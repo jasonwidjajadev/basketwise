@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 
-import cartOutlineIcon from '@/assets/icons/cart-outline.svg'
+// import cartOutlineIcon from '@/assets/icons/cart-outline.svg'
+import { MdOutlineShoppingCart } from 'react-icons/md'
 import menuIcon from '@/assets/icons/menu.svg'
 import icon from '@/assets/logo.svg'
 import CartSidebar from '@/components/CartSidebar'
+import SearchBar from '@/components/SearchBar'
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false)
@@ -50,38 +52,7 @@ export default function Header() {
           </Link>
 
           {/* Search */}
-          <form
-            role="search"
-            className="w-full min-w-0"
-          >
-            <label
-              htmlFor="header-search"
-              className="sr-only"
-            >
-              Search groceries
-            </label>
-
-            <div className="relative">
-              <svg
-                aria-hidden="true"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                className="pointer-events-none absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-zinc-400"
-              >
-                <circle cx="11" cy="11" r="7" />
-                <path d="m20 20-3.5-3.5" />
-              </svg>
-
-              <input
-                id="header-search"
-                type="search"
-                placeholder="Search groceries..."
-                className="w-full min-w-0 rounded-full border border-zinc-300 bg-zinc-50 py-2.5 pr-4 pl-12 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-basket-green focus:bg-white focus:ring-2 focus:ring-basket-green/10"
-              />
-            </div>
-          </form>
+          <SearchBar />
 
           {/* Desktop navigation */}
           <nav
@@ -108,17 +79,14 @@ export default function Header() {
               </li>
 
               <li>
+
                 <button
                   type="button"
                   aria-label="Open cart"
                   onClick={() => setIsCartOpen(true)}
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-100 transition hover:bg-zinc-200"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-100 text-zinc-800 hover:bg-zinc-200"
                 >
-                  <img
-                    src={cartOutlineIcon}
-                    alt=""
-                    className="h-6 w-6"
-                  />
+                  <MdOutlineShoppingCart className="h-6 w-6" />
                 </button>
               </li>
             </ul>
