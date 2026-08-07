@@ -4,7 +4,7 @@ import BrowsePageSidebar from '@/components/BrowsePageLeftSidebar'
 
 export default function BrowseLayout() {
   return (
-    <div className="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-360 px-6 lg:px-8 xl:px-10">
+    <div className="flex min-h-[calc(100svh-4rem)] w-full px-6 lg:px-8 xl:px-12">
       <BrowsePageSidebar />
 
       <main className="min-w-0 flex-1">

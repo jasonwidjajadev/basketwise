@@ -1,7 +1,7 @@
 export default function ComparePage() {
   return (
-    <main className="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-360 items-center justify-center px-6 lg:px-8 xl:px-10">
+    <div className="flex min-h-[calc(100svh-4rem)] w-full items-center justify-center px-6 lg:px-8 xl:px-12">
       TODO Compare Page
-    </main>
+    </div>
   )
 }

@@ -5,7 +5,10 @@ type CartSidebarProps = {
   onClose: () => void
 }
 
-export default function CartSidebar({ isOpen, onClose, }: CartSidebarProps) {
+export default function CartSidebar({
+  isOpen,
+  onClose,
+}: CartSidebarProps) {
   return (
     <div
       className={`fixed inset-0 z-50 ${
@@ -47,7 +50,7 @@ export default function CartSidebar({ isOpen, onClose, }: CartSidebarProps) {
           <Link
             to="/compare"
             onClick={onClose}
-            className="flex w-full justify-center rounded-full bg-green-800 px-5 py-3 text-sm font-semibold text-white"
+            className="flex w-full justify-center rounded-full bg-basket-green px-5 py-3 text-sm font-semibold text-white"
           >
             Compare basket
           </Link>

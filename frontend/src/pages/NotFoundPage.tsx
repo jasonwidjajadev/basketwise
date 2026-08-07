@@ -4,7 +4,7 @@ import mascot from '@/assets/mascots/mascot-paper-bag.svg'
 
 export default function NotFoundPage() {
   return (
-    <section className="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-360 flex-col items-center justify-center px-6 text-center lg:px-8 xl:px-10">
+    <section className="flex min-h-[calc(100svh-4rem)] w-full flex-col items-center justify-center px-6 text-center lg:px-8 xl:px-12">
       <img
         src={mascot}
         alt=""
