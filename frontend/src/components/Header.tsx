@@ -2,24 +2,24 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 
 import icon from '@/assets/logo.svg'
-import CartIcon from '@/components/icons/CartIcon'
 import CartSidebar from '@/components/CartSidebar'
+import CartIcon from '@/components/icons/CartIcon'
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false)
 
   return (
     <>
-      <header className="sticky top-0 z-40 border-b border-zinc-200 bg-white">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-6">
-          <Link to="/" className="flex items-center gap-2.5">
+      <header className="sticky top-0 z-40 w-full border-b border-zinc-200 bg-white">
+        <div className="mx-auto flex h-16 w-full max-w-360 items-center justify-between px-6 lg:px-8 xl:px-10">
+          <Link to="/" className="flex items-center gap-2">
             <img
               src={icon}
               alt=""
-              className="h-7 w-7 object-contain"
+              className="h-6.5 w-6.5 object-contain"
             />
 
-            <span className="text-xl font-semibold tracking-tight text-green-900">
+            <span className="font-eb-garamond text-2xl font-medium text-basket-green">
               BasketWise
             </span>
           </Link>

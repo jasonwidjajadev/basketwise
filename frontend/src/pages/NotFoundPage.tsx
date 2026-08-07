@@ -4,7 +4,7 @@ import mascot from '@/assets/mascots/mascot-paper-bag.svg'
 
 export default function NotFoundPage() {
   return (
-    <section className="flex min-h-[calc(100svh-4rem)] flex-col items-center justify-center px-6 text-center">
+    <section className="mx-auto flex min-h-[calc(100svh-4rem)] w-full max-w-360 flex-col items-center justify-center px-6 text-center lg:px-8 xl:px-10">
       <img
         src={mascot}
         alt=""
@@ -15,7 +15,7 @@ export default function NotFoundPage() {
         404 Page not found
       </h1>
 
-      <p className="mt-4 max-w-l text-zinc-600">
+      <p className="mt-4 max-w-md text-zinc-600">
         The page you are looking for does not exist or may have been moved.
       </p>
 
