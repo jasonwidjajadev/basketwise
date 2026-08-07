@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 
-// import cartOutlineIcon from '@/assets/icons/cart-outline.svg'
-import { MdOutlineShoppingCart } from 'react-icons/md'
+import cartOutlineIcon from '@/assets/icons/cart-outline.svg'
+// import { MdOutlineShoppingCart } from 'react-icons/md'
 import menuIcon from '@/assets/icons/menu.svg'
 import icon from '@/assets/logo.svg'
 import CartSidebar from '@/components/CartSidebar'
@@ -86,7 +86,12 @@ export default function Header() {
                   onClick={() => setIsCartOpen(true)}
                   className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-100 text-zinc-800 hover:bg-zinc-200"
                 >
-                  <MdOutlineShoppingCart className="h-6 w-6" />
+                  {/* <MdOutlineShoppingCart className="h-6 w-6" /> */}
+                  <img
+                    src={cartOutlineIcon}
+                    alt=""
+                    className="h-6 w-6"
+                  />
                 </button>
               </li>
             </ul>
