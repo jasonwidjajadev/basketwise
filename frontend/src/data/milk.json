@@ -1,0 +1,13 @@
+{
+  "items": [
+    {
+      "id": 1,
+      "name": "Full cream milk",
+      "category": "Dairy & eggs",
+      "unit": "2 L",
+      "lowest_price": 3.2,
+      "image_url": "/images/milk.png"
+    }
+  ],
+  "total": 1
+}
