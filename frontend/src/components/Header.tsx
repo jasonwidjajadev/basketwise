@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
+import {
+  MdOutlineGridView,
+  MdOutlineListAlt,
+  MdOutlinePerson,
+} from 'react-icons/md'
 
 import cartOutlineIcon from '@/assets/icons/cart-outline.svg'
-// import { MdOutlineShoppingCart } from 'react-icons/md'
 import menuIcon from '@/assets/icons/menu.svg'
 import icon from '@/assets/logo.svg'
 import CartSidebar from '@/components/CartSidebar'
@@ -59,34 +63,44 @@ export default function Header() {
             aria-label="Main navigation"
             className="hidden justify-self-end lg:block"
           >
-            <ul className="flex items-center gap-3">
+            <ul className="flex items-center gap-2">
               <li>
                 <Link
                   to="/browse"
-                  className="whitespace-nowrap px-3 py-2 text-sm font-medium text-zinc-700 hover:text-zinc-950"
+                  className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950"
                 >
-                  Browse groceries
+                  <MdOutlineGridView className="h-5 w-5" />
+                  Browse
+                </Link>
+              </li>
+
+              <li>
+                <Link
+                  to="/lists"
+                  className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950"
+                >
+                  <MdOutlineListAlt className="h-5 w-5" />
+                  Lists
                 </Link>
               </li>
 
               <li>
                 <Link
                   to="/signin"
-                  className="whitespace-nowrap rounded-full bg-basket-green px-5 py-2.5 text-sm font-medium text-white transition hover:opacity-90"
+                  aria-label="Account"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-100 text-zinc-700 transition hover:bg-zinc-200 hover:text-zinc-950"
                 >
-                  Sign in
+                  <MdOutlinePerson className="h-6 w-6" />
                 </Link>
               </li>
 
               <li>
-
                 <button
                   type="button"
                   aria-label="Open cart"
                   onClick={() => setIsCartOpen(true)}
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-100 text-zinc-800 hover:bg-zinc-200"
+                  className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-100 transition hover:bg-zinc-200"
                 >
-                  {/* <MdOutlineShoppingCart className="h-6 w-6" /> */}
                   <img
                     src={cartOutlineIcon}
                     alt=""
@@ -121,17 +135,28 @@ export default function Header() {
                 <Link
                   to="/browse"
                   onClick={() => setIsMenuOpen(false)}
-                  className="block rounded-lg px-4 py-3 text-sm text-zinc-800 hover:bg-zinc-100"
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-zinc-800 hover:bg-zinc-100"
                 >
-                  Browse groceries
+                  <MdOutlineGridView className="h-5 w-5" />
+                  Browse
+                </Link>
+
+                <Link
+                  to="/lists"
+                  onClick={() => setIsMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-zinc-800 hover:bg-zinc-100"
+                >
+                  <MdOutlineListAlt className="h-5 w-5" />
+                  Lists
                 </Link>
 
                 <Link
                   to="/signin"
                   onClick={() => setIsMenuOpen(false)}
-                  className="block rounded-lg px-4 py-3 text-sm text-zinc-800 hover:bg-zinc-100"
+                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-zinc-800 hover:bg-zinc-100"
                 >
-                  Sign in
+                  <MdOutlinePerson className="h-5 w-5" />
+                  Account
                 </Link>
 
                 <button
@@ -140,8 +165,13 @@ export default function Header() {
                     setIsMenuOpen(false)
                     setIsCartOpen(true)
                   }}
-                  className="block w-full rounded-lg px-4 py-3 text-left text-sm text-zinc-800 hover:bg-zinc-100"
+                  className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm text-zinc-800 hover:bg-zinc-100"
                 >
+                  <img
+                    src={cartOutlineIcon}
+                    alt=""
+                    className="h-5 w-5"
+                  />
                   Cart
                 </button>
               </div>
