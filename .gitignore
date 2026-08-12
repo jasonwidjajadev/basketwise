@@ -62,4 +62,4 @@ htmlcov/
 # Temporary files
 # ignores any folder named temp or tmp anywhere in the repository
 temp/
-tmp/
+tmp/*.db
