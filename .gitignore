@@ -63,3 +63,6 @@ htmlcov/
 # ignores any folder named temp or tmp anywhere in the repository
 temp/
 tmp/*.db
+
+# SQLite databases
+*.db
