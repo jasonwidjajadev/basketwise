@@ -21,8 +21,13 @@
 @theme {
   --color-basket-green: #416b1f;
   --color-basket-green-light: #f8faf4;
+
+  /*528px x 528px */
+  --color-item-card-bg: #f2f1ed;
+
   --font-eb-garamond: "EB Garamond", serif;
 }
+
 
 @layer base {
   html {
