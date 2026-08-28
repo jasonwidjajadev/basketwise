@@ -12,8 +12,7 @@ export default function CategoryGrid() {
             Browse all groceries
           </h2>
           <p className="max-w-[52ch] text-sm text-bw-muted">
-            Canonical categories for people who don&rsquo;t know exactly what
-            to search for.
+            Categories for people who don't know exactly what to search for.
           </p>
         </div>
       </div>

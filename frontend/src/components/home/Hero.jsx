@@ -42,20 +42,33 @@ export default function Hero() {
           to go basket.
         </p>
 
-        <div className="flex flex-wrap gap-2.5">
+        <div className="flex flex-wrap items-center gap-3.5">
           <Link
             to="/#essentials"
-            className="rounded-sm bg-bw-green px-6 py-3.5 font-archivo text-[13.5px] font-semibold text-white transition-colors hover:bg-bw-green-hover"
-          >
-            Compare my basket
-          </Link>
-
-          <Link
-            to="/#start"
-            className="rounded-sm border border-bw-green px-6 py-3.5 font-archivo text-[13.5px] font-semibold text-bw-green transition-colors hover:bg-bw-green hover:text-white"
+            className="rounded-sm bg-bw-green px-5 py-3.5 font-archivo text-[13.5px] font-semibold text-white transition-colors hover:bg-bw-green-hover"
           >
             Scan a receipt
           </Link>
+
+          <span className="font-archivo text-[11px] font-semibold tracking-[.14em] text-bw-subtle uppercase">
+            Or
+          </span>
+
+          <div className="flex flex-wrap gap-2.5">
+            <Link
+              to="/#start"
+              className="rounded-sm border border-bw-green px-5 py-3.5 font-archivo text-[13.5px] font-semibold text-bw-green transition-colors hover:bg-bw-green hover:text-white"
+            >
+              Look for groceries
+            </Link>
+
+            <Link
+              to="/#start"
+              className="rounded-sm border border-bw-green px-5 py-3.5 font-archivo text-[13.5px] font-semibold text-bw-green transition-colors hover:bg-bw-green hover:text-white"
+            >
+              Get Meal Plans
+            </Link>
+          </div>
         </div>
       </div>
     </section>

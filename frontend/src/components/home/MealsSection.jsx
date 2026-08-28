@@ -18,7 +18,7 @@ export default function MealsSection() {
         </p>
 
         <h2 className="max-w-[22ch] font-newsreader text-[32px] leading-[1.14] font-normal tracking-[-.02em] text-bw-ink sm:text-[38px]">
-          Tap a meal, and every ingredient lands in your basket.
+          Pick a meal, and every ingredient lands in your basket.
         </h2>
 
         <p className="mt-3.5 mb-7 max-w-[56ch] text-sm leading-relaxed text-bw-body">

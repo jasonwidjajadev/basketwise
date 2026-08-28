@@ -1,8 +1,8 @@
 export const startAnotherWayTabs = [
   {
-    label: 'Paste a shopping list',
+    label: 'Look for groceries',
     blurb:
-      'Drop in a plain-text list. We match each line to a real product and price it across all four stores in seconds.',
+      'Prefer to pick out your groceries manually? Let BasketWise show you the cheapest prices for all your faves!',
   },
   {
     label: 'Start from a meal plan',

@@ -135,22 +135,24 @@ export default function Header() {
                   type="button"
                   aria-label="Open cart"
                   onClick={() => setIsCartOpen(true)}
-                  className="flex items-center gap-2 rounded-full bg-bw-green px-3.25 py-1.75 font-archivo text-sm font-semibold text-white transition hover:bg-bw-green-hover"
+                  className="flex items-center gap-2.5 rounded-full bg-bw-green px-3.25 py-1.75 font-archivo text-sm font-semibold text-white transition hover:bg-bw-green-hover"
                 >
-                  <img
-                    src={cartOutlineIcon}
-                    alt=""
-                    className="h-5 w-5 invert"
-                  />
-                  <span>Basket</span>
-                  <span
-                    className={cn(
-                      'inline-flex h-4.75 min-w-4.75 items-center justify-center rounded-full bg-bw-yellow px-1 text-[11px] font-bold text-bw-yellow-ink',
-                      pulse && 'animate-[bw-pop_.42s_ease]',
-                    )}
-                  >
-                    {count}
+                  <span className="relative flex h-5 w-5 shrink-0 items-center justify-center">
+                    <img
+                      src={cartOutlineIcon}
+                      alt=""
+                      className="h-5 w-5 invert"
+                    />
+                    <span
+                      className={cn(
+                        'absolute -top-1.75 -right-1.75 inline-flex h-3.75 min-w-3.75 items-center justify-center rounded-full bg-bw-yellow px-0.75 text-[10px] leading-none font-bold text-bw-yellow-ink ring-2 ring-bw-green',
+                        pulse && 'animate-[bw-pop_.42s_ease]',
+                      )}
+                    >
+                      {count}
+                    </span>
                   </span>
+                  <span className="leading-none">Basket</span>
                 </button>
               </li>
             </ul>
