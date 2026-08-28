@@ -21,7 +21,7 @@ export default function SearchBar() {
           id="header-search"
           type="search"
           placeholder="Search groceries..."
-          className="w-full min-w-0 rounded-full border border-zinc-300 bg-zinc-50 py-2.5 pr-4 pl-12 text-sm text-zinc-950 outline-none transition placeholder:text-zinc-400 focus:border-basket-green focus:bg-white focus:ring-2 focus:ring-basket-green/10"
+          className="w-full min-w-0 rounded-full border border-transparent bg-white/10 py-2.5 pr-4 pl-12 text-sm text-bw-panel outline-none transition placeholder:text-bw-on-dark focus:border-bw-yellow focus:bg-white/15 focus:ring-2 focus:ring-bw-yellow/20"
         />
       </div>
     </form>

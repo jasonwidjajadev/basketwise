@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Archivo:wght@400;500;600;700&display=swap");
 @import "tailwindcss";
 /* @import "tw-animate-css"; */
 /* @custom-variant dark (&:where(.dark, .dark *)); */
@@ -19,15 +20,43 @@
 }
 
 @theme {
-  --color-basket-green: #416b1f;
-  --color-basket-green-light: #f8faf4;
+  /* BasketWise design system */
+  --color-bw-page: #fbfaf7;
+  --color-bw-surface: #ffffff;
+  --color-bw-panel: #efede4;
+  --color-bw-line: #e4e1d6;
+  --color-bw-line-strong: #c9c6b8;
+  --color-bw-ink: #1c1c1a;
+  --color-bw-ink-inverse-bg: #14170f;
+  --color-bw-body: #5c5b52;
+  --color-bw-muted: #6e6d63;
+  --color-bw-subtle: #8a897e;
+  --color-bw-on-dark: #b9b7ac;
+  --color-bw-green: #1f4d2e;
+  --color-bw-green-hover: #2e7a47;
+  --color-bw-yellow: #f2c230;
+  --color-bw-yellow-ink: #2a2405;
+  --color-bw-red: #b0332b;
 
   /*528px x 528px */
   --color-item-card-bg: #f2f1ed;
 
   --font-eb-garamond: "EB Garamond", serif;
+  --font-newsreader: "Newsreader", serif;
+  --font-archivo: "Archivo", system-ui, sans-serif;
 }
 
+@keyframes bw-pop {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
 
 @layer base {
   html {
