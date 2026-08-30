@@ -34,6 +34,7 @@
   --color-bw-on-dark: #b9b7ac;
   --color-bw-green: #1f4d2e;
   --color-bw-green-hover: #2e7a47;
+  --color-bw-green-tint: #f4f8f5;
   --color-bw-yellow: #f2c230;
   --color-bw-yellow-ink: #2a2405;
   --color-bw-red: #b0332b;
@@ -55,6 +56,50 @@
   }
   100% {
     transform: scale(1);
+  }
+}
+
+@keyframes bw-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-bw-fade-up {
+  animation: bw-fade-up 320ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bw-fade-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes bw-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-bw-skeleton {
+  animation: bw-skeleton-pulse 1.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-bw-skeleton {
+    animation: none;
+    opacity: 0.8;
   }
 }
 

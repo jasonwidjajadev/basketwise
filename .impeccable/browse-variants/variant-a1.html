@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A1 — Toolbar Grid · BasketWise Browse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,600&family=Archivo:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="tokens.css">
+<style>
+  .container{max-width:1440px;}
+
+  .page-head{padding:28px 0 16px;}
+  .page-title{font-size:32px; font-weight:400; letter-spacing:-.015em; line-height:1.1;}
+  .page-sub{margin-top:6px; font-size:13px; color:var(--muted); max-width:56ch;}
+
+  .browse-layout{display:flex; gap:28px; align-items:flex-start; padding-bottom:60px;}
+  .cat-sidebar{width:264px; flex-shrink:0;}
+  @media(max-width:900px){ .browse-layout{flex-direction:column;} .cat-sidebar{width:100%;} }
+
+  .content-col{min-width:0; flex:1;}
+
+  .toolbar{display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:12px; padding:0 0 16px; margin-bottom:16px; border-bottom:1px solid var(--line);}
+  .toolbar-left{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .toolbar-right{display:flex; align-items:center; gap:10px; flex-wrap:wrap;}
+  .result-count{font-size:12px; color:var(--muted); white-space:nowrap;}
+
+  .chip-toggle{display:flex; gap:6px; flex-wrap:wrap;}
+  .chip-toggle button{border:1px solid var(--line-strong); background:var(--surface); color:var(--ink); border-radius:9999px; padding:9px 14px; font-size:12px; font-weight:600; transition:all .15s;}
+  .chip-toggle button.active{border-color:var(--ink); background:var(--panel);}
+
+  .sort-icon{width:15px; height:15px; flex-shrink:0; color:var(--subtle);}
+
+  .product-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:18px;}
+  @media(min-width:560px){ .product-grid{grid-template-columns:repeat(3,1fr);} }
+  @media(min-width:1000px){ .product-grid{grid-template-columns:repeat(4,1fr);} }
+  @media(min-width:1360px){ .product-grid{grid-template-columns:repeat(5,1fr);} }
+
+  .card{display:flex; flex-direction:column; border:1px solid var(--line); background:var(--surface);}
+  .card-img{position:relative; aspect-ratio:1/1; display:flex; align-items:center; justify-content:center; padding:12px; background-image:repeating-linear-gradient(135deg, var(--img-a) 0 8px, var(--img-b) 8px 16px);}
+  .card-img span{font-family:'Menlo','Consolas',monospace; font-size:9.5px; letter-spacing:.02em; color:#9b9a8f; text-align:center; line-height:1.4;}
+  .card-body{padding:12px 12px 0;}
+  .card-name{font-size:12.5px; font-weight:600; color:var(--ink); line-height:1.35; min-height:34px;}
+  .card-meta{margin-top:3px; font-size:11px; color:var(--muted);}
+  .price-compare{display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-top:10px; padding-top:10px; border-top:1px solid var(--line);}
+  .price-col{display:flex; flex-direction:column; gap:2px; padding:6px 6px; border:1px solid transparent;}
+  .price-col.best{border-color:var(--green); background:#f4f8f5;}
+  .store-row{display:flex; align-items:center; gap:4px;}
+  .store-name{font-size:9.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted);}
+  .price-col.best .store-name{color:var(--green);}
+  .check{width:11px; height:11px; flex-shrink:0; color:var(--green);}
+  .price-val{font-family:'Newsreader',serif; font-size:18px; line-height:1.05; color:var(--ink);}
+  .price-col.best .price-val{color:var(--green);}
+  .single-store-note{margin-top:10px; padding-top:10px; border-top:1px solid var(--line); display:flex; align-items:baseline; justify-content:space-between; gap:8px;}
+  .single-store-note .price-val{font-size:20px;}
+  .only-at{font-size:10px; color:var(--muted); text-align:right; line-height:1.3;}
+  .save-badge{display:inline-flex; align-self:flex-start; margin-top:9px; background:var(--yellow); color:var(--yellow-ink); font-size:10px; font-weight:700; padding:3px 6px;}
+  .card-actions{padding:10px 12px 12px; margin-top:auto;}
+  .add-btn{width:100%; border:none; border-radius:2px; background:var(--green); color:#fff; font-size:12px; font-weight:600; padding:9px 10px; transition:background .15s;}
+  .add-btn:hover{background:var(--green-hover);}
+  .add-btn.added{background:var(--ink-inverse);}
+
+  .empty-state{display:none; flex-direction:column; align-items:flex-start; gap:6px; border:1px solid var(--line); background:var(--surface); padding:48px 32px; text-align:left;}
+  .empty-state.visible{display:flex;}
+  .empty-state h3{font-family:'Newsreader',serif; font-size:22px; font-weight:400; color:var(--ink);}
+  .empty-state p{font-size:13px; color:var(--muted); max-width:44ch;}
+  .empty-state button{margin-top:10px; border:1px solid var(--ink); background:transparent; color:var(--ink); border-radius:9999px; padding:9px 18px; font-size:12.5px; font-weight:600;}
+  .empty-state button:hover{background:var(--panel);}
+</style>
+</head>
+<body>
+  <div id="banner"></div>
+  <div id="header"></div>
+
+  <main class="container">
+    <div class="page-head">
+      <h1 class="page-title serif">Browse groceries</h1>
+      <p class="page-sub">Coles and Woolworths prices shown side-by-side, so the cheaper option is never hidden.</p>
+    </div>
+
+    <div class="browse-layout">
+      <aside class="cat-sidebar">
+        <div class="cat-sidebar-head">Categories</div>
+        <div id="cat-sidebar-list"></div>
+      </aside>
+
+      <div class="content-col">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="chip-toggle" id="store-group" role="group" aria-label="Filter by which store is cheaper">
+              <button class="active" data-store="both" aria-pressed="true">Both stores</button>
+              <button data-store="coles" aria-pressed="false">Best at Coles</button>
+              <button data-store="woolworths" aria-pressed="false">Best at Woolworths</button>
+            </div>
+          </div>
+          <div class="toolbar-right">
+            <span class="result-count" id="result-count"></span>
+            <div class="dd">
+              <button class="dd-trigger" id="sort-trigger" aria-haspopup="true" aria-expanded="false">
+                <svg class="sort-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 7h11"/><path d="M4 12h7"/><path d="M4 17h4"/><path d="M16 6v13"/><path d="M13 16l3 3 3-3"/></svg>
+                <span id="sort-label">Name: A–Z</span>
+                <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+              </button>
+              <div class="dd-panel" id="sort-panel" style="left:auto; right:0;"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="product-grid" id="product-grid"></div>
+        <div class="empty-state" id="empty-state">
+          <h3 class="serif">No items here yet</h3>
+          <p>We haven't loaded prices for this category yet, or the store filter is hiding everything in it. Try another category, or show both stores.</p>
+          <button id="empty-reset">Show both stores</button>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="footer"></div>
+
+  <script src="data.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    document.getElementById('banner').innerHTML = renderOptionABanner('a1');
+    document.getElementById('header').innerHTML = renderHeader();
+    document.getElementById('footer').innerHTML = renderFooter();
+
+    let state = { category: "Fruit & Veg", sub: "All", sort: "name-asc", store: "both" };
+
+    function renderCard(p){
+      const div = document.createElement('div');
+      div.className = 'card';
+      const hasBoth = p.coles != null && p.woolworths != null;
+      const colesCheaper = hasBoth && p.coles < p.woolworths;
+      const woolsCheaper = hasBoth && p.woolworths < p.coles;
+      const tie = hasBoth && p.coles === p.woolworths;
+      const save = hasBoth ? Math.abs(p.coles - p.woolworths) : 0;
+
+      let priceBlock;
+      if(hasBoth){
+        priceBlock = `
+          <div class="price-compare">
+            <div class="price-col ${colesCheaper||tie ? 'best' : ''}">
+              <div class="store-row"><span class="store-name">Coles</span>${colesCheaper||tie ? checkIconSvg('check') : ''}</div>
+              <span class="price-val serif">${fmt(p.coles)}</span>
+            </div>
+            <div class="price-col ${woolsCheaper||tie ? 'best' : ''}">
+              <div class="store-row"><span class="store-name">Woolworths</span>${woolsCheaper||tie ? checkIconSvg('check') : ''}</div>
+              <span class="price-val serif">${fmt(p.woolworths)}</span>
+            </div>
+          </div>
+          ${save > 0 ? `<span class="save-badge">Save ${fmt(save)}</span>` : ''}
+        `;
+      } else {
+        const store = p.coles != null ? 'Coles' : 'Woolworths';
+        const price = p.coles != null ? p.coles : p.woolworths;
+        priceBlock = `
+          <div class="single-store-note">
+            <span class="price-val serif">${fmt(price)}</span>
+            <span class="only-at">Only at<br>${store}</span>
+          </div>
+        `;
+      }
+
+      div.innerHTML = `
+        <div class="card-img"><span>${p.shot}</span></div>
+        <div class="card-body">
+          <p class="card-name">${p.name}</p>
+          <p class="card-meta">${p.unit}</p>
+          ${priceBlock}
+        </div>
+        <div class="card-actions">
+          <button class="add-btn" type="button">Add to cart</button>
+        </div>
+      `;
+      return div;
+    }
+
+    function renderGrid(){
+      const grid = document.getElementById('product-grid');
+      const empty = document.getElementById('empty-state');
+      const all = PRODUCTS[state.category] || [];
+      const filtered = sortProducts(
+        all.filter(p => passesPreferredStore(p, state.store) && passesSubFilter(p, state.sub)),
+        state.sort
+      );
+
+      grid.innerHTML = "";
+      if(filtered.length === 0){
+        grid.style.display = 'none';
+        empty.classList.add('visible');
+      } else {
+        grid.style.display = 'grid';
+        empty.classList.remove('visible');
+        filtered.forEach(p => grid.appendChild(renderCard(p)));
+      }
+      bindAddButtons(grid);
+      document.getElementById('result-count').textContent =
+        filtered.length > 0 ? `${filtered.length} item${filtered.length === 1 ? '' : 's'}` : '';
+    }
+
+    setupCategorySidebar({
+      containerId: 'cat-sidebar-list',
+      getState: () => state,
+      onSelect: ({ category, sub }) => { state.category = category; state.sub = sub; renderGrid(); }
+    });
+
+    setupSortDropdown({
+      triggerId: 'sort-trigger', panelId: 'sort-panel', labelId: 'sort-label',
+      getState: () => state,
+      onSelect: (sort) => { state.sort = sort; renderGrid(); }
+    });
+
+    document.getElementById('store-group').addEventListener('click', (e) => {
+      const btn = e.target.closest('button[data-store]');
+      if(!btn) return;
+      state.store = btn.dataset.store;
+      [...e.currentTarget.children].forEach(b => {
+        b.classList.toggle('active', b === btn);
+        b.setAttribute('aria-pressed', String(b === btn));
+      });
+      renderGrid();
+    });
+    document.getElementById('empty-reset').addEventListener('click', () => {
+      state.store = 'both';
+      document.querySelectorAll('#store-group button').forEach(b => {
+        const isBoth = b.dataset.store === 'both';
+        b.classList.toggle('active', isBoth);
+        b.setAttribute('aria-pressed', String(isBoth));
+      });
+      renderGrid();
+    });
+
+    renderGrid();
+  </script>
+</body>
+</html>

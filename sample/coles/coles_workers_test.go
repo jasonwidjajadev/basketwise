@@ -76,8 +76,6 @@ func TestProductListPageWorker(t *testing.T) {
 		ID:   "fruit-vegetables",
 		page: 1,
 	}
-	// TODO remove this hardcoded sleep and use a loop in a goroutine with a channel for the output
-	// as I've done before in another test.
 	time.Sleep(2500 * time.Millisecond)
 	readInfo, err := c.loadProductInfo(productID("2511791"))
 	if err != nil {

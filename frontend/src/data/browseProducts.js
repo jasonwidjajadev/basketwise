@@ -1,0 +1,63 @@
+// Mock product catalog, shaped exactly like the real `GET /products` response
+// (browsing_page_guide.md §7) — a canonical product with its retailer offers
+// attached, so the frontend never makes a separate request per offer.
+export const BROWSE_PRODUCTS = [
+  // Fruit & Vegetables
+  { id: 'bananas', name: 'Bananas', category: 'fruit-vegetables', subcategory: 'fruit', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'aldi', price: 3.49 }, { retailer: 'woolworths', price: 4.2 }, { retailer: 'coles', price: 3.9 }] },
+  { id: 'avocado', name: 'Cavendish Avocado', category: 'fruit-vegetables', subcategory: 'fruit', size_value: 1, size_unit: 'each', image_url: null, offers: [{ retailer: 'aldi', price: 1.49 }, { retailer: 'woolworths', price: 1.8 }, { retailer: 'coles', price: 1.8 }] },
+  { id: 'apples-gala', name: 'Royal Gala Apples', category: 'fruit-vegetables', subcategory: 'fruit', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'woolworths', price: 4.9 }, { retailer: 'coles', price: 4.5 }] },
+  { id: 'tomatoes-roma', name: 'Roma Tomatoes', category: 'fruit-vegetables', subcategory: 'vegetables', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'aldi', price: 4.99 }, { retailer: 'woolworths', price: 5.5 }, { retailer: 'coles', price: 5.9 }] },
+  { id: 'carrots', name: 'Carrots', category: 'fruit-vegetables', subcategory: 'vegetables', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'aldi', price: 1.79 }, { retailer: 'woolworths', price: 2.3 }, { retailer: 'coles', price: 2.1 }] },
+  { id: 'onions-brown', name: 'Brown Onions', category: 'fruit-vegetables', subcategory: 'vegetables', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'coles', price: 2.9 }] },
+  { id: 'cucumber-lebanese', name: 'Lebanese Cucumber', category: 'fruit-vegetables', subcategory: 'vegetables', size_value: 1, size_unit: 'each', image_url: null, offers: [{ retailer: 'woolworths', price: 1.2 }] },
+  { id: 'spinach-baby', name: 'Baby Spinach', category: 'fruit-vegetables', subcategory: 'salads', size_value: 120, size_unit: 'g', image_url: null, offers: [{ retailer: 'aldi', price: 2.99 }, { retailer: 'woolworths', price: 3.8 }, { retailer: 'coles', price: 3.5 }] },
+
+  // Meat & Seafood
+  { id: 'chicken-breast', name: 'Chicken Breast', category: 'meat-seafood', subcategory: 'poultry', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'aldi', price: 9.99 }, { retailer: 'woolworths', price: 10.5 }, { retailer: 'coles', price: 11.0 }] },
+  { id: 'beef-mince', name: 'Beef Mince, 5-Star', category: 'meat-seafood', subcategory: 'mince', size_value: 500, size_unit: 'g', image_url: null, offers: [{ retailer: 'woolworths', price: 6.9 }, { retailer: 'coles', price: 6.5 }] },
+  { id: 'salmon-fillet', name: 'Atlantic Salmon Fillet', category: 'meat-seafood', subcategory: 'seafood', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'woolworths', price: 29.0 }, { retailer: 'coles', price: 32.0 }] },
+  { id: 'lamb-chops', name: 'Lamb Loin Chops', category: 'meat-seafood', subcategory: 'lamb', size_value: 500, size_unit: 'g', image_url: null, offers: [{ retailer: 'aldi', price: 8.99 }, { retailer: 'coles', price: 9.5 }] },
+
+  // Deli & Chilled
+  { id: 'bacon-rashers', name: 'Bacon Rashers', category: 'deli-chilled', subcategory: 'ham-bacon-smallgoods', size_value: 200, size_unit: 'g', image_url: null, offers: [{ retailer: 'aldi', price: 4.49 }, { retailer: 'woolworths', price: 5.2 }, { retailer: 'coles', price: 5.5 }] },
+  { id: 'hummus-dip', name: 'Traditional Hummus', category: 'deli-chilled', subcategory: 'dips-spreads', size_value: 200, size_unit: 'g', image_url: null, offers: [{ retailer: 'woolworths', price: 3.5 }, { retailer: 'coles', price: 3.6 }] },
+
+  // Dairy, Eggs & Fridge
+  { id: 'milk-full-cream', name: 'Full Cream Milk', category: 'dairy-eggs-fridge', subcategory: 'milk', size_value: 2, size_unit: 'L', image_url: null, offers: [{ retailer: 'aldi', price: 2.89 }, { retailer: 'woolworths', price: 3.1 }, { retailer: 'coles', price: 3.2 }] },
+  { id: 'eggs-free-range', name: 'Free Range Eggs', category: 'dairy-eggs-fridge', subcategory: 'eggs', size_value: 12, size_unit: 'pack', image_url: null, offers: [{ retailer: 'aldi', price: 5.99 }, { retailer: 'woolworths', price: 6.9 }, { retailer: 'coles', price: 6.5 }] },
+  { id: 'cheese-tasty-block', name: 'Tasty Cheese Block', category: 'dairy-eggs-fridge', subcategory: 'cheese', size_value: 500, size_unit: 'g', image_url: null, offers: [{ retailer: 'aldi', price: 5.99 }, { retailer: 'woolworths', price: 6.5 }, { retailer: 'coles', price: 7.0 }] },
+  { id: 'butter-salted', name: 'Salted Butter', category: 'dairy-eggs-fridge', subcategory: 'butter-margarine', size_value: 500, size_unit: 'g', image_url: null, offers: [{ retailer: 'woolworths', price: 7.2 }, { retailer: 'coles', price: 6.8 }] },
+  { id: 'yoghurt-greek', name: 'Greek Yoghurt', category: 'dairy-eggs-fridge', subcategory: 'yoghurt', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'aldi', price: 4.49 }, { retailer: 'woolworths', price: 5.9 }, { retailer: 'coles', price: 5.5 }] },
+
+  // Bakery
+  { id: 'bread-white-loaf', name: 'White Sandwich Loaf', category: 'bakery', subcategory: 'bread', size_value: 700, size_unit: 'g', image_url: null, offers: [{ retailer: 'aldi', price: 2.49 }, { retailer: 'woolworths', price: 3.8 }, { retailer: 'coles', price: 3.6 }] },
+  { id: 'bread-multigrain', name: 'Multigrain Loaf', category: 'bakery', subcategory: 'bread', size_value: 700, size_unit: 'g', image_url: null, offers: [{ retailer: 'woolworths', price: 4.3 }, { retailer: 'coles', price: 4.5 }] },
+  { id: 'dinner-rolls', name: 'Dinner Rolls', category: 'bakery', subcategory: 'rolls-buns', size_value: 6, size_unit: 'pack', image_url: null, offers: [{ retailer: 'woolworths', price: 3.2 }] },
+  { id: 'baguette-bake-at-home', name: 'Bake-at-Home Baguette', category: 'bakery', subcategory: 'bake-at-home', size_value: 2, size_unit: 'pack', image_url: null, offers: [{ retailer: 'coles', price: 3.8 }, { retailer: 'woolworths', price: 4.0 }] },
+  { id: 'chocolate-mud-cake', name: 'Chocolate Mud Cake', category: 'bakery', subcategory: 'cakes-sweet-treats', size_value: 1, size_unit: 'each', image_url: null, offers: [{ retailer: 'coles', price: 9.5 }, { retailer: 'woolworths', price: 8.9 }] },
+
+  // Pantry
+  { id: 'rice-basmati', name: 'Basmati Rice', category: 'pantry', subcategory: 'pasta-rice-grains', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'aldi', price: 2.79 }, { retailer: 'woolworths', price: 3.5 }, { retailer: 'coles', price: 3.2 }] },
+  { id: 'pasta-penne', name: 'Penne Pasta', category: 'pantry', subcategory: 'pasta-rice-grains', size_value: 500, size_unit: 'g', image_url: null, offers: [{ retailer: 'aldi', price: 1.19 }, { retailer: 'woolworths', price: 1.5 }, { retailer: 'coles', price: 1.6 }] },
+  { id: 'olive-oil-extra-virgin', name: 'Extra Virgin Olive Oil', category: 'pantry', subcategory: 'oils-vinegars', size_value: 750, size_unit: 'mL', image_url: null, offers: [{ retailer: 'woolworths', price: 11.5 }, { retailer: 'coles', price: 12.0 }] },
+  { id: 'oats-rolled', name: 'Rolled Oats', category: 'pantry', subcategory: 'breakfast', size_value: 750, size_unit: 'g', image_url: null, offers: [{ retailer: 'aldi', price: 2.99 }, { retailer: 'woolworths', price: 4.1 }, { retailer: 'coles', price: 3.9 }] },
+  { id: 'peanut-butter-crunchy', name: 'Peanut Butter, Crunchy', category: 'pantry', subcategory: 'jams-honey-spreads', size_value: 375, size_unit: 'g', image_url: null, offers: [{ retailer: 'aldi', price: 3.29 }, { retailer: 'woolworths', price: 4.5 }, { retailer: 'coles', price: 4.2 }] },
+  { id: 'tomatoes-crushed', name: 'Crushed Tomatoes', category: 'pantry', subcategory: 'canned-food', size_value: 400, size_unit: 'g', image_url: null, offers: [{ retailer: 'aldi', price: 0.99 }, { retailer: 'woolworths', price: 1.4 }, { retailer: 'coles', price: 1.4 }] },
+
+  // Snacks & Confectionery
+  { id: 'chips-salt-vinegar', name: 'Salt & Vinegar Chips', category: 'snacks-confectionery', subcategory: 'chips', size_value: 175, size_unit: 'g', image_url: null, offers: [{ retailer: 'woolworths', price: 3.7 }, { retailer: 'coles', price: 3.5 }] },
+  { id: 'chocolate-family-block', name: 'Family Block Chocolate', category: 'snacks-confectionery', subcategory: 'chocolate', size_value: 180, size_unit: 'g', image_url: null, offers: [{ retailer: 'woolworths', price: 4.5 }, { retailer: 'coles', price: 4.8 }] },
+  { id: 'cookies-choc-chip', name: 'Chocolate Chip Cookies', category: 'snacks-confectionery', subcategory: 'biscuits', size_value: 200, size_unit: 'g', image_url: null, offers: [{ retailer: 'coles', price: 3.2 }] },
+  { id: 'crackers-cheese-pack', name: 'Cheese & Crackers Snack Pack', category: 'snacks-confectionery', subcategory: 'crackers', size_value: 250, size_unit: 'g', image_url: null, offers: [{ retailer: 'woolworths', price: 3.9 }] },
+
+  // Drinks
+  { id: 'cola', name: 'Cola', category: 'drinks', subcategory: 'soft-drinks', size_value: 1.25, size_unit: 'L', image_url: null, offers: [{ retailer: 'aldi', price: 1.99 }, { retailer: 'woolworths', price: 2.6 }, { retailer: 'coles', price: 2.8 }] },
+  { id: 'water-spring', name: 'Spring Water 24pk', category: 'drinks', subcategory: 'water', size_value: 24, size_unit: 'pack', image_url: null, offers: [{ retailer: 'aldi', price: 6.49 }, { retailer: 'woolworths', price: 7.5 }, { retailer: 'coles', price: 8.0 }] },
+  { id: 'coffee-instant', name: 'Instant Coffee', category: 'drinks', subcategory: 'tea-coffee', size_value: 200, size_unit: 'g', image_url: null, offers: [{ retailer: 'woolworths', price: 9.9 }, { retailer: 'coles', price: 9.5 }] },
+  { id: 'juice-orange', name: 'Orange Juice', category: 'drinks', subcategory: 'juice-cordial', size_value: 2, size_unit: 'L', image_url: null, offers: [{ retailer: 'woolworths', price: 5.2 }, { retailer: 'coles', price: 5.2 }] },
+
+  // Frozen
+  { id: 'veg-frozen-mixed', name: 'Frozen Mixed Vegetables', category: 'frozen', subcategory: 'frozen-vegetables', size_value: 1, size_unit: 'kg', image_url: null, offers: [{ retailer: 'aldi', price: 2.29 }, { retailer: 'woolworths', price: 3.0 }, { retailer: 'coles', price: 3.2 }] },
+  { id: 'ice-cream-vanilla', name: 'Vanilla Ice Cream', category: 'frozen', subcategory: 'ice-cream', size_value: 2, size_unit: 'L', image_url: null, offers: [{ retailer: 'woolworths', price: 6.0 }, { retailer: 'coles', price: 6.5 }] },
+  { id: 'fish-crumbed-frozen', name: 'Frozen Crumbed Fish', category: 'frozen', subcategory: 'frozen-seafood', size_value: 400, size_unit: 'g', image_url: null, offers: [{ retailer: 'coles', price: 7.2 }] },
+]

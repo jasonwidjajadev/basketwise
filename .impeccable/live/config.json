@@ -1,0 +1,6 @@
+{
+  "files": [".impeccable/browse-variants/*.html"],
+  "insertBefore": "</body>",
+  "commentSyntax": "html",
+  "cspChecked": true
+}
