@@ -1,571 +1,432 @@
-# Used to pause before retrying a failed request
+import os
+import re
+import requests
 import time
 
-# Used to catch internet/Supabase connection errors
-import httpx
-
-# Connect to our Supabase database
-from database import supabase
-
-# Import the Woolworths scraper
-from woolworths import scrape_woolworths
-
-# Import the Coles scraper
-from coles import scrape_coles
+from dotenv import load_dotenv
 
 
-# Remember store IDs so we don't keep asking Supabase
-STORE_ID_CACHE = {}
-
-# Try a failed Supabase request up to 5 times
-MAX_RETRIES = 5
-
-# Save Coles products in groups of 100
-BATCH_SIZE = 100
+# Load variables from .env
+load_dotenv()
 
 
-###### RETRY FAILED SUPABASE REQUESTS
+# Main Coles website
+BASE_URL = "https://www.coles.com.au"
 
-def execute_with_retry(
-    operation,
-    description="Supabase request"
-):
 
-    # Try the request up to 5 times
-    for attempt in range(
-        1,
-        MAX_RETRIES + 1
-    ):
+# Coles categories we want to scrape
+COLES_CATEGORIES = [
+    "dairy-eggs-fridge",
+    "fruit-vegetables",
+    "bakery",
+    "deli",
+    "pantry",
+    "meat-seafood",
+    "frozen",
+    "drinks",
+    "cleaning-laundry",
+]
+
+
+# Find the current Coles Next.js build ID
+def get_build_id(session, headers):
+
+    print("Opening Coles...")
+
+    # Try the browse page first, then homepage
+    urls_to_try = [
+        f"{BASE_URL}/browse",
+        BASE_URL
+    ]
+
+    for url in urls_to_try:
 
         try:
-            # Run the Supabase request
-            return operation()
+            # Request the Coles page
+            response = session.get(
+                url,
+                headers=headers,
+                timeout=30
+            )
 
-        # If there is a connection problem
-        except httpx.TransportError as error:
+            print(
+                f"Build ID page status ({url}):",
+                response.status_code
+            )
 
-            # If we already tried 5 times, stop
-            if attempt == MAX_RETRIES:
+            response.raise_for_status()
+
+            # Search the page for the buildId
+            match = re.search(
+                r'"buildId"\s*:\s*"([^"]+)"',
+                response.text
+            )
+
+            # If build ID was found
+            if match:
+                build_id = match.group(1)
 
                 print(
-                    f"{description} failed "
-                    f"after {MAX_RETRIES} attempts."
+                    "Discovered Coles build ID:",
+                    build_id
                 )
 
-                raise
+                return build_id
 
-            # Wait longer each time:
-            # 1 second, 2 seconds, 4 seconds, 8 seconds
-            wait_time = 2 ** (
-                attempt - 1
-            )
-
-            print()
-            print(
-                f"{description} temporarily failed."
-            )
+        # Handle request errors
+        except requests.RequestException as error:
 
             print(
-                f"Error: {error}"
-            )
-
-            print(
-                f"Retrying in "
-                f"{wait_time} seconds..."
-            )
-
-            # Wait before trying again
-            time.sleep(
-                wait_time
+                "Could not use page for build ID:",
+                error
             )
 
 
-
-##### SPLIT PRODUCTS INTO GROUPS
-
-def create_batches(
-    items,
-    batch_size=BATCH_SIZE
-):
-
-    # Split products into groups of 100
-    for start in range(
-        0,
-        len(items),
-        batch_size
-    ):
-
-        yield items[
-            start:
-            start + batch_size
-        ]
-
-##### GET STORE ID
-def get_store_id(store_code):
-
-    # If we already know the store ID, use it
-    if store_code in STORE_ID_CACHE:
-
-        return STORE_ID_CACHE[
-            store_code
-        ]
-
-    # Otherwise, find the store in Supabase
-    response = execute_with_retry(
-
-        lambda: (
-            supabase
-            .table("stores")
-            .select("id")
-            .eq(
-                "code",
-                store_code
-            )
-            .execute()
-        ),
-
-        description=(
-            f"Looking up store "
-            f"{store_code}"
-        )
+    # If we could not find it,
+    # try reading it from .env
+    build_id = os.getenv(
+        "COLES_BUILD_ID"
     )
 
-    # If the store does not exist, show an error
-    if not response.data:
+    if build_id:
 
-        raise ValueError(
-            f"Store does not exist: "
-            f"{store_code}"
+        print(
+            "Using fallback Coles build ID:",
+            build_id
         )
 
-    # Get the store's ID
-    store_id = (
-        response.data[0]["id"]
+        return build_id
+
+
+    # If neither worked, stop
+    raise ValueError(
+        "Could not discover Coles build ID and "
+        "COLES_BUILD_ID is not set in .env"
     )
 
-    # Remember the ID for later
-    STORE_ID_CACHE[
-        store_code
-    ] = store_id
 
-    return store_id
-
-
-
-#### CREATE A PRODUCT ROW
-
-def create_store_product_row(
-    product,
-    store_id
+# Scrape one Coles category
+def scrape_coles_category(
+    session,
+    headers,
+    build_id,
+    category,
+    max_pages=None
 ):
 
-    # Turn scraped product data into
-    # the format our Supabase table needs
-    return {
+    print()
+    print("=" * 60)
+    print("COLES CATEGORY:", category)
+    print("=" * 60)
 
-        # Which store sells the product
-        "store_id":
-        store_id,
 
-        # Product ID from Woolworths or Coles
-        "external_product_id":
-        str(
-            product["product_id"]
-        ),
+    # Create the Next.js JSON endpoint
+    api_url = (
+        f"{BASE_URL}/_next/data/"
+        f"{build_id}/en/browse/{category}.json"
+    )
 
-        # Product name
-        "name":
-        product["name"],
 
-        # Product brand
-        "brand":
-        product.get("brand"),
+    # Store products from this category
+    all_products = []
 
-        # Product description
-        "description":
-        product.get("description"),
 
-        # Product image
-        "image_url":
-        product.get("image"),
+    # Remember product IDs already seen
+    seen_ids = set()
 
-        # Example: 2L or 500g
-        "package_size":
-        product.get(
-            "package_size"
-        ),
 
-        # Category it came from
-        "source_category":
-        product.get("category"),
+    # Start on page 1
+    page = 1
 
-        # We currently assume it is not sold by weight
-        "is_weighted":
-        False,
 
-        # Quantity is not calculated yet
-        "quantity":
-        None,
+    # Keep scraping pages
+    while True:
 
-        # Unit if available
-        "unit":
-        product.get("unit")
+        print(
+            f"Requesting {category} page {page}..."
+        )
+
+
+        # Query parameters
+        params = {
+            "slug": category,
+            "page": page
+        }
+
+
+        # Request product JSON
+        response = session.get(
+            api_url,
+            params=params,
+            headers={
+                "User-Agent": headers["User-Agent"],
+                "Accept": "application/json"
+            },
+            timeout=30
+        )
+
+
+        print(
+            "API status:",
+            response.status_code
+        )
+
+
+        response.raise_for_status()
+
+
+        # Convert response into Python dictionary
+        data = response.json()
+
+
+        # Get the product results
+        results = (
+            data
+            .get("pageProps", {})
+            .get("searchResults", {})
+            .get("results", [])
+        )
+
+
+        # If there are no products,
+        # we have reached the end
+        if not results:
+
+            print("No more results.")
+
+            break
+
+
+        new_products = 0
+
+
+        # Go through products on this page
+        for product in results:
+
+
+            # Ignore anything that is not a product
+            if product.get("_type") != "PRODUCT":
+                continue
+
+
+            # Get product ID
+            product_id = str(
+                product.get("id")
+            )
+
+
+            # Skip duplicate products
+            if product_id in seen_ids:
+                continue
+
+
+            seen_ids.add(
+                product_id
+            )
+
+
+            # Get pricing information
+            pricing = (
+                product.get("pricing")
+                or {}
+            )
+
+
+            # Default image to None
+            image = None
+
+
+            # Get image URLs
+            image_uris = (
+                product.get("imageUris")
+                or []
+            )
+
+
+            # Use first image if available
+            if image_uris:
+
+                image = (
+                    image_uris[0]
+                    .get("uri")
+                )
+
+
+            # Create a cleaner product dictionary
+            clean_product = {
+
+                "product_id":
+                product_id,
+
+                "name":
+                product.get("name"),
+
+                "brand":
+                product.get("brand"),
+
+                "description":
+                product.get("description"),
+
+                "price":
+                pricing.get("now"),
+
+                "was_price":
+                pricing.get("was"),
+
+                "package_size":
+                product.get("size"),
+
+                "in_stock":
+                product.get("availability"),
+
+                "image":
+                image,
+
+                "category":
+                category,
+
+                "store":
+                "Coles"
+            }
+
+
+            # Add product to our list
+            all_products.append(
+                clean_product
+            )
+
+
+            new_products += 1
+
+
+        print(
+            f"Found {new_products} new products "
+            f"on page {page}"
+        )
+
+
+        # Stop if this page added nothing new
+        if new_products == 0:
+            break
+
+
+        # Optional testing limit
+        if (
+            max_pages is not None
+            and page >= max_pages
+        ):
+
+            print(
+                f"Reached test limit of "
+                f"{max_pages} pages."
+            )
+
+            break
+
+
+        # Move to next page
+        page += 1
+
+
+        # Wait before next request
+        time.sleep(1.5)
+
+
+    print(
+        f"{category}: "
+        f"{len(all_products)} products total"
+    )
+
+
+    return all_products
+
+
+# Main function that scrapes all Coles categories
+def scrape_coles(
+    max_pages_per_category=None
+):
+
+    # Reuse one HTTP session
+    session = requests.Session()
+
+
+    # Browser-style request header
+    headers = {
+
+        "User-Agent": (
+            "Mozilla/5.0 "
+            "(Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 "
+            "(KHTML, like Gecko) "
+            "Chrome/151.0.0.0 "
+            "Safari/537.36"
+        )
     }
 
 
-# --------------------------------------------------
-# SAVE PRODUCTS TO SUPABASE
-# --------------------------------------------------
-
-def save_store_products(
-    products,
-    store_code
-):
-
-    # Nothing to save
-    if not products:
-        return []
-
-    # Find the ID for Woolworths or Coles
-    store_id = get_store_id(
-        store_code
+    # Find the current Coles build ID
+    build_id = get_build_id(
+        session,
+        headers
     )
 
-    # List of products we will send to Supabase
-    rows = []
 
-    # Convert every product into a database row
-    for product in products:
+    # Store all Coles products
+    all_products = []
 
-        row = create_store_product_row(
-            product,
-            store_id
+
+    # Remember all IDs across every category
+    all_seen_ids = set()
+
+
+    # Go through each category
+    for category in COLES_CATEGORIES:
+
+
+        # Scrape this category
+        products = scrape_coles_category(
+            session,
+            headers,
+            build_id,
+            category,
+            max_pages=max_pages_per_category
         )
 
-        rows.append(row)
 
-    # Save all the products together
-    response = execute_with_retry(
-
-        lambda: (
-            supabase
-            .table("store_products")
-            .upsert(
-                rows,
-
-                # If the product already exists,
-                # update it instead of adding a duplicate
-                on_conflict=(
-                    "store_id,"
-                    "external_product_id"
-                )
-            )
-            .execute()
-        ),
-
-        description=(
-            f"Saving {len(rows)} "
-            f"{store_code} products"
-        )
-    )
-
-    # Make sure products were saved
-    if not response.data:
-
-        raise ValueError(
-            f"Could not save "
-            f"{store_code} products."
-        )
-
-    # Return the products saved by Supabase
-    return response.data
+        # Add products to final list
+        for product in products:
 
 
-# --------------------------------------------------
-# SAVE PRODUCT PRICES
-# --------------------------------------------------
+            # Skip products already found
+            # in another category
+            if (
+                product["product_id"]
+                in all_seen_ids
+            ):
+                continue
 
-def save_prices(
-    scraped_products,
-    saved_products
-):
 
-    # Nothing to do if there are no products
-    if not scraped_products:
-        return
-
-    # Match the Woolworths/Coles product ID
-    # with our Supabase product ID
-    product_ids = {}
-
-    for product in saved_products:
-
-        external_id = str(
-            product[
-                "external_product_id"
-            ]
-        )
-
-        product_ids[
-            external_id
-        ] = product["id"]
-
-    # List of prices to save
-    price_rows = []
-
-    # Go through every scraped product
-    for product in scraped_products:
-
-        # Get its price
-        price = product.get(
-            "price"
-        )
-
-        # Skip products that have no price
-        if price is None:
-            continue
-
-        # Get the Woolworths/Coles product ID
-        external_id = str(
-            product["product_id"]
-        )
-
-        # Find its Supabase product ID
-        store_product_id = (
-            product_ids.get(
-                external_id
-            )
-        )
-
-        # If we cannot find the product, skip it
-        if store_product_id is None:
-
-            print(
-                f"Warning: could not find "
-                f"saved product id for "
-                f"{product['name']}"
+            all_seen_ids.add(
+                product["product_id"]
             )
 
-            continue
 
-        # Create the price row
-        price_rows.append({
-
-            # Which product this price belongs to
-            "store_product_id":
-            store_product_id,
-
-            # Current price
-            "price":
-            price
-        })
-
-    # Nothing to save
-    if not price_rows:
-        return
-
-    try:
-
-        # Save all prices together
-        (
-            supabase
-            .table("price_history")
-            .insert(
-                price_rows
+            all_products.append(
+                product
             )
-            .execute()
-        )
 
-    # If the Supabase connection fails
-    except httpx.TransportError as error:
-
-        print()
-        print(
-            "WARNING: Supabase connection "
-            "failed while saving price history."
-        )
-
-        print(
-            f"Error: {error}"
-        )
-
-        # Do not stop the whole scraper
-        print(
-            "The scraper will continue."
-        )
-
-        print(
-            "Some prices from this batch "
-            "may or may not have been saved."
-        )
-
-
-# --------------------------------------------------
-# SAVE PRODUCTS + PRICES
-# --------------------------------------------------
-
-def save_product_batch(
-    products,
-    store_code
-):
-
-    # Nothing to save
-    if not products:
-        return 0
-
-    # Save product information first
-    saved_products = (
-        save_store_products(
-            products,
-            store_code
-        )
-    )
-
-    # Then save their prices
-    save_prices(
-        products,
-        saved_products
-    )
-
-    # Return number of products saved
-    return len(
-        saved_products
-    )
-
-
-# --------------------------------------------------
-# WOOLWORTHS
-# --------------------------------------------------
-
-def save_woolworths_page(
-    products
-):
-
-    # This runs every time Woolworths
-    # finishes scraping one page
 
     print()
+    print("=" * 60)
 
+
+    # Show final total
     print(
-        f"Saving {len(products)} "
-        f"Woolworths products "
-        f"to Supabase..."
-    )
-
-    # Save this page's products and prices
-    save_product_batch(
-        products,
-        "woolworths"
-    )
-
-    print(
-        "Woolworths page saved."
+        f"COLES TOTAL: "
+        f"{len(all_products)} "
+        f"unique products"
     )
 
 
-def import_woolworths():
-
-    print()
-
-    print(
-        "SCRAPING WOOLWORTHS"
-    )
-
-    print(
-        "===================="
-    )
-
-    # Start the Woolworths scraper
-    #
-    # Each finished page gets sent to
-    # save_woolworths_page()
-    scrape_woolworths(
-        on_page=
-        save_woolworths_page
-    )
-
-    print()
-
-    print(
-        "Woolworths scrape completed."
-    )
-
-
-# --------------------------------------------------
-# COLES
-# --------------------------------------------------
-
-def import_coles():
-
-    print()
-
-    print(
-        "SCRAPING COLES"
-    )
-
-    print(
-        "=============="
-    )
-
-    # Scrape all Coles products
-    products = scrape_coles()
-
-    print()
-
-    print(
-        f"Saving {len(products)} "
-        f"Coles products "
-        f"to Supabase..."
-    )
-
-    # Keep track of how many we save
-    total_saved = 0
-
-    # Split Coles products into groups of 100
-    for batch in create_batches(
-        products
-    ):
-
-        # Save this group of products and prices
-        saved_count = (
-            save_product_batch(
-                batch,
-                "coles"
-            )
-        )
-
-        # Add to the total
-        total_saved += (
-            saved_count
-        )
-
-        # Show progress
-        print(
-            f"Saved "
-            f"{total_saved}/"
-            f"{len(products)} "
-            f"Coles products."
-        )
-
-    print()
-
-    print(
-        f"Saved {total_saved} "
-        f"Coles products."
-    )
-
-
-# --------------------------------------------------
-# START THE PROGRAM
-# --------------------------------------------------
-
-# This runs when we type:
-#
-# python import_products.py
-if __name__ == "__main__":
-
-    # Scrape and save Woolworths first
-    import_woolworths()
-
-    # Then scrape and save Coles
-    import_coles()
+    # Return all scraped Coles products
+    return all_products
