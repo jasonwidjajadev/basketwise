@@ -11,18 +11,28 @@ import menuIcon from '@/assets/icons/menu.svg'
 import icon from '@/assets/logo.svg'
 import CartSidebar from '@/components/CartSidebar'
 import SearchBar from '@/components/SearchBar'
+import { useCart } from '@/context/useCart'
+import { cn } from '@/lib/utils'
+
+const NAV_LINKS = [
+  { to: '/#essentials', label: 'Groceries' },
+  { to: '/#meals', label: 'Meals' },
+  { to: '/#browse', label: 'Compare' },
+  { to: '/#faq', label: 'Help' },
+]
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
-  const menuRef = useRef<HTMLDivElement>(null)
+  const menuRef = useRef(null)
+  const { count, pulse } = useCart()
 
   useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
+    function handleClickOutside(event) {
       if (
         menuRef.current &&
-        !menuRef.current.contains(event.target as Node)
+        !menuRef.current.contains(event.target)
       ) {
         setIsMenuOpen(false)
       }
@@ -37,23 +47,40 @@ export default function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full border-b border-zinc-200 bg-white">
-        <div className="grid h-16 w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 px-6 lg:grid-cols-[1fr_minmax(0,36rem)_1fr] lg:gap-6 lg:px-8 xl:px-12">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 justify-self-start"
-          >
-            <img
-              src={icon}
-              alt=""
-              className="h-6.5 w-6.5 shrink-0 object-contain"
-            />
+      <header className="sticky top-0 z-40 w-full bg-bw-ink-inverse-bg text-bw-on-dark">
+        <div className="grid h-13 w-full grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 px-6 lg:grid-cols-[1fr_minmax(0,32rem)_1fr] lg:gap-6 lg:px-10">
+          {/* Logo + anchor nav */}
+          <div className="flex items-center gap-7 justify-self-start">
+            <Link
+              to="/"
+              className="flex items-center gap-2"
+            >
+              <img
+                src={icon}
+                alt=""
+                className="h-6 w-6 shrink-0 object-contain"
+              />
 
-            <span className="hidden font-eb-garamond text-2xl font-medium text-basket-green sm:block">
-              BasketWise
-            </span>
-          </Link>
+              <span className="hidden font-newsreader text-xl tracking-[-.01em] text-bw-panel sm:block">
+                BasketWise
+              </span>
+            </Link>
+
+            <nav
+              aria-label="Section navigation"
+              className="hidden items-center gap-5.5 xl:flex"
+            >
+              {NAV_LINKS.map((link) => (
+                <Link
+                  key={link.label}
+                  to={link.to}
+                  className="font-archivo text-xs tracking-[.08em] text-bw-on-dark uppercase"
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </nav>
+          </div>
 
           {/* Search */}
           <SearchBar />
@@ -63,11 +90,20 @@ export default function Header() {
             aria-label="Main navigation"
             className="hidden justify-self-end lg:block"
           >
-            <ul className="flex items-center gap-2">
+            <ul className="flex items-center gap-4">
+              <li className="hidden shrink-0 items-center gap-4.5 font-archivo text-[11.5px] tracking-[.1em] text-bw-on-dark uppercase xl:flex">
+                <Link
+                  to="/signin"
+                  className="border-b border-bw-yellow/45 whitespace-nowrap text-bw-yellow"
+                >
+                  Sign in
+                </Link>
+              </li>
+
               <li>
                 <Link
                   to="/browse"
-                  className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950"
+                  className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-bw-on-dark transition hover:text-bw-panel"
                 >
                   <MdOutlineGridView className="h-5 w-5" />
                   Browse
@@ -77,7 +113,7 @@ export default function Header() {
               <li>
                 <Link
                   to="/account"
-                  className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-zinc-700 transition hover:bg-zinc-100 hover:text-zinc-950"
+                  className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-bw-on-dark transition hover:text-bw-panel"
                 >
                   <MdOutlineListAlt className="h-5 w-5" />
                   Lists
@@ -88,9 +124,9 @@ export default function Header() {
                 <Link
                   to="/signin"
                   aria-label="Account"
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-100 text-zinc-700 transition hover:bg-zinc-200 hover:text-zinc-950"
+                  className="flex h-10 w-10 items-center justify-center rounded-full bg-white/10 text-bw-on-dark transition hover:bg-white/15 hover:text-bw-panel"
                 >
-                  <MdOutlinePerson className="h-6 w-6" />
+                  <MdOutlinePerson className="h-5.5 w-5.5" />
                 </Link>
               </li>
 
@@ -99,13 +135,24 @@ export default function Header() {
                   type="button"
                   aria-label="Open cart"
                   onClick={() => setIsCartOpen(true)}
-                  className="flex h-11 w-11 items-center justify-center rounded-full bg-zinc-100 transition hover:bg-zinc-200"
+                  className="flex items-center gap-2.5 rounded-full bg-bw-green px-3.25 py-1.75 font-archivo text-sm font-semibold text-white transition hover:bg-bw-green-hover"
                 >
-                  <img
-                    src={cartOutlineIcon}
-                    alt=""
-                    className="h-6 w-6"
-                  />
+                  <span className="relative flex h-5 w-5 shrink-0 items-center justify-center">
+                    <img
+                      src={cartOutlineIcon}
+                      alt=""
+                      className="h-5 w-5 invert"
+                    />
+                    <span
+                      className={cn(
+                        'absolute -top-1.75 -right-1.75 inline-flex h-3.75 min-w-3.75 items-center justify-center rounded-full bg-bw-yellow px-0.75 text-[10px] leading-none font-bold text-bw-yellow-ink ring-2 ring-bw-green',
+                        pulse && 'animate-[bw-pop_.42s_ease]',
+                      )}
+                    >
+                      {count}
+                    </span>
+                  </span>
+                  <span className="leading-none">Basket</span>
                 </button>
               </li>
             </ul>
@@ -121,21 +168,21 @@ export default function Header() {
               aria-label="Open menu"
               aria-expanded={isMenuOpen}
               onClick={() => setIsMenuOpen((open) => !open)}
-              className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-zinc-100 active:bg-zinc-200"
+              className="flex h-10 w-10 items-center justify-center rounded-full transition hover:bg-white/10 active:bg-white/15"
             >
               <img
                 src={menuIcon}
                 alt=""
-                className="h-7 w-7"
+                className="h-6.5 w-6.5 invert"
               />
             </button>
 
             {isMenuOpen && (
-              <div className="absolute top-12 right-0 w-52 rounded-xl border border-zinc-200 bg-white p-2 shadow-lg">
+              <div className="absolute top-12 right-0 w-52 border border-bw-line bg-bw-surface p-2 text-bw-ink">
                 <Link
                   to="/browse"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-zinc-800 hover:bg-zinc-100"
+                  className="flex items-center gap-3 px-4 py-3 text-sm text-bw-ink hover:bg-bw-panel"
                 >
                   <MdOutlineGridView className="h-5 w-5" />
                   Browse
@@ -144,7 +191,7 @@ export default function Header() {
                 <Link
                   to="/lists"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-zinc-800 hover:bg-zinc-100"
+                  className="flex items-center gap-3 px-4 py-3 text-sm text-bw-ink hover:bg-bw-panel"
                 >
                   <MdOutlineListAlt className="h-5 w-5" />
                   Lists
@@ -153,7 +200,7 @@ export default function Header() {
                 <Link
                   to="/signin"
                   onClick={() => setIsMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-4 py-3 text-sm text-zinc-800 hover:bg-zinc-100"
+                  className="flex items-center gap-3 px-4 py-3 text-sm text-bw-ink hover:bg-bw-panel"
                 >
                   <MdOutlinePerson className="h-5 w-5" />
                   Account
@@ -165,14 +212,14 @@ export default function Header() {
                     setIsMenuOpen(false)
                     setIsCartOpen(true)
                   }}
-                  className="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-sm text-zinc-800 hover:bg-zinc-100"
+                  className="flex w-full items-center gap-3 px-4 py-3 text-left text-sm text-bw-ink hover:bg-bw-panel"
                 >
                   <img
                     src={cartOutlineIcon}
                     alt=""
                     className="h-5 w-5"
                   />
-                  Cart
+                  Cart ({count})
                 </button>
               </div>
             )}

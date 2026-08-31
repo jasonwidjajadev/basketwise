@@ -1,14 +1,13 @@
 import { Link } from 'react-router'
 
-type CartSidebarProps = {
-  isOpen: boolean
-  onClose: () => void
-}
+import { useCart } from '@/context/useCart'
 
 export default function CartSidebar({
   isOpen,
   onClose,
-}: CartSidebarProps) {
+}) {
+  const { count } = useCart()
+
   return (
     <div
       className={`fixed inset-0 z-50 ${
@@ -31,7 +30,7 @@ export default function CartSidebar({
       >
         <div className="flex items-center justify-between border-b border-zinc-200 p-6">
           <h2 className="text-xl font-semibold">
-            Your basket
+            Your basket ({count})
           </h2>
 
           <button
@@ -50,7 +49,7 @@ export default function CartSidebar({
           <Link
             to="/compare"
             onClick={onClose}
-            className="flex w-full justify-center rounded-full bg-basket-green px-5 py-3 text-sm font-semibold text-white"
+            className="flex w-full justify-center rounded-full bg-bw-green px-5 py-3 text-sm font-semibold text-white"
           >
             Compare basket
           </Link>
