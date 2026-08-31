@@ -15,7 +15,7 @@ const RETAILER_VALUES = ['', 'woolworths', 'coles', 'aldi']
 
 export default function BrowsePage() {
   const { categories, category, subcategory } = useOutletContext()
-  const { addedIds, add } = useCart()
+  const { addedIds, add, remove } = useCart()
   const [searchParams, setSearchParams] = useSearchParams()
   const [search, setSearch] = useState('')
 
@@ -23,7 +23,9 @@ export default function BrowsePage() {
   const retailer = RETAILER_VALUES.includes(retailerParam) ? retailerParam : ''
 
   const sortParam = searchParams.get('sort')
-  const sort = SORT_OPTIONS.some((opt) => opt.value === sortParam) ? sortParam : ''
+  const sort = SORT_OPTIONS.some((opt) => opt.value === sortParam)
+    ? sortParam
+    : ''
 
   function updateParam(key, value) {
     setSearchParams(
@@ -54,15 +56,21 @@ export default function BrowsePage() {
   useEffect(() => {
     let cancelled = false
 
-    getProducts({ category, subcategory, retailer, q: search, sort, limit: PAGE_SIZE, offset: 0 }).then(
-      (result) => {
-        if (!cancelled) {
-          setItems(result.items)
-          setTotal(result.total)
-          setLoadedFor(requestKey)
-        }
-      },
-    )
+    getProducts({
+      category,
+      subcategory,
+      retailer,
+      q: search,
+      sort,
+      limit: PAGE_SIZE,
+      offset: 0,
+    }).then((result) => {
+      if (!cancelled) {
+        setItems(result.items)
+        setTotal(result.total)
+        setLoadedFor(requestKey)
+      }
+    })
 
     return () => {
       cancelled = true
@@ -71,17 +79,25 @@ export default function BrowsePage() {
 
   function loadMore() {
     setLoadingMore(true)
-    getProducts({ category, subcategory, retailer, q: search, sort, limit: PAGE_SIZE, offset: items.length }).then(
-      (result) => {
-        setItems((prev) => [...prev, ...result.items])
-        setTotal(result.total)
-        setLoadingMore(false)
-      },
-    )
+    getProducts({
+      category,
+      subcategory,
+      retailer,
+      q: search,
+      sort,
+      limit: PAGE_SIZE,
+      offset: items.length,
+    }).then((result) => {
+      setItems((prev) => [...prev, ...result.items])
+      setTotal(result.total)
+      setLoadingMore(false)
+    })
   }
 
   const activeCategory = categories.find((cat) => cat.id === category)
-  const activeSubcategory = activeCategory?.subcategories.find((sub) => sub.id === subcategory)
+  const activeSubcategory = activeCategory?.subcategories.find(
+    (sub) => sub.id === subcategory,
+  )
 
   const heading = search.trim()
     ? `Search results for “${search.trim()}”`
@@ -94,10 +110,7 @@ export default function BrowsePage() {
   return (
     <div>
       <div className="mx-auto mb-5 max-w-md">
-        <label
-          htmlFor="browse-item-search"
-          className="sr-only"
-        >
+        <label htmlFor="browse-item-search" className="sr-only">
           Search items
         </label>
         <div className="relative">
@@ -128,9 +141,13 @@ export default function BrowsePage() {
       </div>
 
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="font-newsreader text-[28px] font-normal tracking-[-.015em] text-bw-ink">{heading}</h1>
+        <h1 className="font-newsreader text-[28px] font-normal tracking-[-.015em] text-bw-ink">
+          {heading}
+        </h1>
         <span className="text-xs text-bw-muted">
-          {!loading && total > 0 ? `${total} item${total === 1 ? '' : 's'}` : ''}
+          {!loading && total > 0
+            ? `${total} item${total === 1 ? '' : 's'}`
+            : ''}
         </span>
       </div>
 
@@ -167,7 +184,9 @@ export default function BrowsePage() {
         </div>
       ) : items.length === 0 ? (
         <div className="animate-bw-fade-up flex flex-col items-start gap-1.5 border border-bw-line bg-bw-surface px-8 py-12">
-          <h2 className="font-newsreader text-xl font-normal text-bw-ink">No products found</h2>
+          <h2 className="font-newsreader text-xl font-normal text-bw-ink">
+            No products found
+          </h2>
           <p className="max-w-[44ch] text-[13px] text-bw-muted">
             {search.trim()
               ? `Nothing matches “${search.trim()}”. Try a different search, or clear it to browse by category.`
@@ -190,6 +209,7 @@ export default function BrowsePage() {
                   product={product}
                   added={Boolean(addedIds[product.id])}
                   onAdd={() => add(product.id, 1)}
+                  onRemove={() => remove(product.id)}
                 />
               </div>
             ))}
