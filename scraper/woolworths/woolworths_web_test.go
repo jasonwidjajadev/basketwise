@@ -14,7 +14,7 @@ import (
 
 	_ "github.com/mattn/go-sqlite3"
 	"github.com/shopspring/decimal"
-	utils "github.com/tjhowse/aus_grocery_price_database/internal/utils"
+	utils "basketwise/scraper/internal/utils"
 )
 
 var woolworthsServer = WoolworthsHTTPServer()
@@ -169,7 +169,6 @@ func TestExtractTotalRecordCount(t *testing.T) {
 }
 
 func TestGetProductInfoFromListPage(t *testing.T) {
-
 	w := getInitialisedWoolworths()
 
 	dp := departmentPage{
@@ -207,7 +206,6 @@ func TestGetProductInfoFromListPage(t *testing.T) {
 	if want, got := "9300633050559", productInfo[35].Info.Barcode; want != got {
 		t.Errorf("Expected %s, got %s", want, got)
 	}
-
 }
 
 func TestIsDepartmentFilteredOut(t *testing.T) {

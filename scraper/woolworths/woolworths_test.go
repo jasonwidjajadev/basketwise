@@ -58,7 +58,6 @@ func TestScheduler(t *testing.T) {
 	case <-time.After(10 * time.Second):
 		t.Fatal("Timed out waiting for scheduler to finish")
 	case <-done:
-
 	}
 
 	close(cancel)

@@ -56,6 +56,8 @@ func (w *Woolworths) getDepartmentInfos() ([]departmentInfo, error) {
 	if req, err = http.NewRequest("GET", url, nil); err != nil {
 		return departmentInfos, err
 	}
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0")
+	req.Header.Set("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
 	resp, err = w.client.Do(req)
 	if err != nil {
 		return departmentInfos, err

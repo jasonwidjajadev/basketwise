@@ -86,7 +86,6 @@ func TestSaveProductInfo(t *testing.T) {
 	if want, got := "fruit-vegetables", loadedProduct.departmentID; want != got {
 		t.Errorf("Expected %s, got %s", want, got)
 	}
-
 }
 
 func TestDepartmentInfo(t *testing.T) {
@@ -138,10 +137,10 @@ func TestGetSharedProductsUpdatedAfter(t *testing.T) {
 	if want, got := COLES_ID_PREFIX+"123459", productIDs[1].ID; want != got {
 		t.Errorf("Expected %s, got %s", want, got)
 	}
-	if want, got := 500, productIDs[1].PreviousPriceCents; want != got {
+	if want, got := int64(500), productIDs[1].PreviousPriceCents; want != got {
 		t.Errorf("Expected %v, got %v", want, got)
 	}
-	if want, got := 510, productIDs[1].PriceCents; want != got {
+	if want, got := int64(510), productIDs[1].PriceCents; want != got {
 		t.Errorf("Expected %v, got %v", want, got)
 	}
 	productIDs, err = c.GetSharedProductsUpdatedAfter(time.Now().Add(-2*time.Minute), 1)
@@ -154,7 +153,7 @@ func TestGetSharedProductsUpdatedAfter(t *testing.T) {
 	if want, got := COLES_ID_PREFIX+"123458", productIDs[0].ID; want != got {
 		t.Errorf("Expected %s, got %s", want, got)
 	}
-	if want, got := 420, productIDs[0].PriceCents; want != got {
+	if want, got := int64(420), productIDs[0].PriceCents; want != got {
 		t.Errorf("Expected %v, got %v", want, got)
 	}
 

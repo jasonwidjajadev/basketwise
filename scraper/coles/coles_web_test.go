@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/tjhowse/aus_grocery_price_database/internal/utils"
+	"basketwise/scraper/internal/utils"
 )
 
 var colesServer = ColesHTTPServer()
@@ -24,7 +24,7 @@ func getInitialisedColes() Coles {
 	return c
 }
 
-// This mocks enough of the Woolworths API to test various stuff
+// This mocks enough of the Coles API to test various stuff
 func ColesHTTPServer() *httptest.Server {
 	var err error
 
@@ -70,12 +70,12 @@ func ColesHTTPServer() *httptest.Server {
 			responseFilename = fmt.Sprintf("data/%s_%d.json", category, page)
 		} else {
 			w.WriteHeader(http.StatusNotFound)
-			slog.Error("Simulated woolworths server can't find requested URL.", "url", r.URL.Path)
+			slog.Error("Simulated coles server can't find requested URL.", "url", r.URL.Path)
 			return
 		}
 
 		if responseData, knownFile := fileContents[responseFilename]; !knownFile {
-			slog.Error("Simulated woolworths server can't find requested file.", "filename", responseFilename)
+			slog.Error("Simulated coles server can't find requested file.", "filename", responseFilename)
 			w.WriteHeader(http.StatusNotFound)
 			return
 		} else {
@@ -149,11 +149,6 @@ func TestUpdateAPIVersion(t *testing.T) {
 
 func TestGetCategoryJSON(t *testing.T) {
 	c := getInitialisedColes()
-	// c.baseURL = "https://coles.com.au"
-	// c.colesAPIVersion = "20240827.02_v4.7.7"
-	// if err := c.updateAPIVersion(); err != nil {
-	// 	t.Fatalf("Failed to update API version: %v", err)
-	// }
 	body, err := c.getCategoryJSON("fruit-vegetables", 1)
 	if err != nil {
 		t.Fatalf("Failed to get category JSON: %v", err)
@@ -161,7 +156,6 @@ func TestGetCategoryJSON(t *testing.T) {
 	if len(body) == 0 {
 		t.Fatalf("Got empty body")
 	}
-	// utils.WriteEntireFile("data/fruit-vegetables.json", body)
 }
 
 func TestGetProductsAndTotalCountForCategoryPage(t *testing.T) {
@@ -185,7 +179,6 @@ func TestGetProductsAndTotalCountForCategoryPage(t *testing.T) {
 		if want, got := 578, totalRecordCount; want != got {
 			t.Errorf("Expected %d total record count, got %d", want, got)
 		}
-
 	}
 	{
 		dp := departmentPage{"fruit-vegetables", 2}
@@ -210,9 +203,7 @@ func TestGetProductsAndTotalCountForCategoryPage(t *testing.T) {
 
 func TestGetDepartmentInfos(t *testing.T) {
 	slog.SetLogLoggerLevel(slog.LevelDebug)
-	// c := getInitialisedRealColes()
 	c := getInitialisedColes()
-	// c.updateAPIVersion()
 
 	departments, err := c.getDepartmentInfos()
 	if err != nil {

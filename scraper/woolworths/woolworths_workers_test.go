@@ -16,7 +16,6 @@ func TestNewDepartmentIDWorker(t *testing.T) {
 	departmentIDChannel := make(chan departmentInfo)
 	go w.newDepartmentInfoWorker(departmentIDChannel)
 	var index int
-	// var departmentIDs = []departmentID{"1_DEB537E", "1_D5A2236", "1_6E4F4E4"}
 	var departmentIDs = []departmentID{"specialsgroup", "1_DEF0CCD", "1_D5A2236"}
 	select {
 	case d := <-departmentIDChannel:
@@ -43,8 +42,6 @@ func TestProductListPageWorker(t *testing.T) {
 		ID:   "1-E5BEE36E",
 		page: 1,
 	}
-	// TODO remove this hardcoded sleep and use a loop in a goroutine with a channel for the output
-	// as I've done before in another test.
 	time.Sleep(50 * time.Millisecond)
 	readInfo, err := w.loadProductInfo("144607")
 	if err != nil {
@@ -84,8 +81,4 @@ func TestDepartmentPageUpdateQueueWorker(t *testing.T) {
 		t.Fatal("Expected no more products, got", dept)
 	case <-time.After(1 * time.Second):
 	}
-	// if want, got := 3, pageIndex; want != got {
-	// 	t.Errorf("Expected %d, got %d", want, got)
-	// }
-
 }

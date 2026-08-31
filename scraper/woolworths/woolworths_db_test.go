@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/shopspring/decimal"
-	"github.com/tjhowse/aus_grocery_price_database/internal/shared"
-	utils "github.com/tjhowse/aus_grocery_price_database/internal/utils"
+	"basketwise/scraper/internal/shared"
+	utils "basketwise/scraper/internal/utils"
 )
 
 func TestUpdateProductInfo(t *testing.T) {
@@ -71,7 +71,6 @@ func TestDepartmentInfo(t *testing.T) {
 }
 
 func TestDBFail(t *testing.T) {
-
 	w := Woolworths{}
 	err := w.Init("", "/zingabingo/db.db3", 5*time.Second)
 	if err == nil {
@@ -113,10 +112,10 @@ func TestGetSharedProductsUpdatedAfter(t *testing.T) {
 	if want, got := WOOLWORTHS_ID_PREFIX+"123459", productIDs[1].ID; want != got {
 		t.Errorf("Expected %s, got %s", want, got)
 	}
-	if want, got := 500, productIDs[1].PreviousPriceCents; want != got {
+	if want, got := int64(500), productIDs[1].PreviousPriceCents; want != got {
 		t.Errorf("Expected %v, got %v", want, got)
 	}
-	if want, got := 510, productIDs[1].PriceCents; want != got {
+	if want, got := int64(510), productIDs[1].PriceCents; want != got {
 		t.Errorf("Expected %v, got %v", want, got)
 	}
 	productIDs, err = w.GetSharedProductsUpdatedAfter(time.Now().Add(-2*time.Minute), 1)
@@ -129,7 +128,7 @@ func TestGetSharedProductsUpdatedAfter(t *testing.T) {
 	if want, got := WOOLWORTHS_ID_PREFIX+"123458", productIDs[0].ID; want != got {
 		t.Errorf("Expected %s, got %s", want, got)
 	}
-	if want, got := 420, productIDs[0].PriceCents; want != got {
+	if want, got := int64(420), productIDs[0].PriceCents; want != got {
 		t.Errorf("Expected %v, got %v", want, got)
 	}
 
@@ -202,9 +201,6 @@ func TestPreviousPrice(t *testing.T) {
 }
 
 func TestBackupDB(t *testing.T) {
-
-	// Get a temp directory
-
 	tempDirName, err := os.MkdirTemp("", "delme")
 	if err != nil {
 		t.Fatal(err)
@@ -251,5 +247,4 @@ func TestBackupDB(t *testing.T) {
 			t.Fatalf("Couldn't find the backed-up file.")
 		}
 	}()
-
 }
