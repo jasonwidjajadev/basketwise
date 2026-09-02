@@ -1,0 +1,1544 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "BasketWise API",
+    "description": "\nCompare an Australian grocery basket across **Coles, Woolworths, ALDI and Harris Farm**.\n\n### The three routes you need\n1. `GET /categories` \u2014 build the browse nav. Ids for requests, names for display.\n2. `GET /products` \u2014 list, filter, paginate, search.\n3. `POST /compare` \u2014 send the basket, get per-retailer totals and a recommendation.\n\n### Rules that keep us consistent\n* The basket stores the canonical `product_id` **only** \u2014 never a retailer's SKU.\n* The frontend never totals a basket itself; `POST /compare` owns that arithmetic.\n* Category labels come from `GET /categories`, never from a local map.\n\n### Generating a TypeScript client\n```bash\nnpx openapi-typescript https://basket.taskglass.work/openapi.json -o src/api/schema.d.ts\n```\n\nNo authentication. Data is rebuilt daily; `GET /health` reports the current `build_id`.\n",
+    "contact": {
+      "name": "BasketWise",
+      "url": "https://basket.taskglass.work/docs"
+    },
+    "license": {
+      "name": "Internal use"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/categories": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Canonical categories with subcategories",
+        "description": "Returns every canonical BasketWise category that has products, each with its subcategories.\n\nUse `id` in API requests and `name` for display. Do **not** build your own id-to-label map on the frontend -- this endpoint is the source of truth for both.",
+        "operationId": "get_categories_categories_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "items": {
+                    "$ref": "#/components/schemas/Category"
+                  },
+                  "type": "array",
+                  "title": "Response Get Categories Categories Get"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "List, filter and search canonical products",
+        "description": "Bounded listing of canonical products. Returns `[]` when nothing matches -- never 404.\n\n**Load the landing page in two steps:** request a small first page (`?essential=true&limit=20`) for first paint, then page with `limit`/`offset` once the app has mounted. `limit` is hard-capped at 100 so the full 50k-product catalogue can never be pulled in one request.\n\nFilters combine with AND. `q` searches product names and brands.\n\nThe **`X-Total-Count`** response header carries how many products match the filter ignoring `limit`/`offset` -- use it to render \"24 of 1,240\" and to know when to stop paging. The body stays a bare array.",
+        "operationId": "list_products_products_get",
+        "parameters": [
+          {
+            "name": "essential",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only curated Home Essentials.",
+              "title": "Essential"
+            },
+            "description": "Only curated Home Essentials."
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Canonical category id.",
+              "examples": [
+                "dairy-eggs-fridge"
+              ],
+              "title": "Category"
+            },
+            "description": "Canonical category id."
+          },
+          {
+            "name": "subcategory",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Canonical subcategory id.",
+              "examples": [
+                "milk"
+              ],
+              "title": "Subcategory"
+            },
+            "description": "Canonical subcategory id."
+          },
+          {
+            "name": "tag",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Canonical tag id.",
+              "examples": [
+                "gluten-free"
+              ],
+              "title": "Tag"
+            },
+            "description": "Canonical tag id."
+          },
+          {
+            "name": "q",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Full-text search over product names.",
+              "examples": [
+                "milk"
+              ],
+              "title": "Q"
+            },
+            "description": "Full-text search over product names."
+          },
+          {
+            "name": "special",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only products on special at some retailer.",
+              "title": "Special"
+            },
+            "description": "Only products on special at some retailer."
+          },
+          {
+            "name": "retailer",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only products this retailer stocks.",
+              "examples": [
+                "coles"
+              ],
+              "title": "Retailer"
+            },
+            "description": "Only products this retailer stocks."
+          },
+          {
+            "name": "multi_retailer",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "description": "Only products carried by 2+ retailers (comparable).",
+              "title": "Multi Retailer"
+            },
+            "description": "Only products carried by 2+ retailers (comparable)."
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 100,
+              "minimum": 1,
+              "default": 24,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "default": 0,
+              "title": "Offset"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Product"
+                  },
+                  "title": "Response List Products Products Get"
+                }
+              }
+            },
+            "headers": {
+              "X-Total-Count": {
+                "description": "Total matches ignoring limit/offset.",
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{product_id}": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "One product with every retailer's offer",
+        "description": "The product plus one offer per retailer, cheapest first -- what the Compare page needs.",
+        "operationId": "get_product_products__product_id__get",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "full-cream-milk-2l"
+              ],
+              "title": "Product Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProductDetail"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such canonical product id."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/products/{product_id}/price-history": {
+      "get": {
+        "tags": [
+          "catalogue"
+        ],
+        "summary": "Observed price history per retailer",
+        "description": "One series per retailer, oldest first. Backs a price sparkline and a \"cheapest in 30 days\" badge.\n\nCoverage is currently thin -- the crawler has only recently begun recording daily observations, so expect one or two points per offer until it has run for a while.",
+        "operationId": "price_history_products__product_id__price_history_get",
+        "parameters": [
+          {
+            "name": "product_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "examples": [
+                "full-cream-milk-2l"
+              ],
+              "title": "Product Id"
+            }
+          },
+          {
+            "name": "days",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 365,
+              "minimum": 1,
+              "description": "Look back this many days.",
+              "default": 30,
+              "title": "Days"
+            },
+            "description": "Look back this many days."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/PriceHistory"
+                  },
+                  "title": "Response Price History Products  Product Id  Price History Get"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No such canonical product id."
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/compare": {
+      "post": {
+        "tags": [
+          "compare"
+        ],
+        "summary": "Price a basket across every retailer",
+        "description": "Send the whole basket; get one total per retailer plus a recommendation.\n\n- `total` sums only the items that retailer actually stocks.\n- `missing_product_ids` lists what it does not stock, explicitly -- a cheap total with three missing items is not a real win, so show this in the UI.\n- `recommendation` is the cheapest retailer stocking the **entire** basket, and is `null` when no retailer stocks everything.\n- `unknown_product_ids` lists ids that do not exist at all (usually a stale basket).\n\nCall this again whenever the basket changes.",
+        "operationId": "compare_compare_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompareRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CompareResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": [
+          "meta"
+        ],
+        "summary": "Liveness and data freshness",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "BasketItem": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "title": "Product Id",
+            "examples": [
+              "full-cream-milk-2l"
+            ]
+          },
+          "quantity": {
+            "type": "integer",
+            "exclusiveMinimum": 0.0,
+            "title": "Quantity",
+            "description": "Must be > 0. Removing the last unit removes the item.",
+            "examples": [
+              2
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "quantity"
+        ],
+        "title": "BasketItem"
+      },
+      "Category": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "examples": [
+              "dairy-eggs-fridge"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "examples": [
+              "Dairy, Eggs & Fridge"
+            ]
+          },
+          "product_count": {
+            "type": "integer",
+            "title": "Product Count",
+            "examples": [
+              3546
+            ]
+          },
+          "subcategories": {
+            "items": {
+              "$ref": "#/components/schemas/Subcategory"
+            },
+            "type": "array",
+            "title": "Subcategories",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "product_count"
+        ],
+        "title": "Category"
+      },
+      "CompareRequest": {
+        "properties": {
+          "items": {
+            "items": {
+              "$ref": "#/components/schemas/BasketItem"
+            },
+            "type": "array",
+            "title": "Items"
+          }
+        },
+        "type": "object",
+        "required": [
+          "items"
+        ],
+        "title": "CompareRequest"
+      },
+      "CompareResponse": {
+        "properties": {
+          "stores": {
+            "items": {
+              "$ref": "#/components/schemas/StoreComparison"
+            },
+            "type": "array",
+            "title": "Stores"
+          },
+          "recommendation": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Recommendation"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "description": "Cheapest retailer that stocks the WHOLE basket. null if no retailer stocks everything."
+          },
+          "unknown_product_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Unknown Product Ids",
+            "description": "Ids in the request that do not exist at all.",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "stores"
+        ],
+        "title": "CompareResponse"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "build_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Build Id"
+          },
+          "built_at": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Built At"
+          },
+          "product_count": {
+            "type": "integer",
+            "title": "Product Count"
+          },
+          "offer_count": {
+            "type": "integer",
+            "title": "Offer Count"
+          },
+          "retailers": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Retailers"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "product_count",
+          "offer_count",
+          "retailers"
+        ],
+        "title": "Health"
+      },
+      "Offer": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "product_id": {
+            "type": "string",
+            "title": "Product Id"
+          },
+          "retailer": {
+            "type": "string",
+            "enum": [
+              "coles",
+              "woolworths",
+              "aldi",
+              "harrisfarm"
+            ],
+            "title": "Retailer"
+          },
+          "retailer_product_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retailer Product Id"
+          },
+          "retailer_product_name": {
+            "type": "string",
+            "title": "Retailer Product Name"
+          },
+          "retailer_brand": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retailer Brand"
+          },
+          "source_category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Category",
+            "description": "Raw retailer taxonomy, preserved."
+          },
+          "source_subcategory": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Source Subcategory"
+          },
+          "price": {
+            "type": "number",
+            "title": "Price"
+          },
+          "was_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Was Price"
+          },
+          "is_special": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Special"
+          },
+          "special_type": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Special Type"
+          },
+          "special_end_date": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Special End Date"
+          },
+          "size_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Value"
+          },
+          "size_unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Unit"
+          },
+          "unit_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price"
+          },
+          "product_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Product Url"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "is_available": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Available"
+          },
+          "last_updated": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Last Updated"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "product_id",
+          "retailer",
+          "retailer_product_name",
+          "price"
+        ],
+        "title": "Offer",
+        "description": "One canonical product as sold by one retailer."
+      },
+      "PriceHistory": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "title": "Product Id"
+          },
+          "retailer": {
+            "type": "string",
+            "title": "Retailer"
+          },
+          "points": {
+            "items": {
+              "$ref": "#/components/schemas/PricePoint"
+            },
+            "type": "array",
+            "title": "Points"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "retailer",
+          "points"
+        ],
+        "title": "PriceHistory"
+      },
+      "PricePoint": {
+        "properties": {
+          "price": {
+            "type": "number",
+            "title": "Price"
+          },
+          "was_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Was Price"
+          },
+          "is_special": {
+            "anyOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Is Special"
+          },
+          "recorded_at": {
+            "type": "string",
+            "title": "Recorded At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "price",
+          "recorded_at"
+        ],
+        "title": "PricePoint"
+      },
+      "Product": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Canonical id. The basket stores this.",
+            "examples": [
+              "full-cream-milk-2l"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "examples": [
+              "Full Cream Milk"
+            ]
+          },
+          "brand": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brand",
+            "examples": [
+              "Bega"
+            ]
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category",
+            "examples": [
+              "dairy-eggs-fridge"
+            ]
+          },
+          "subcategory": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subcategory",
+            "description": "null when no reliable canonical mapping exists yet.",
+            "examples": [
+              "milk"
+            ]
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags",
+            "default": [],
+            "examples": [
+              [
+                "gluten-free"
+              ]
+            ]
+          },
+          "size_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Value",
+            "description": "Normalised: grams, millilitres, packs or each.",
+            "examples": [
+              2000.0
+            ]
+          },
+          "size_unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Unit",
+            "examples": [
+              "ml"
+            ]
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "is_essential": {
+            "type": "boolean",
+            "title": "Is Essential",
+            "default": false
+          },
+          "min_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Price",
+            "description": "Cheapest current price across all retailers.",
+            "examples": [
+              3.1
+            ]
+          },
+          "cheapest_retailer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cheapest Retailer",
+            "description": "Which retailer sells it at `min_price`.",
+            "examples": [
+              "coles"
+            ]
+          },
+          "unit_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price",
+            "description": "Price per `unit_measure` at the cheapest retailer. Use with `unit_measure` to render \"$1.55 / 100g\" so a 500 g tub and a 1 kg tub compare honestly.",
+            "examples": [
+              1.55
+            ]
+          },
+          "unit_measure": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Measure",
+            "examples": [
+              "100g"
+            ]
+          },
+          "was_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Was Price",
+            "description": "Pre-special price at the cheapest retailer. null when not on special.",
+            "examples": [
+              4.2
+            ]
+          },
+          "has_special": {
+            "type": "boolean",
+            "title": "Has Special",
+            "description": "On special at at least one retailer.",
+            "default": false
+          },
+          "retailer_count": {
+            "type": "integer",
+            "title": "Retailer Count",
+            "description": "How many retailers stock it.",
+            "default": 0,
+            "examples": [
+              3
+            ]
+          },
+          "rating_avg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating Avg",
+            "description": "Retailer star rating. Sparse today -- the Woolworths detail crawl has not been run yet. Render only if present.",
+            "examples": [
+              4.7
+            ]
+          },
+          "rating_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating Count",
+            "examples": [
+              13
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "Product",
+        "description": "A canonical grocery -- what the user wants to buy, not one retailer's listing."
+      },
+      "ProductDetail": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Canonical id. The basket stores this.",
+            "examples": [
+              "full-cream-milk-2l"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "examples": [
+              "Full Cream Milk"
+            ]
+          },
+          "brand": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Brand",
+            "examples": [
+              "Bega"
+            ]
+          },
+          "category": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Category",
+            "examples": [
+              "dairy-eggs-fridge"
+            ]
+          },
+          "subcategory": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Subcategory",
+            "description": "null when no reliable canonical mapping exists yet.",
+            "examples": [
+              "milk"
+            ]
+          },
+          "tags": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tags",
+            "default": [],
+            "examples": [
+              [
+                "gluten-free"
+              ]
+            ]
+          },
+          "size_value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Value",
+            "description": "Normalised: grams, millilitres, packs or each.",
+            "examples": [
+              2000.0
+            ]
+          },
+          "size_unit": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Size Unit",
+            "examples": [
+              "ml"
+            ]
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          },
+          "is_essential": {
+            "type": "boolean",
+            "title": "Is Essential",
+            "default": false
+          },
+          "min_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Min Price",
+            "description": "Cheapest current price across all retailers.",
+            "examples": [
+              3.1
+            ]
+          },
+          "cheapest_retailer": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Cheapest Retailer",
+            "description": "Which retailer sells it at `min_price`.",
+            "examples": [
+              "coles"
+            ]
+          },
+          "unit_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Price",
+            "description": "Price per `unit_measure` at the cheapest retailer. Use with `unit_measure` to render \"$1.55 / 100g\" so a 500 g tub and a 1 kg tub compare honestly.",
+            "examples": [
+              1.55
+            ]
+          },
+          "unit_measure": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Unit Measure",
+            "examples": [
+              "100g"
+            ]
+          },
+          "was_price": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Was Price",
+            "description": "Pre-special price at the cheapest retailer. null when not on special.",
+            "examples": [
+              4.2
+            ]
+          },
+          "has_special": {
+            "type": "boolean",
+            "title": "Has Special",
+            "description": "On special at at least one retailer.",
+            "default": false
+          },
+          "retailer_count": {
+            "type": "integer",
+            "title": "Retailer Count",
+            "description": "How many retailers stock it.",
+            "default": 0,
+            "examples": [
+              3
+            ]
+          },
+          "rating_avg": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating Avg",
+            "description": "Retailer star rating. Sparse today -- the Woolworths detail crawl has not been run yet. Render only if present.",
+            "examples": [
+              4.7
+            ]
+          },
+          "rating_count": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Rating Count",
+            "examples": [
+              13
+            ]
+          },
+          "offers": {
+            "items": {
+              "$ref": "#/components/schemas/Offer"
+            },
+            "type": "array",
+            "title": "Offers",
+            "default": []
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name"
+        ],
+        "title": "ProductDetail"
+      },
+      "Recommendation": {
+        "properties": {
+          "retailer": {
+            "type": "string",
+            "enum": [
+              "coles",
+              "woolworths",
+              "aldi",
+              "harrisfarm"
+            ],
+            "title": "Retailer"
+          },
+          "total": {
+            "type": "number",
+            "title": "Total"
+          }
+        },
+        "type": "object",
+        "required": [
+          "retailer",
+          "total"
+        ],
+        "title": "Recommendation"
+      },
+      "StoreComparison": {
+        "properties": {
+          "retailer": {
+            "type": "string",
+            "enum": [
+              "coles",
+              "woolworths",
+              "aldi",
+              "harrisfarm"
+            ],
+            "title": "Retailer"
+          },
+          "total": {
+            "type": "number",
+            "title": "Total",
+            "description": "Sum over items this retailer stocks. Missing items are excluded."
+          },
+          "missing_product_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Missing Product Ids",
+            "description": "Basket items this retailer does not stock. Returned explicitly, never silently dropped."
+          },
+          "available_count": {
+            "type": "integer",
+            "title": "Available Count"
+          }
+        },
+        "type": "object",
+        "required": [
+          "retailer",
+          "total",
+          "missing_product_ids",
+          "available_count"
+        ],
+        "title": "StoreComparison"
+      },
+      "Subcategory": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "description": "Stable canonical id. Send this in API requests.",
+            "examples": [
+              "milk"
+            ]
+          },
+          "name": {
+            "type": "string",
+            "title": "Name",
+            "description": "Display label. Never derive this yourself.",
+            "examples": [
+              "Milk"
+            ]
+          },
+          "product_count": {
+            "type": "integer",
+            "title": "Product Count",
+            "examples": [
+              214
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "product_count"
+        ],
+        "title": "Subcategory"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

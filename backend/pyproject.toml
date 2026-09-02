@@ -1,0 +1,12 @@
+[project]
+name = "basketwise-api"
+version = "1.0.0"
+description = "Read-only public API serving the BasketWise canonical grocery catalogue"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+]
+
+[dependency-groups]
+dev = ["httpx>=0.27", "pytest>=8.0"]

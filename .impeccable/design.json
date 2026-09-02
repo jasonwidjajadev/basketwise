@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-30T04:35:07Z",
+  "generatedAt": "2026-08-31T05:00:00Z",
   "title": "Design System: BasketWise",
   "extensions": {
     "colorMeta": {
@@ -26,7 +26,10 @@
       "label": { "displayName": "Label / Archivo", "purpose": "Uppercase tracked chrome text: nav, buttons, eyebrows, badges." },
       "body": { "displayName": "Body / Archivo", "purpose": "Paragraph copy and meta text, sentence case." }
     },
-    "shadows": [],
+    "shadows": [
+      { "name": "browse-card", "value": "shadow-sm (0 1px 2px 0 rgba(0,0,0,0.05))", "purpose": "Outer container of the Browse product card — the system's one confirmed elevation exception." },
+      { "name": "browse-card-control", "value": "shadow-md (0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -2px rgba(0,0,0,0.1))", "purpose": "Floating add/remove button and savings pill on the Browse product card image." }
+    ],
     "motion": [
       { "name": "cart-count-pop", "value": "scale 1 -> 1.18 -> 1 over 420ms ease (keyframes bw-pop)", "purpose": "Basket count badge pulse when an item is added." },
       { "name": "sidebar-slide", "value": "transform 300ms, translate-x-full <-> translate-x-0", "purpose": "Cart sidebar slide-in/out." }
@@ -79,6 +82,14 @@
       "css": ".ds-card { display: flex; flex-direction: column; border: 1px solid #e4e1d6; background: #fff; font-family: Archivo, system-ui, sans-serif; } .ds-card-image { position: relative; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; padding: 12px; background-image: repeating-linear-gradient(135deg, #F3F1EA 0 8px, #EDEBE2 8px 16px); } .ds-card-tag { position: absolute; top: 8px; left: 8px; background: #1f4d2e; color: #fff; font-size: 10px; font-weight: 700; letter-spacing: 0.04em; padding: 4px 7px; border-radius: 9999px; } .ds-card-caption { font-family: monospace; font-size: 9.5px; color: #9b9a8f; text-align: center; } .ds-card-body { padding: 12px 12px 0; } .ds-card-save { display: inline-block; margin-bottom: 8px; background: #f2c230; color: #2a2405; font-size: 10px; font-weight: 700; padding: 3px 6px; } .ds-card-price { font-family: Newsreader, Georgia, serif; font-size: 26px; line-height: 1; color: #1c1c1a; margin: 0; } .ds-card-unit { font-size: 11px; color: #8a897e; margin: 4px 0 2px; } .ds-card-name { font-size: 12.5px; color: #1c1c1a; margin: 0 0 6px; } .ds-card-actions { display: flex; flex-direction: column; gap: 6px; padding: 0 12px 12px; margin-top: auto; } .ds-btn-outline { width: 100%; background: #fff; color: #1c1c1a; border: 1px solid #c9c6b8; border-radius: 2px; font-size: 12px; font-weight: 600; padding: 9px 10px; cursor: pointer; }"
     },
     {
+      "name": "Browse Product Card",
+      "kind": "card",
+      "refersTo": "card-browse-product",
+      "description": "Confirmed exception to the flat/square system: the Browse grid's product card, with a rounded corner and soft shadow, a floating add/remove toggle, and a floating savings pill.",
+      "html": "<div class=\"ds-browse-card\"><div class=\"ds-browse-card-image\"><span class=\"ds-browse-card-caption\">product shot</span><span class=\"ds-browse-card-save\">Save $0.71</span><button class=\"ds-browse-card-add\" aria-label=\"Add to basket\"><svg viewBox=\"0 0 24 24\" width=\"20\" height=\"20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\"><line x1=\"12\" y1=\"5\" x2=\"12\" y2=\"19\"/><line x1=\"5\" y1=\"12\" x2=\"19\" y2=\"12\"/></svg></button></div><div class=\"ds-browse-card-body\"><div class=\"ds-browse-card-row\"><p class=\"ds-browse-card-name\">Bananas, Cavendish</p><p class=\"ds-browse-card-size\">1kg</p></div><div class=\"ds-browse-card-price ds-is-cheapest\"><span>ALDI</span><span>$3.49</span></div><div class=\"ds-browse-card-price\"><span>Coles</span><span>$3.90</span></div></div></div>",
+      "css": ".ds-browse-card { display: flex; flex-direction: column; overflow: hidden; border: 1px solid #e4e1d6; background: #fff; border-radius: 16px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); font-family: Archivo, system-ui, sans-serif; } .ds-browse-card-image { position: relative; margin: 12px 12px 0; aspect-ratio: 1 / 1; display: flex; align-items: center; justify-content: center; border-radius: 12px; background-image: repeating-linear-gradient(135deg, #F3F1EA 0 8px, #EDEBE2 8px 16px); } .ds-browse-card-caption { font-family: monospace; font-size: 11px; color: #9b9a8f; } .ds-browse-card-save { position: absolute; bottom: 8px; left: 8px; background: #1f4d2e; color: #fff; font-size: 12px; font-weight: 600; padding: 6px 12px; border-radius: 9999px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); } .ds-browse-card-add { position: absolute; bottom: 12px; right: 12px; width: 36px; height: 36px; border-radius: 9999px; border: none; background: #fff; color: #1c1c1a; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); cursor: pointer; } .ds-browse-card-body { padding: 14px 16px 16px; } .ds-browse-card-row { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 10px; } .ds-browse-card-name { font-size: 15px; font-weight: 600; color: #1c1c1a; margin: 0; } .ds-browse-card-size { font-size: 12px; color: #6e6d63; margin: 0; } .ds-browse-card-price { display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; border-radius: 8px; font-size: 13px; color: #5c5b52; } .ds-browse-card-price.ds-is-cheapest { background: #f4f8f5; color: #1f4d2e; font-weight: 600; } .ds-browse-card-price.ds-is-cheapest span:last-child { font-family: Newsreader, Georgia, serif; font-size: 20px; font-weight: 700; }"
+    },
+    {
       "name": "Header Navigation",
       "kind": "nav",
       "refersTo": "header-nav",
@@ -94,8 +105,8 @@
       "Warm off-white paper ground, near-black ink text — never pure white-on-black.",
       "Deep pantry green is the only color allowed to mean \"go\" or \"action.\"",
       "Market mustard yellow is reserved for money signals: savings, count badges, the sign-in accent.",
-      "Flat everywhere. Hairline borders and color blocking replace shadows entirely.",
-      "A restrained, almost print-like radius vocabulary: square by default, full pill or a 2px nudge as the only two exceptions.",
+      "Flat everywhere, with one confirmed exception: the Browse page's product card carries a soft shadow and a deeper rounded corner, a deliberate, isolated departure kept off every other surface.",
+      "A restrained, almost print-like radius vocabulary: square by default, full pill or a 2px nudge as the near-universal exceptions, plus the Browse product card's own larger radius.",
       "Serif for feeling (headlines, prices, the wordmark), tracked-uppercase sans for function (labels, buttons, nav)."
     ],
     "rules": [
@@ -103,19 +114,20 @@
       { "name": "The No-Pure-Black Rule", "body": "Text and dark surfaces are never #000 or #fff-on-black; ink and its inverse both carry warmth.", "section": "colors" },
       { "name": "The Shelf-Label Rule", "body": "Functional text (buttons, nav, badges) is uppercase tracked Archivo; expressive text (headlines, prices) is Newsreader sentence case.", "section": "typography" },
       { "name": "The Hairline Gutter Rule", "body": "Bordered grids use a bg-bw-line container with gap-px so gaps render as seams, rather than adding per-cell borders.", "section": "layout" },
-      { "name": "The Flat-By-Default Rule", "body": "Never add box-shadow to a card, button, or panel. Depth comes from borders and flat color blocking.", "section": "elevation" }
+      { "name": "The Flat-By-Default Rule", "body": "Never add box-shadow to a card, button, or panel, except the Browse product card, which is the system's one named elevation exception. Everywhere else, depth comes from borders and flat color blocking.", "section": "elevation" }
     ],
     "dos": [
       "Do keep pantry green and market mustard as the only saturated colors in any new UI.",
       "Do use the Hairline Gutter Rule for any new bordered grid.",
       "Do use the diagonal-stripe placeholder + mono caption pattern for imagery slots without a real asset yet.",
       "Do reserve italic-bold Newsreader for inline emphasis within a headline.",
-      "Do keep functional text uppercase tracked Archivo and expressive text Newsreader sentence case."
+      "Do keep functional text uppercase tracked Archivo and expressive text Newsreader sentence case.",
+      "Do confine shadow-sm/shadow-md and the rounded-xl/rounded-2xl radii to the Browse product card only — it is a named, single-component exception, not a new default."
     ],
     "donts": [
-      "Don't add box-shadow anywhere.",
+      "Don't add box-shadow anywhere outside the confirmed Browse-product-card exception.",
       "Don't introduce a third saturated color.",
-      "Don't use a radius outside the three established values (pill / 2px / square).",
+      "Don't use a radius outside the established values (pill / 2px / square, plus the Browse product card's rounded-xl/rounded-2xl) anywhere else in the system.",
       "Don't fade or dim a completed/active state — swap to a distinct solid fill instead."
     ]
   }

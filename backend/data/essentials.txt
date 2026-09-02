@@ -1,0 +1,32 @@
+# Curated Home 'Everyday Essentials', in display order (essential_rank).
+# One canonical product id per line; build_api_db.py sets is_essential from this.
+# Verify ids still exist after a rebuild: they change only if a product's name changes.
+full-cream-milk-2l
+light-milk-1l-2
+free-range-large-eggs-18-pack-900g
+butter-garlic-125g
+cheese-tasty-block-250g
+greek-style-yoghurt-1kg
+spaghetti-no-5-500g
+basmati-rice-1kg
+weet-bix-cereal-1-2kg
+wheat-free-rolled-oats-600g
+canned-baked-beans-425g
+polpa-finely-chopped-tomatoes-400g
+tomato-sauce-300ml
+peanut-butter-smooth-200g
+australian-strawberry-jam-300g
+instant-coffee-500g
+tradicional-olive-oil-1l
+plain-flour-1kg
+white-sugar-1kg
+woolworths-beef-mince-1kg
+smoked-chicken-breast-300g
+bananas-approx-170g
+jazz-apples-approx-160g-each
+potatoes-sweet-500g
+woolworths-baby-carrots-500g
+brown-onions-1kg-2
+complete-clean-toilet-paper-9-pack
+laundry-liquid-1l
+dishwashing-liquid-1l

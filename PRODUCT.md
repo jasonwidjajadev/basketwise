@@ -24,17 +24,17 @@ Shopper compares prices, builds a basket, and decides whether to shop at one sto
 
 ## Capabilities and Constraints
 
-- Frontend-only today: React 19 + Vite + Tailwind v4 app (`frontend/`). No running backend.
-- `backend/interfaces/types.py` is a draft/notes-only sketch of domain types (Franchise, Store, Item, StockRecord, Category) — not a running service.
-- `sample/coles/`, `sample/woolworths/` contain external reference Go scraper code (from `github.com/tjhowse/aus_grocery_price_database`), kept only as design reference. Not buildable as-is (no `go.mod`). Whether/how a scraping layer gets built is undecided.
-- All product data currently shown (categories, essentials, meals, FAQs, prices) is placeholder/mock data in `src/data/*`, standing in for a future backend API — not real retailer data.
+- Frontend is a standalone React 19 + Vite + Tailwind v4 app (`frontend/`) with no API backend wired to it — it reads only mock data from `src/data/*`.
+- `backend/interfaces/types.py` is a draft/notes-only sketch of domain types (Franchise, Store, Item, StockRecord, Category) — not a running service. `backend/contracts.py` and `backend/README.md` are empty placeholders.
+- `scraper/` is a real, working Python data pipeline (not a reference/sample) that scrapes Woolworths and Coles and imports real product/price data into Supabase (`stores`, `store_products`, `price_history` tables — see `scraper/README.md`). It has been run for real: Supabase holds actual Woolworths/Coles product and price data today. **The frontend does not consume this data yet** — the scraper/Supabase pipeline and the frontend are still two disconnected pieces; wiring them together is future work.
+- **ALDI scraping is planned but not yet built.** `scraper/` only has `woolworths.py` and `coles.py`; there is no `aldi.py` or equivalent. This is a confirmed gap against the Browse MVP's three-retailer commitment (see below), not an oversight to silently fill in.
 - **Confirmed retailers for the Browse MVP: Woolworths, Coles, and ALDI** (per `browsing_page_guide.md`, the Browse page's backend contract). IGA is no longer part of the confirmed retailer set for this scope — it was previously listed as unconfirmed and has been superseded by this contract; revisit if IGA support is wanted later.
 - **Confirmed category taxonomy**: the 17-category/subcategory structure defined in `browsing_page_guide.md` §3 (e.g. "Fruit & Vegetables", "Meat & Seafood", "Dairy, Eggs & Fridge" …) is the approved BasketWise taxonomy, intended to be served by a future `GET /categories` endpoint. The frontend currently mocks this endpoint (`frontend/src/data/browseApi.js`) with the exact same shape so the swap to a real backend is mechanical.
-- **Browse MVP scope is deliberately narrow**: categories, subcategories, product cards with per-retailer prices, add-to-basket, and pagination ("Load more") only. Search, retailer-only filtering, price/savings/recommended sorting, tags/dietary filters, and specials filtering are explicitly out of scope until the core flow is working (per `browsing_page_guide.md`) — do not reintroduce them without checking that contract first.
+- **Browse MVP scope**: categories, subcategories, product cards with per-retailer prices, add-to-basket, pagination ("Load more"), retailer-only filtering, and sorting are all in scope and implemented (`RetailerFilter`, `SortMenu`). This is a deliberate expansion beyond `browsing_page_guide.md`'s original narrower cut, made once the core browse-and-compare flow was working. Search, tags/dietary filters, and specials filtering remain out of scope — do not reintroduce those without checking that contract first.
 
 ## Evidence on Hand
 
-No real retailer data, testimonials, benchmarks, or usage evidence exists yet. All current numbers/stats in UI copy (product counts, match rates, postcode coverage) are filler and must not be reused as fact in future work.
+Real Woolworths and Coles product/price data exists in Supabase via `scraper/`, but is not yet connected to or reflected in the frontend — every number and product currently visible in the app is still placeholder/mock data from `frontend/src/data/*`. No ALDI data exists (no scraper built yet). No testimonials, benchmarks, or usage evidence exist. All current numbers/stats in UI copy (product counts, match rates, postcode coverage) are filler and must not be reused as fact in future work.
 
 ## Product Principles
 

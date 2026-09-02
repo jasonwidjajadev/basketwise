@@ -40,6 +40,8 @@ typography:
 rounded:
   none: "0px"
   sm: "2px"
+  xl: "12px"
+  2xl: "16px"
   full: "9999px"
 spacing:
   xs: "8px"
@@ -77,6 +79,10 @@ components:
     textColor: "{colors.panel}"
     rounded: "{rounded.full}"
     padding: "10px 16px 10px 48px"
+  card-browse-product:
+    backgroundColor: "{colors.surface}"
+    rounded: "{rounded.2xl}"
+    padding: "0"
 ---
 
 # Design System: BasketWise
@@ -93,8 +99,8 @@ The system currently trusts placeholder photography blocks (a diagonal two-tone 
 - Warm off-white paper ground, near-black ink text — never pure white-on-black.
 - Deep pantry green is the only color allowed to mean "go" or "action."
 - Market mustard yellow is reserved for money signals: savings, count badges, the sign-in accent.
-- Flat everywhere. Hairline borders and color blocking replace shadows entirely.
-- A restrained, almost print-like radius vocabulary: square by default, full pill or a 2px nudge as the only two exceptions.
+- Flat everywhere, with one confirmed exception: the Browse page's product card carries a soft shadow and a deeper rounded corner, a deliberate, isolated departure kept off every other surface.
+- A restrained, almost print-like radius vocabulary: square by default, full pill or a 2px nudge as the near-universal exceptions, plus two component-scoped exceptions — the Browse product card and the `/categories` hub page tiles (see Shapes).
 - Serif for feeling (headlines, prices, the wordmark), tracked-uppercase sans for function (labels, buttons, nav).
 
 ## Colors
@@ -153,21 +159,29 @@ A single centered container at **1160px max-width**, with `px-6` mobile gutters 
 Product and category grids run responsive column counts: 2 columns mobile → 3 at `sm` → 5–6 at `lg`, using CSS grid.
 
 ### Named Rules
-**The Hairline Gutter Rule.** Bordered grids (category grid, "how it works" steps) are built by giving the grid container `bg-bw-line` (the hairline color) and a `gap-px`, so the 1px gaps between cells render as seams rather than literal `<hr>` elements or per-cell borders. Reuse this pattern for any new tessellated grid rather than adding individual cell borders.
+**The Hairline Gutter Rule.** Bordered grids (the homepage's `CategoryGrid`, "how it works" steps) are built by giving the grid container `bg-bw-line` (the hairline color) and a `gap-px`, so the 1px gaps between cells render as seams rather than literal `<hr>` elements or per-cell borders. Reuse this pattern for any new tessellated grid rather than adding individual cell borders — **except** the dedicated `/categories` hub page, which is a confirmed, deliberate departure from this rule (see Shapes).
 
 ## Elevation & Depth
 
-Flat by design — there is no shadow vocabulary anywhere in the implemented system. Depth and separation come from two devices only: hairline borders (`border-bw-line`) around cards and panels, and flat color blocking (the near-black `ink-inverse-bg` header/footer sitting against the warm-paper page). Overlays (the cart sidebar's scrim) use a plain `bg-black/40` wash rather than a blurred or elevated treatment.
+Flat by design almost everywhere — depth and separation come from two devices: hairline borders (`border-bw-line`) around cards and panels, and flat color blocking (the near-black `ink-inverse-bg` header/footer sitting against the warm-paper page). Overlays (the cart sidebar's scrim) use a plain `bg-black/40` wash rather than a blurred or elevated treatment.
+
+**Confirmed exception — the Browse product card.** `BrowseProductCard` carries `shadow-sm` on its outer container and `shadow-md` on its floating add/remove button and its "Save $X" badge. This is the system's one sanctioned use of elevation, scoped to that single component; it does not license shadows anywhere else.
+
+### Shadow Vocabulary (Browse product card only)
+- **`shadow-sm`**: outer card container, giving it a faint lift off the page grid.
+- **`shadow-md`**: the circular add/remove control and the savings pill, both floating over the placeholder image.
 
 ### Named Rules
-**The Flat-By-Default Rule.** Never add `box-shadow` to a card, button, or panel. If something needs to read as "above" the page, use a border and/or a darker flat fill — not elevation.
+**The Flat-By-Default Rule.** Never add `box-shadow` to a card, button, or panel — except the Browse product card, which is the system's one named elevation exception (see above). Everywhere else, if something needs to read as "above" the page, use a border and/or a darker flat fill — not elevation.
 
 ## Shapes
 
-A deliberately narrow radius vocabulary with exactly two values in active use:
+A deliberately narrow radius vocabulary, with two component-scoped exceptions:
 - **Full pill** (`rounded-full`, 9999px): Every clickable chip, tab, and header/nav-level button (Basket button, ghost nav links, search input, tab toggles, circular icon buttons, the mustard count badge).
 - **2px nudge** (`rounded-sm`): Only on card-level CTA buttons and badges sitting inside a `ProductCard` (Add to cart, Save to list, the savings badge) — barely-there, closer to "eased" than "rounded."
-- **Square** (0px, default/unset): Everything else — cards, panels, containers, the category grid cells, the search dropdown, the mobile menu. Squareness is the resting state; roundness is earned by being an interactive pill or a small in-card control.
+- **Square** (0px, default/unset): Everything else — panels, containers, the homepage's `CategoryGrid` cells, the search dropdown, the mobile menu. Squareness is the resting state; roundness is earned by being an interactive pill, a small in-card control, or one of the two named exceptions below.
+- **Confirmed exception — Browse product card** (`rounded-2xl`, 16px, on the card container; `rounded-xl`, 12px, on the inset placeholder image): Scoped entirely to `BrowseProductCard`. No other card, panel, or container in the system uses this radius step.
+- **Confirmed exception — `/categories` hub page tiles** (`rounded-xl`, 12px, on the tile card; `rounded-lg`, 8px, on the inset placeholder image): a deliberate, Erewhon-referenced departure for the dedicated category-browsing hub, scoped to `CategoriesPage`. This page also departs from the Hairline Gutter Rule, using a spaced `gap-4`/`gap-5` grid with filled `bg-bw-panel` tiles instead of touching hairline cells — chosen so the trailing partial row reads as empty page background rather than an oddly-colored fill cell. Do not extend either departure (radius or gapped grid) to the homepage's `CategoryGrid`, which stays on the square/hairline pattern.
 
 Borders are always 1px, always the hairline oat color at rest, stepping up to `bw-line-strong` or `bw-ink` only for a selected/active state (e.g. the "Saved" toggle, the active "Start another way" tab).
 
@@ -184,12 +198,19 @@ Borders are always 1px, always the hairline oat color at rest, stepping up to `b
 - **Tag badge:** `bg-bw-green` / white text, `rounded-full`, small, top-left overlay on product imagery.
 
 ### Cards / Containers
-- **Corner Style:** Square (0px radius) throughout.
+- **Corner Style:** Square (0px radius) throughout, except the Browse product card (see below).
 - **Background:** `bw-surface` (white) on `bw-page`, or `bw-panel` (oat) for framed feature blocks.
-- **Shadow Strategy:** None — see Elevation & Depth.
+- **Shadow Strategy:** None — see Elevation & Depth — except the Browse product card (see below).
 - **Border:** 1px `bw-line`, uniform on all sides.
 - **Internal Padding:** Card body padding runs `px-3` to `px-4`/`py-3.5`–`py-5.5` depending on card density; feature panels (meals) use generous `px-6 sm:px-10 pt-10 pb-9`.
 - **Placeholder imagery:** Where real product/hero photography is missing, use a repeating 135° two-tone diagonal-stripe background (`#F3F1EA`/`#EDEBE2` or similar close warm-neutral pair) with a centered, small monospace caption naming the intended shot — never a gray box or a broken-image icon.
+
+### Browse Product Card (confirmed exception)
+- **Character:** The one component in the system permitted to feel "soft" — a rounded, lightly elevated tile rather than the ledger's flat square panels. Confined entirely to the Browse grid; do not extend this treatment to any other card (meal cards, home `ProductCard`, feature panels all stay flat/square).
+- **Corner Style:** `rounded-2xl` (16px) on the outer card, `rounded-xl` (12px) on the inset placeholder-image block.
+- **Shadow Strategy:** `shadow-sm` on the outer card, `shadow-md` on the floating add/remove button and the savings pill.
+- **Add/remove control:** A circular (`rounded-full`) button floating bottom-right over the image, `+` at rest, swapping to a filled green checkmark once added; the same control removes the item on a second click.
+- **Savings pill:** `rounded-full`, solid `bw-green`, floating bottom-left over the image; shown only when the saving is both ≥10% of the cheapest price and ≥$0.20.
 
 ### Inputs / Fields
 - **Style:** `rounded-full`, translucent white fill (`bg-white/10`) on the dark header, no visible border at rest (`border-transparent`).
@@ -208,9 +229,11 @@ Borders are always 1px, always the hairline oat color at rest, stepping up to `b
 - **Do** use the diagonal-stripe placeholder + mono caption pattern for any imagery slot that doesn't yet have a real asset, rather than a plain gray box.
 - **Do** reserve italic-bold Newsreader for inline emphasis within a headline, not for standalone UI text.
 - **Do** keep functional text (labels, nav, buttons, badges) in uppercase tracked Archivo, and expressive text (headlines, prices) in Newsreader sentence case.
+- **Do** confine `shadow-sm`/`shadow-md` to the Browse product card only — it is a named, single-component exception, not a new default.
+- **Do** confine `rounded-xl`/`rounded-2xl` to the Browse product card, and `rounded-xl`/`rounded-lg` to the `/categories` hub page tiles — these are the system's two named radius exceptions, not a general license.
 
 ### Don't:
-- **Don't** add `box-shadow` anywhere — depth comes from borders and flat color blocking only, never elevation.
+- **Don't** add `box-shadow` anywhere outside the confirmed Browse-product-card exception — depth everywhere else comes from borders and flat color blocking only, never elevation.
 - **Don't** introduce a third saturated color; if something needs emphasis beyond green/mustard/red, reach for the neutral ramp or a stronger border, not a new hue.
-- **Don't** use a radius outside the three established values (pill / 2px / square) — no `rounded-md`, `rounded-lg`, or `rounded-xl`.
+- **Don't** use a radius outside the established values (pill / 2px / square, plus the Browse product card's and `/categories` hub page's own exceptions) anywhere else in the system.
 - **Don't** fade or dim a completed/active state (e.g. "added" or "saved") — swap to a distinct solid fill (ink-inverse or a bordered active state) so it reads as fully done, not partially disabled.
