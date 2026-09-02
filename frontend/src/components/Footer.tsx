@@ -25,11 +25,7 @@ function FooterColumn({ heading, links }) {
       </span>
 
       {links.map((link) => (
-        <Link
-          key={link.label}
-          to={link.to}
-          className="text-bw-on-dark"
-        >
+        <Link key={link.label} to={link.to} className="text-bw-on-dark">
           {link.label}
         </Link>
       ))}
@@ -53,18 +49,9 @@ export default function Footer() {
           </p>
         </div>
 
-        <FooterColumn
-          heading="Shop"
-          links={SHOP_LINKS}
-        />
-        <FooterColumn
-          heading="Company"
-          links={COMPANY_LINKS}
-        />
-        <FooterColumn
-          heading="Legal"
-          links={LEGAL_LINKS}
-        />
+        <FooterColumn heading="Shop" links={SHOP_LINKS} />
+        <FooterColumn heading="Company" links={COMPANY_LINKS} />
+        <FooterColumn heading="Legal" links={LEGAL_LINKS} />
       </div>
 
       <div className="mx-auto mt-9 max-w-[1160px] border-t border-white/10 pt-4.5 text-[11.5px] text-bw-muted">

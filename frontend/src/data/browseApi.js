@@ -14,11 +14,15 @@ import { BROWSE_PRODUCTS } from '@/data/browseProducts'
 const MOCK_LATENCY_MS = 200
 
 function delay(value) {
-  return new Promise((resolve) => setTimeout(() => resolve(value), MOCK_LATENCY_MS))
+  return new Promise((resolve) =>
+    setTimeout(() => resolve(value), MOCK_LATENCY_MS),
+  )
 }
 
 function cheapestOffer(product, retailer) {
-  const offers = retailer ? product.offers.filter((offer) => offer.retailer === retailer) : product.offers
+  const offers = retailer
+    ? product.offers.filter((offer) => offer.retailer === retailer)
+    : product.offers
   return offers.reduce((min, offer) => Math.min(min, offer.price), Infinity)
 }
 
@@ -34,7 +38,15 @@ export function getCategories() {
 }
 
 // GET /products?category=&subcategory=&retailer=&q=&sort=&limit=&offset=
-export function getProducts({ category, subcategory, retailer, q, sort, limit = 24, offset = 0 } = {}) {
+export function getProducts({
+  category,
+  subcategory,
+  retailer,
+  q,
+  sort,
+  limit = 24,
+  offset = 0,
+} = {}) {
   let items = BROWSE_PRODUCTS
 
   if (category) {
@@ -44,11 +56,15 @@ export function getProducts({ category, subcategory, retailer, q, sort, limit = 
     items = items.filter((product) => product.subcategory === subcategory)
   }
   if (retailer) {
-    items = items.filter((product) => product.offers.some((offer) => offer.retailer === retailer))
+    items = items.filter((product) =>
+      product.offers.some((offer) => offer.retailer === retailer),
+    )
   }
   if (q) {
     const query = q.trim().toLowerCase()
-    items = items.filter((product) => product.name.toLowerCase().includes(query))
+    items = items.filter((product) =>
+      product.name.toLowerCase().includes(query),
+    )
   }
 
   if (sort === 'name_asc') {
@@ -56,9 +72,13 @@ export function getProducts({ category, subcategory, retailer, q, sort, limit = 
   } else if (sort === 'name_desc') {
     items = [...items].sort((a, b) => b.name.localeCompare(a.name))
   } else if (sort === 'price_asc') {
-    items = [...items].sort((a, b) => cheapestOffer(a, retailer) - cheapestOffer(b, retailer))
+    items = [...items].sort(
+      (a, b) => cheapestOffer(a, retailer) - cheapestOffer(b, retailer),
+    )
   } else if (sort === 'price_desc') {
-    items = [...items].sort((a, b) => cheapestOffer(b, retailer) - cheapestOffer(a, retailer))
+    items = [...items].sort(
+      (a, b) => cheapestOffer(b, retailer) - cheapestOffer(a, retailer),
+    )
   } else if (sort === 'biggest_saving') {
     items = [...items].sort((a, b) => savingsOf(b) - savingsOf(a))
   } else if (sort === 'smallest_saving') {

@@ -3,7 +3,6 @@ const STEPS = [
     number: '01',
     title: 'Upload your receipt',
     body: "Take a photo of last week\'s receipt and upload it to BaskWise.",
-
   },
   {
     number: '02',
@@ -26,10 +25,7 @@ export default function HowItWorks() {
 
       <div className="grid grid-cols-1 gap-px border border-bw-line bg-bw-line sm:grid-cols-3">
         {STEPS.map((step) => (
-          <div
-            key={step.number}
-            className="bg-bw-page px-6 py-5.5"
-          >
+          <div key={step.number} className="bg-bw-page px-6 py-5.5">
             <span className="font-newsreader text-[26px] text-bw-line-strong">
               {step.number}
             </span>

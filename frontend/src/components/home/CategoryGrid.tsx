@@ -2,10 +2,7 @@ import { categories } from '@/data/categories'
 
 export default function CategoryGrid() {
   return (
-    <section
-      id="browse"
-      className="mx-auto max-w-[1160px] px-6 pt-14 lg:px-10"
-    >
+    <section id="browse" className="mx-auto max-w-[1160px] px-6 pt-14 lg:px-10">
       <div className="mb-5 flex flex-wrap items-end justify-between gap-6">
         <div>
           <h2 className="mb-2 font-newsreader text-[34px] font-normal tracking-[-.015em] text-bw-ink">
@@ -27,9 +24,7 @@ export default function CategoryGrid() {
             <span className="font-newsreader text-[15px] text-bw-line-strong">
               {String(i + 1).padStart(2, '0')}
             </span>
-            <span className="text-[13.5px] font-semibold">
-              {category.name}
-            </span>
+            <span className="text-[13.5px] font-semibold">{category.name}</span>
             <span className="text-[11.5px] text-bw-subtle">
               {category.count}
             </span>

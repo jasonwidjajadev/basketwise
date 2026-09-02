@@ -3,10 +3,7 @@ import FaqRow from '@/components/home/FaqRow'
 
 export default function FaqSection() {
   return (
-    <section
-      id="faq"
-      className="mx-auto max-w-[820px] px-6 pt-19 lg:px-10"
-    >
+    <section id="faq" className="mx-auto max-w-[820px] px-6 pt-19 lg:px-10">
       <h2 className="mb-1.5 text-center font-newsreader text-[36px] font-normal tracking-[-.02em] text-bw-ink sm:text-[44px]">
         FAQ
       </h2>

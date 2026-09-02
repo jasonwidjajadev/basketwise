@@ -3,7 +3,14 @@ import { MdExpandMore } from 'react-icons/md'
 
 import { cn } from '@/lib/utils'
 
-function CategoryAccordionList({ categories, category, subcategory, expandedCategory, onHeaderClick, onSelectSub }) {
+function CategoryAccordionList({
+  categories,
+  category,
+  subcategory,
+  expandedCategory,
+  onHeaderClick,
+  onSelectSub,
+}) {
   return (
     <div>
       {categories.map((cat) => {
@@ -11,17 +18,14 @@ function CategoryAccordionList({ categories, category, subcategory, expandedCate
         const isActive = cat.id === category
 
         return (
-          <div
-            key={cat.id}
-            className="border-b border-bw-line last:border-b-0"
-          >
+          <div key={cat.id} className="border-b border-bw-line last:border-b-0">
             <button
               type="button"
               aria-expanded={isExpanded}
               aria-current={isActive && !subcategory ? 'true' : undefined}
               onClick={() => onHeaderClick(cat.id, isExpanded)}
               className={cn(
-                'flex w-full items-center justify-between gap-2.5 px-3.5 py-2.75 text-left font-archivo text-[13px] text-bw-ink transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
+                'flex w-full items-center justify-between gap-2.5 px-3.5 py-3.25 text-left font-archivo text-[13px] text-bw-ink transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
                 isActive && !subcategory && 'bg-bw-panel font-semibold',
               )}
             >
@@ -44,17 +48,21 @@ function CategoryAccordionList({ categories, category, subcategory, expandedCate
               <div className="overflow-hidden">
                 <div className="flex flex-col px-2 pb-2.5">
                   {cat.subcategories.map((sub) => {
-                    const isSubActive = subcategory === sub.id && category === cat.id
+                    const isSubActive =
+                      subcategory === sub.id && category === cat.id
                     return (
                       <button
                         key={sub.id}
                         type="button"
                         tabIndex={isExpanded ? 0 : -1}
                         aria-current={isSubActive ? 'true' : undefined}
-                        onClick={() => onSelectSub(cat.id, isSubActive ? null : sub.id)}
+                        onClick={() =>
+                          onSelectSub(cat.id, isSubActive ? null : sub.id)
+                        }
                         className={cn(
-                          'px-5 py-2 text-left font-archivo text-[12.5px] text-bw-body transition-colors hover:bg-bw-panel hover:text-bw-ink focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
-                          isSubActive && 'bg-bw-panel font-semibold text-bw-ink',
+                          'px-5 py-2.75 text-left font-archivo text-[12.5px] text-bw-body transition-colors hover:bg-bw-panel hover:text-bw-ink focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
+                          isSubActive &&
+                            'bg-bw-panel font-semibold text-bw-ink',
                         )}
                       >
                         {sub.name}
@@ -71,7 +79,13 @@ function CategoryAccordionList({ categories, category, subcategory, expandedCate
   )
 }
 
-export default function CategorySidebar({ categories, loading, category, subcategory, onSelect }) {
+export default function CategorySidebar({
+  categories,
+  loading,
+  category,
+  subcategory,
+  onSelect,
+}) {
   const [expandedCategory, setExpandedCategory] = useState(category)
 
   function handleHeaderClick(catId, isExpanded) {
@@ -92,7 +106,9 @@ export default function CategorySidebar({ categories, loading, category, subcate
   }
 
   const body = loading ? (
-    <p className="px-3.5 py-4 font-archivo text-[12.5px] text-bw-muted">Loading categories…</p>
+    <p className="px-3.5 py-4 font-archivo text-[12.5px] text-bw-muted">
+      Loading categories…
+    </p>
   ) : (
     <CategoryAccordionList {...listProps} />
   )

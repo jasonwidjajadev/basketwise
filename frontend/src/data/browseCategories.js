@@ -12,10 +12,31 @@ function slugify(label) {
 }
 
 const TAXONOMY = [
-  ['Fruit & Vegetables', ['Fruit', 'Vegetables', 'Herbs & Sprouts', 'Salads', 'Prepared Vegetables', 'Flowers']],
+  [
+    'Fruit & Vegetables',
+    [
+      'Fruit',
+      'Vegetables',
+      'Herbs & Sprouts',
+      'Salads',
+      'Prepared Vegetables',
+      'Flowers',
+    ],
+  ],
   [
     'Meat & Seafood',
-    ['Beef', 'Poultry', 'Lamb', 'Pork', 'Mince', 'Sausages & Burgers', 'Ham', 'Seafood', 'Roasts & Slow Cooked', 'Game'],
+    [
+      'Beef',
+      'Poultry',
+      'Lamb',
+      'Pork',
+      'Mince',
+      'Sausages & Burgers',
+      'Ham',
+      'Seafood',
+      'Roasts & Slow Cooked',
+      'Game',
+    ],
   ],
   [
     'Deli & Chilled',
@@ -79,7 +100,18 @@ const TAXONOMY = [
       'Nuts & Dried Fruit',
     ],
   ],
-  ['Snacks & Confectionery', ['Chips', 'Chocolate', 'Lollies', 'Biscuits', 'Crackers', 'Snack Bars', 'Nuts & Snacks']],
+  [
+    'Snacks & Confectionery',
+    [
+      'Chips',
+      'Chocolate',
+      'Lollies',
+      'Biscuits',
+      'Crackers',
+      'Snack Bars',
+      'Nuts & Snacks',
+    ],
+  ],
   [
     'Frozen',
     [
@@ -144,7 +176,16 @@ const TAXONOMY = [
   ],
   [
     'Baby',
-    ['Baby Food', 'Baby Formula', 'Nappies & Wipes', 'Bottles & Feeding', 'Bath & Skincare', 'Baby Medicinal', 'Dummies & Teethers', 'Baby Clothing'],
+    [
+      'Baby Food',
+      'Baby Formula',
+      'Nappies & Wipes',
+      'Bottles & Feeding',
+      'Bath & Skincare',
+      'Baby Medicinal',
+      'Dummies & Teethers',
+      'Baby Clothing',
+    ],
   ],
   ['Pet', ['Cat', 'Dog', 'Birds', 'Fish', 'Small Pets']],
   ['Liquor', ['Beer', 'Wine', 'Spirits', 'Premixed Drinks']],

@@ -1,6 +1,12 @@
 import { useRef, useState } from 'react'
-import { MdAdd, MdCheck } from 'react-icons/md'
+import { MdAdd, MdCheck, MdClose, MdOutlineImage } from 'react-icons/md'
 
+import aldiColor from '@/assets/logos/ALDI.png'
+import aldiGreyscale from '@/assets/logos/ALDI_greyscale.png'
+import colesColor from '@/assets/logos/Coles.png'
+import colesGreyscale from '@/assets/logos/Coles_greyscale.png'
+import woolworthsColor from '@/assets/logos/Woolworths.png'
+import woolworthsGreyscale from '@/assets/logos/Woolworths_greyscale.png'
 import { cn } from '@/lib/utils'
 
 const POP_DURATION_MS = 420
@@ -11,7 +17,13 @@ const RETAILER_LABELS = {
   woolworths: 'Woolworths',
 }
 
-const RETAILER_ORDER = ['aldi', 'coles', 'woolworths']
+const RETAILER_LOGOS = {
+  aldi: { color: aldiColor, greyscale: aldiGreyscale },
+  coles: { color: colesColor, greyscale: colesGreyscale },
+  woolworths: { color: woolworthsColor, greyscale: woolworthsGreyscale },
+}
+
+const RETAILER_ORDER = ['woolworths', 'coles', 'aldi']
 
 function fmt(n) {
   return `$${n.toFixed(2)}`
@@ -47,39 +59,27 @@ export default function BrowseProductCard({ product, added, onAdd, onRemove }) {
   return (
     <div className="flex flex-col overflow-hidden rounded-2xl border border-bw-line bg-bw-surface shadow-sm">
       <div className="p-3 pb-0">
-        <div
-          className="relative flex aspect-square items-center justify-center rounded-xl"
-          style={{
-            backgroundImage:
-              'repeating-linear-gradient(135deg,#F3F1EA 0 8px,#EDEBE2 8px 16px)',
-          }}
-        >
-          <span className="text-center font-mono text-[9.5px] leading-snug text-[#9B9A8F]">
-            product shot
-          </span>
+        <div className="relative flex aspect-square items-center justify-center rounded-xl border border-dashed border-bw-line-strong bg-bw-panel">
+          <div className="flex flex-col items-center gap-1.5 text-center">
+            <MdOutlineImage
+              aria-hidden="true"
+              className="h-8 w-8 text-bw-subtle"
+            />
+            <span className="font-mono text-[11px] leading-snug text-bw-subtle">
+              product shot
+              <br />
+              or <span className="underline">browse files</span>
+            </span>
+          </div>
 
           {showSaving && (
-            <span className="absolute bottom-2 left-2 rounded-full bg-bw-green px-3 py-1.5 font-archivo text-xs font-semibold text-white shadow-md">
+            <span
+              className="absolute bottom-2 left-2 rounded-full bg-bw-green px-3 py-1.5 font-archivo text-xs font-semibold text-white shadow-md"
+              title="Shown when this saving is at least 10% of the cheapest price and at least $0.20"
+            >
               Save {fmt(saving)}
             </span>
           )}
-
-          <button
-            type="button"
-            onClick={handleToggle}
-            aria-label={added ? 'Remove from basket' : 'Add to basket'}
-            className={cn(
-              'absolute right-3 bottom-3 flex h-9 w-9 items-center justify-center rounded-full bg-bw-surface text-bw-ink shadow-md transition-colors focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:animate-none',
-              added && 'bg-bw-green text-white',
-              justAdded && 'animate-[bw-pop_420ms_ease]',
-            )}
-          >
-            {added ? (
-              <MdCheck className="h-5 w-5" />
-            ) : (
-              <MdAdd className="h-5 w-5" />
-            )}
-          </button>
         </div>
       </div>
 
@@ -94,35 +94,60 @@ export default function BrowseProductCard({ product, added, onAdd, onRemove }) {
           </p>
         </div>
 
-        <div className="flex flex-col gap-1">
-          {rows.map((offer) => {
-            const isCheapest = offer.price === cheapestPrice
-            return (
-              <div
-                key={offer.retailer}
-                className={cn(
-                  'flex items-center justify-between gap-2 rounded-lg px-2.5 py-2',
-                  isCheapest && 'bg-bw-green-tint',
-                )}
-              >
-                <span className="font-archivo text-[13px] text-bw-body">
-                  <span
-                    className={cn(isCheapest && 'font-semibold text-bw-green')}
-                  >
-                    {RETAILER_LABELS[offer.retailer] ?? offer.retailer}
-                  </span>
-                </span>
-                <span
-                  className={cn(
-                    'font-newsreader text-base leading-none text-bw-muted',
-                    isCheapest && 'text-xl font-bold text-bw-green',
-                  )}
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex flex-1 items-center justify-between">
+            {rows.map((offer) => {
+              const isCheapest =
+                offer.price != null && offer.price === cheapestPrice
+              const logos = RETAILER_LOGOS[offer.retailer]
+              const label = RETAILER_LABELS[offer.retailer] ?? offer.retailer
+              return (
+                <div
+                  key={offer.retailer}
+                  className="flex flex-col items-center gap-1.5"
                 >
-                  {offer.price != null ? fmt(offer.price) : 'N/A'}
-                </span>
-              </div>
-            )
-          })}
+                  {logos && (
+                    <img
+                      src={isCheapest ? logos.color : logos.greyscale}
+                      alt={label}
+                      className="h-8 w-8 rounded-md object-contain"
+                    />
+                  )}
+                  <span
+                    className={cn(
+                      'font-newsreader text-base leading-none text-bw-muted',
+                      isCheapest && 'text-xl font-bold text-bw-green',
+                    )}
+                  >
+                    {offer.price != null ? fmt(offer.price) : 'N/A'}
+                  </span>
+                </div>
+              )
+            })}
+          </div>
+
+          <div className="flex h-8 w-9 shrink-0 items-center justify-center">
+            <button
+              type="button"
+              onClick={handleToggle}
+              aria-label={added ? 'Remove from basket' : 'Add to basket'}
+              title={added ? 'Remove from basket' : 'Add to basket'}
+              className={cn(
+                'group flex h-9 w-9 items-center justify-center rounded-full bg-bw-panel text-bw-ink shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:animate-none',
+                added && 'bg-bw-green text-white',
+                justAdded && 'animate-[bw-pop_420ms_ease]',
+              )}
+            >
+              {added ? (
+                <>
+                  <MdCheck className="h-5 w-5 group-hover:hidden group-focus-visible:hidden" />
+                  <MdClose className="hidden h-5 w-5 group-hover:block group-focus-visible:block" />
+                </>
+              ) : (
+                <MdAdd className="h-5 w-5" />
+              )}
+            </button>
+          </div>
         </div>
       </div>
     </div>

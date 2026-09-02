@@ -38,8 +38,8 @@ export default function Hero() {
 
         <p className="mt-5.5 mb-7.5 max-w-[44ch] text-[14.5px] leading-relaxed text-bw-body">
           BasketWise compares live prices across Coles, Woolworths, ALDI and
-          IGA, reads your receipts and turns the meals you love into a ready
-          to go basket.
+          IGA, reads your receipts and turns the meals you love into a ready to
+          go basket.
         </p>
 
         <div className="flex flex-wrap items-center gap-3.5">

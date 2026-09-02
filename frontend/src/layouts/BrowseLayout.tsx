@@ -1,14 +1,17 @@
 import { useEffect, useState } from 'react'
-import { Outlet } from 'react-router'
+import { Outlet, useSearchParams } from 'react-router'
 
 import CategorySidebar from '@/components/browse/CategorySidebar'
 import { getCategories } from '@/data/browseApi'
 
 export default function BrowseLayout() {
+  const [searchParams, setSearchParams] = useSearchParams()
   const [categories, setCategories] = useState([])
   const [categoriesLoading, setCategoriesLoading] = useState(true)
-  const [category, setCategory] = useState(null)
-  const [subcategory, setSubcategory] = useState(null)
+  const [category, setCategory] = useState(() => searchParams.get('category'))
+  const [subcategory, setSubcategory] = useState(() =>
+    searchParams.get('subcategory'),
+  )
 
   useEffect(() => {
     let cancelled = false
@@ -28,6 +31,23 @@ export default function BrowseLayout() {
   function selectCategory(nextCategory, nextSubcategory = null) {
     setCategory(nextCategory)
     setSubcategory(nextSubcategory)
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        if (nextCategory) {
+          next.set('category', nextCategory)
+        } else {
+          next.delete('category')
+        }
+        if (nextSubcategory) {
+          next.set('subcategory', nextSubcategory)
+        } else {
+          next.delete('subcategory')
+        }
+        return next
+      },
+      { replace: true },
+    )
   }
 
   return (
@@ -41,7 +61,9 @@ export default function BrowseLayout() {
       />
 
       <main className="min-w-0 flex-1">
-        <Outlet context={{ categories, category, subcategory, selectCategory }} />
+        <Outlet
+          context={{ categories, category, subcategory, selectCategory }}
+        />
       </main>
     </div>
   )

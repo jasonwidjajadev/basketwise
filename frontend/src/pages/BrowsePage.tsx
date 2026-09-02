@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import { MdClose, MdSearch } from 'react-icons/md'
 import { useOutletContext, useSearchParams } from 'react-router'
 
 import BrowseProductCard from '@/components/browse/BrowseProductCard'
@@ -8,7 +7,6 @@ import SortMenu from '@/components/browse/SortMenu'
 import { useCart } from '@/context/useCart'
 import { getProducts } from '@/data/browseApi'
 import { SORT_OPTIONS } from '@/lib/browseSort'
-import { cn } from '@/lib/utils'
 
 const PAGE_SIZE = 24
 const RETAILER_VALUES = ['', 'woolworths', 'coles', 'aldi']
@@ -17,7 +15,6 @@ export default function BrowsePage() {
   const { categories, category, subcategory } = useOutletContext()
   const { addedIds, add, remove } = useCart()
   const [searchParams, setSearchParams] = useSearchParams()
-  const [search, setSearch] = useState('')
 
   const retailerParam = searchParams.get('retailer')
   const retailer = RETAILER_VALUES.includes(retailerParam) ? retailerParam : ''
@@ -49,10 +46,10 @@ export default function BrowsePage() {
   // derived instead of set synchronously inside the effect.
   const [loadedFor, setLoadedFor] = useState(null)
 
-  const requestKey = `${category}:${subcategory}:${retailer}:${search}:${sort}`
+  const requestKey = `${category}:${subcategory}:${retailer}:${sort}`
   const loading = loadedFor !== requestKey
 
-  // Fetch page 1 whenever category, subcategory, retailer, search, or sort changes.
+  // Fetch page 1 whenever category, subcategory, retailer, or sort changes.
   useEffect(() => {
     let cancelled = false
 
@@ -60,7 +57,6 @@ export default function BrowsePage() {
       category,
       subcategory,
       retailer,
-      q: search,
       sort,
       limit: PAGE_SIZE,
       offset: 0,
@@ -75,7 +71,7 @@ export default function BrowsePage() {
     return () => {
       cancelled = true
     }
-  }, [category, subcategory, retailer, search, sort, requestKey])
+  }, [category, subcategory, retailer, sort, requestKey])
 
   function loadMore() {
     setLoadingMore(true)
@@ -83,7 +79,6 @@ export default function BrowsePage() {
       category,
       subcategory,
       retailer,
-      q: search,
       sort,
       limit: PAGE_SIZE,
       offset: items.length,
@@ -99,47 +94,14 @@ export default function BrowsePage() {
     (sub) => sub.id === subcategory,
   )
 
-  const heading = search.trim()
-    ? `Search results for “${search.trim()}”`
-    : !activeCategory
-      ? 'All groceries'
-      : activeSubcategory
-        ? `${activeCategory.name} — ${activeSubcategory.name}`
-        : activeCategory.name
+  const heading = !activeCategory
+    ? 'All groceries'
+    : activeSubcategory
+      ? `${activeCategory.name} — ${activeSubcategory.name}`
+      : activeCategory.name
 
   return (
     <div>
-      <div className="mx-auto mb-5 max-w-md">
-        <label htmlFor="browse-item-search" className="sr-only">
-          Search items
-        </label>
-        <div className="relative">
-          <MdSearch className="pointer-events-none absolute top-1/2 left-3.5 h-5 w-5 -translate-y-1/2 text-bw-subtle" />
-          <input
-            id="browse-item-search"
-            type="search"
-            value={search}
-            onChange={(event) => setSearch(event.target.value)}
-            placeholder="Search groceries…"
-            className="w-full rounded-full border border-bw-line-strong bg-bw-surface py-2.75 pr-10 pl-10 font-archivo text-sm text-bw-ink outline-none placeholder:text-bw-subtle focus-visible:ring-2 focus-visible:ring-bw-green"
-          />
-          <button
-            type="button"
-            aria-label="Clear search"
-            onClick={() => setSearch('')}
-            tabIndex={search ? 0 : -1}
-            className={cn(
-              'absolute top-1/2 right-2.5 -translate-y-1/2 rounded-full p-1 text-bw-subtle transition-all duration-150 ease-out hover:bg-bw-panel hover:text-bw-ink focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none motion-reduce:transition-none',
-              search
-                ? 'pointer-events-auto scale-100 opacity-100'
-                : 'pointer-events-none scale-75 opacity-0',
-            )}
-          >
-            <MdClose className="h-4 w-4" />
-          </button>
-        </div>
-      </div>
-
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
         <h1 className="font-newsreader text-[28px] font-normal tracking-[-.015em] text-bw-ink">
           {heading}
@@ -188,9 +150,7 @@ export default function BrowsePage() {
             No products found
           </h2>
           <p className="max-w-[44ch] text-[13px] text-bw-muted">
-            {search.trim()
-              ? `Nothing matches “${search.trim()}”. Try a different search, or clear it to browse by category.`
-              : `We don't have any products loaded for ${heading} yet.`}
+            {`We don't have any products loaded for ${heading} yet.`}
           </p>
         </div>
       ) : (

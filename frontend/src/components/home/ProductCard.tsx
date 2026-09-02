@@ -37,9 +37,7 @@ export default function ProductCard({
         <p className="font-newsreader text-[26px] leading-none text-bw-ink">
           {product.price}
         </p>
-        <p className="mt-1 mb-0.5 text-[11px] text-bw-subtle">
-          {product.unit}
-        </p>
+        <p className="mt-1 mb-0.5 text-[11px] text-bw-subtle">{product.unit}</p>
         <p className="mb-2 text-[11px] font-semibold text-bw-red">
           {product.was}
         </p>
@@ -47,7 +45,8 @@ export default function ProductCard({
           {product.name}
         </p>
         <p className="mb-3 text-[11px] text-bw-subtle">
-          ★ {product.rating} <span className="underline">({product.reviews})</span>
+          ★ {product.rating}{' '}
+          <span className="underline">({product.reviews})</span>
         </p>
       </div>
 

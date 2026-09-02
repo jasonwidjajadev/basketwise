@@ -2,18 +2,13 @@ import { Link } from 'react-router'
 
 import { useCart } from '@/context/useCart'
 
-export default function CartSidebar({
-  isOpen,
-  onClose,
-}) {
+export default function CartSidebar({ isOpen, onClose }) {
   const { count } = useCart()
 
   return (
     <div
       className={`fixed inset-0 z-50 ${
-        isOpen
-          ? 'pointer-events-auto visible'
-          : 'pointer-events-none invisible'
+        isOpen ? 'pointer-events-auto visible' : 'pointer-events-none invisible'
       }`}
     >
       <button
@@ -29,9 +24,7 @@ export default function CartSidebar({
         }`}
       >
         <div className="flex items-center justify-between border-b border-zinc-200 p-6">
-          <h2 className="text-xl font-semibold">
-            Your basket ({count})
-          </h2>
+          <h2 className="text-xl font-semibold">Your basket ({count})</h2>
 
           <button
             type="button"

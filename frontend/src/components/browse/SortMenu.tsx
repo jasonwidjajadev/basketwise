@@ -31,13 +31,11 @@ export default function SortMenu({ value, onChange }) {
     }
   }, [open])
 
-  const current = SORT_OPTIONS.find((opt) => opt.value === value) ?? SORT_OPTIONS[0]
+  const current =
+    SORT_OPTIONS.find((opt) => opt.value === value) ?? SORT_OPTIONS[0]
 
   return (
-    <div
-      ref={rootRef}
-      className="relative"
-    >
+    <div ref={rootRef} className="relative">
       <button
         ref={triggerRef}
         type="button"
