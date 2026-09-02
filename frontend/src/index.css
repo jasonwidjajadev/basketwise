@@ -166,17 +166,8 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-<<<<<<< HEAD
   button:not(:disabled),
   [role='button']:not([aria-disabled='true']) {
     cursor: pointer;
   }
 }
-=======
-  button,
-  [role="button"],
-  a {
-    cursor: pointer;
-  }
-}
->>>>>>> e40c4a212c6af846df6f2b7c4afe4e2e3e4bb4c2
