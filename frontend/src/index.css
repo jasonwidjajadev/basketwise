@@ -81,4 +81,10 @@
   input {
     -webkit-tap-highlight-color: transparent;
   }
+
+  button,
+  [role="button"],
+  a {
+    cursor: pointer;
+  }
 }
