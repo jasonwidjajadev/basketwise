@@ -126,7 +126,7 @@ export default function BrowsePage() {
 
       {loading ? (
         <div
-          className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-4"
+          className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
           aria-hidden="true"
         >
           {Array.from({ length: 8 }).map((_, index) => (
@@ -157,7 +157,7 @@ export default function BrowsePage() {
         <>
           <div
             key={requestKey}
-            className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-4"
+            className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
           >
             {items.map((product, index) => (
               <div

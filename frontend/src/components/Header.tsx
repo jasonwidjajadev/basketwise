@@ -65,7 +65,7 @@ export default function Header() {
             <ul className="flex items-center gap-4">
               <li>
                 <Link
-                  to="/categories"
+                  to="/browse"
                   className="flex items-center gap-2 rounded-full px-3 py-2 text-sm font-medium text-bw-on-dark transition hover:text-bw-panel"
                 >
                   <MdOutlineGridView className="h-5 w-5" />
@@ -136,7 +136,7 @@ export default function Header() {
             {isMenuOpen && (
               <div className="absolute top-12 right-0 w-52 border border-bw-line bg-bw-surface p-2 text-bw-ink">
                 <Link
-                  to="/categories"
+                  to="/browse"
                   onClick={() => setIsMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 text-sm text-bw-ink hover:bg-bw-panel"
                 >

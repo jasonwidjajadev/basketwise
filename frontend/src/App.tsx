@@ -6,7 +6,6 @@ import MainLayout from '@/layouts/MainLayout'
 
 import AccountPage from '@/pages/AccountPage'
 import BrowsePage from '@/pages/BrowsePage'
-import CategoriesPage from '@/pages/CategoriesPage'
 import ComparePage from '@/pages/ComparePage'
 import HomePage from '@/pages/HomePage'
 import NotFoundPage from '@/pages/NotFoundPage'
@@ -18,8 +17,6 @@ function App() {
       <Routes>
         <Route element={<MainLayout />}>
           <Route index element={<HomePage />} />
-
-          <Route path="categories" element={<CategoriesPage />} />
 
           <Route element={<BrowseLayout />}>
             <Route path="browse" element={<BrowsePage />} />

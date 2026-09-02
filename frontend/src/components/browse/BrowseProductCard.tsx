@@ -130,10 +130,11 @@ export default function BrowseProductCard({ product, added, onAdd, onRemove }) {
             <button
               type="button"
               onClick={handleToggle}
+
               aria-label={added ? 'Remove from basket' : 'Add to basket'}
               title={added ? 'Remove from basket' : 'Add to basket'}
               className={cn(
-                'group flex h-9 w-9 items-center justify-center rounded-full bg-bw-panel text-bw-ink shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:animate-none',
+                'curso group flex h-9 w-9 items-center justify-center rounded-full bg-bw-panel text-bw-ink shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:animate-none',
                 added && 'bg-bw-green text-white',
                 justAdded && 'animate-[bw-pop_420ms_ease]',
               )}
