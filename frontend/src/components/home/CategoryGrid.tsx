@@ -1,6 +1,17 @@
-import { categories } from '@/data/categories'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router'
+
+import { getCategories, type Category } from '@/api/client'
 
 export default function CategoryGrid() {
+  const [categories, setCategories] = useState<Category[]>([])
+
+  useEffect(() => {
+    const controller = new AbortController()
+    getCategories(controller.signal).then(setCategories).catch(() => {})
+    return () => controller.abort()
+  }, [])
+
   return (
     <section
       id="browse"
@@ -19,21 +30,19 @@ export default function CategoryGrid() {
 
       <div className="grid grid-cols-2 gap-px border border-bw-line bg-bw-line sm:grid-cols-3 lg:grid-cols-6">
         {categories.map((category, i) => (
-          <a
-            key={category.name}
-            href="#browse"
+          <Link
+            key={category.id}
+            to={`/browse?category=${category.id}`}
             className="flex flex-col gap-1.5 bg-bw-surface px-4 pt-4.5 pb-5 text-bw-ink transition-colors hover:bg-bw-panel"
           >
             <span className="font-newsreader text-[15px] text-bw-line-strong">
               {String(i + 1).padStart(2, '0')}
             </span>
-            <span className="text-[13.5px] font-semibold">
-              {category.name}
-            </span>
+            <span className="text-[13.5px] font-semibold">{category.name}</span>
             <span className="text-[11.5px] text-bw-subtle">
-              {category.count}
+              {category.product_count.toLocaleString()} items
             </span>
-          </a>
+          </Link>
         ))}
       </div>
     </section>
