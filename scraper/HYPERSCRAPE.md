@@ -141,6 +141,41 @@ Supabase reuses the existing `store_products` / `price_history` tables exactly a
 `import_products.py` does; the extra detail fields go to a new `product_details` table
 (create it once with `supabase/001_product_details.sql`).
 
+## Serving the data: build_api_db.py
+
+`build_master.py` produces a 3.4 GB research artifact with the raw JSON kept. The API
+cannot serve that, so one more step turns it into what the backend actually reads:
+
+```bash
+uv run tui/build_api_db.py --dry-run   # report dedupe + mapping coverage, write nothing
+uv run tui/build_api_db.py             # data/basketwise.db (52 MB) + data/warm/
+```
+
+What it does:
+
+- **Drops the marketplace noise.** Woolworths' `is_market=1` rows are Everyday Market
+  third-party listings (Home & Lifestyle, Electronics, Gift Ideas) -- ~490k of its
+  514k rows, and not groceries. 550,906 master rows become 59,542 serving rows.
+- **Canonicalises** those into ~50k BasketWise products: union-find over barcode
+  (strong) then normalised name+size (fallback, the only tier ALDI and Harris Farm
+  have). ~8.5k products end up carried by 2+ retailers -- those are what Compare compares.
+- **Maps taxonomy** with `tui/canonical.py` (the Source-of-Truth v2 appendix, plus a
+  volume-driven extension and a Harris Farm map v2 lacks). ~90% land on a canonical
+  category, ~60% on a subcategory; the rest stay NULL rather than being guessed.
+- **Drops the zstd blobs** (2.3 GB of the 3.4 GB) and builds an FTS5 index.
+- **Pre-renders** the hot API responses into `data/warm/` so the server never
+  serializes them at request time.
+
+Nightly crawl + build + ship, run from the build machine:
+
+```bash
+deploy/nightly.sh              # crawl all 4 stores, rebuild, validate, ship to hpsrv
+deploy/nightly.sh --no-crawl   # rebuild + ship from the crawl data already on disk
+```
+
+It validates before shipping and aborts on a bad build, so the server keeps serving
+the last good artifact rather than garbage. See `backend/DEPLOY.md`.
+
 ## CLI flags (Go)
 
 ```

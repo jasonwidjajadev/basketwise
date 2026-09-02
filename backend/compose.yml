@@ -1,0 +1,55 @@
+# BasketWise API + its Cloudflare Tunnel.
+#
+# The API publishes NO host port: the only way in is the tunnel, which dials out.
+# Nothing new listens on hpsrv's public interface.
+services:
+  api:
+    build: .
+    image: basketwise-api:latest
+    container_name: basketwise-api
+    restart: unless-stopped
+    # The whole point: the process cannot write to the data it serves.
+    volumes:
+      - /srv/basketwise/data:/data:ro
+    read_only: true
+    tmpfs:
+      - /tmp:size=16m
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 512m
+    memswap_limit: 512m
+    pids_limit: 128
+    environment:
+      BASKETWISE_CORS: ${BASKETWISE_CORS:-*}
+      BASKETWISE_CACHE_KB: "32000"
+    networks: [basketwise]
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+
+  tunnel:
+    image: cloudflare/cloudflared:latest
+    container_name: basketwise-tunnel
+    restart: unless-stopped
+    # The token goes in the ENVIRONMENT, never in `command`. Anything on the command
+    # line shows up in `ps` for every user on the box -- that is a secret leak.
+    # --protocol http2: cloudflared's QUIC path busy-polls on this kernel and pinned a
+    # full core here; http2 idles at ~0.1%, same as the other tunnels on this host.
+    command: tunnel --no-autoupdate --protocol http2 run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN:?set CLOUDFLARE_TUNNEL_TOKEN in .env}
+    depends_on:
+      api: {condition: service_healthy}
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    mem_limit: 128m
+    networks: [basketwise]
+    logging:
+      driver: json-file
+      options: {max-size: "10m", max-file: "3"}
+
+networks:
+  basketwise:
+    driver: bridge

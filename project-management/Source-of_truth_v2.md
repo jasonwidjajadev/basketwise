@@ -15,6 +15,27 @@ POST /compare
 ↓
 Coles / Woolworths / ALDI totals + recommendation
 
+0. Status (updated 2026-09-02)
+IMPLEMENTED. The API is live and this contract is enforced by tests.
+
+Live API:  https://basket.taskglass.work
+Swagger:   https://basket.taskglass.work/docs
+TS types:  npx openapi-typescript https://basket.taskglass.work/openapi.json -o src/api/schema.d.ts
+
+Amendments made when implementing, per the 0.12 rule:
+
+1. Harris Farm Markets added as a fourth retailer. The `retailer` enum is now
+   "coles" | "woolworths" | "aldi" | "harrisfarm".
+2. `Product` gained `min_price` and `retailer_count` so a product card can show
+   "from $x at N stores" without a second request. Required fields are unchanged.
+3. `StoreComparison` gained `available_count`, and `CompareResponse` gained
+   `unknown_product_ids` (ids sent that do not exist -- usually a stale basket).
+4. `size_value`/`size_unit` are normalised to g / ml / pk / ea, so 1kg and 1000g
+   compare equal. Display with formatSize() in frontend/src/api/client.ts.
+5. Data source is a nightly-built read-only SQLite artifact, not live Supabase.
+   The three-table products/offers/price_history model is unchanged.
+6. Extra query params on GET /products: `retailer` and `multi_retailer`.
+
 0. Source of Truth Contract
 This document is the contract between frontend, backend, database, and scraping/data work.
 
@@ -229,7 +250,7 @@ Database/data shape
 type Offer = {
   id: string
   product_id: string
-  retailer: "coles" | "woolworths" | "aldi"
+  retailer: "coles" | "woolworths" | "aldi" | "harrisfarm"
   retailer_product_id: string | null
   retailer_product_name: string
   retailer_brand: string | null
@@ -432,17 +453,19 @@ Request:
 Response type:
 
 type StoreComparison = {
-  retailer: "coles" | "woolworths" | "aldi"
+  retailer: "coles" | "woolworths" | "aldi" | "harrisfarm"
   total: number
   missing_product_ids: string[]
+  available_count: number
 }
 
 type CompareResponse = {
   stores: StoreComparison[]
   recommendation: {
-    retailer: "coles" | "woolworths" | "aldi"
+    retailer: "coles" | "woolworths" | "aldi" | "harrisfarm"
     total: number
   } | null
+  unknown_product_ids: string[]
 }
 
 Example:
