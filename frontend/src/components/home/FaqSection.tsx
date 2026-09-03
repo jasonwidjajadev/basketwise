@@ -1,5 +1,3 @@
-import FaqRow from '@/components/home/FaqRow'
-
 const faqs = [
   {
     question: 'Where do the prices come from',
@@ -28,7 +26,6 @@ const faqs = [
   },
 ]
 
-
 export default function FaqSection() {
   return (
     <section id="faq" className="mx-auto max-w-[820px] px-6 pt-19 lg:px-10">
@@ -41,11 +38,11 @@ export default function FaqSection() {
 
       <div className="border-t border-bw-line">
         {faqs.map((faq) => (
-          <FaqRow
-            key={faq.question}
-            question={faq.question}
-            answer={faq.answer}
-          />
+          <div key={faq.question} className="border-b border-bw-line px-1 py-5">
+            <span className="text-[12.5px] font-bold tracking-[.12em] text-bw-ink uppercase">
+              {faq.question}
+            </span>
+          </div>
         ))}
       </div>
     </section>
