@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { MdAdd, MdDeleteOutline, MdRemove } from 'react-icons/md'
 
-import { getCartLineItem } from '@/data/cartLineItems'
+import { getCartLineItem } from '@/components/checkout/cartLineItems.js'
 import { useCart } from '@/context/useCart'
 
 const QTY_POP_DURATION_MS = 300

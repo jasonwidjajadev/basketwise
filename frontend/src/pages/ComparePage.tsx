@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { cn } from '@/lib/utils'
 import { useCart } from '@/context/useCart'
-import { computeCompareOptions, RETAILER_LABEL } from '@/lib/compareBasket'
+import { computeCompareOptions, RETAILER_LABEL } from '@/components/compare/compareBasket'
 import EmptyCompareState from '@/components/compare/EmptyCompareState'
 import OptionCard from '@/components/compare/OptionCard'
 import LedgerBreakdown from '@/components/compare/LedgerBreakdown'

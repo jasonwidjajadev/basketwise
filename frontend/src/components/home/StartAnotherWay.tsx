@@ -2,7 +2,19 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 
 import { cn } from '@/lib/utils'
-import { startAnotherWayTabs } from '@/components/home/startAnotherWay'
+
+const startAnotherWayTabs = [
+  {
+    label: 'Look for groceries',
+    blurb:
+      'Prefer to pick out your groceries manually? Let BasketWise show you the cheapest prices for all your faves!',
+  },
+  {
+    label: 'Start from a meal plan',
+    blurb:
+      'Pick a week of dinners and we assemble one costed basket, flagging anything cheaper at a second store.',
+  },
+]
 
 export default function StartAnotherWay() {
   const [tab, setTab] = useState(0)

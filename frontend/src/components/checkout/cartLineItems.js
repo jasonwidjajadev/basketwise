@@ -4,7 +4,6 @@
 // the id came from.
 import BROWSE_PRODUCTS from '@/mocks/browse/products.json'
 import HOME_ESSENTIALS from '@/mocks/home/essentials.json'
-import { essentials } from '../../_can_possibly_delete/data/essentials.js'
 import meals from '@/mocks/home/meals.json'
 
 function cheapestPrice(product) {
@@ -30,16 +29,6 @@ export function getCartLineItem(productId) {
       name: homeEssential.name,
       shotCaption: homeEssential.name.toLowerCase(),
       unitPrice: cheapestPrice(homeEssential),
-    }
-  }
-
-  const essential = essentials.find((p) => p.id === productId)
-  if (essential) {
-    return {
-      kind: 'product',
-      name: essential.name,
-      shotCaption: essential.shot,
-      unitPrice: parseFloat(essential.price.replace('$', '')) || 0,
     }
   }
 
