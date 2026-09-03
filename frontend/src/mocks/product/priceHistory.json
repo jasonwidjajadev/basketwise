@@ -1,0 +1,186 @@
+{
+  "afourer-mandarins-750g-0-75-kg": [
+    {
+      "product_id": "afourer-mandarins-750g-0-75-kg",
+      "retailer": "aldi",
+      "points": [
+        {
+          "price": 2.99,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T06:20:35Z"
+        }
+      ]
+    }
+  ],
+  "afourer-mandarins-loose-approx-0-13-kg-per-piece": [
+    {
+      "product_id": "afourer-mandarins-loose-approx-0-13-kg-per-piece",
+      "retailer": "aldi",
+      "points": [
+        {
+          "price": 3.99,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T06:20:35Z"
+        }
+      ]
+    }
+  ],
+  "apple-cosmic-crisp-each": [
+    {
+      "product_id": "apple-cosmic-crisp-each",
+      "retailer": "woolworths",
+      "points": [
+        {
+          "price": 1.42,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:29:11Z"
+        }
+      ]
+    }
+  ],
+  "butter-garlic-125g": [
+    {
+      "product_id": "butter-garlic-125g",
+      "retailer": "coles",
+      "points": [
+        {
+          "price": 4.0,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:04:19Z"
+        }
+      ]
+    },
+    {
+      "product_id": "butter-garlic-125g",
+      "retailer": "harrisfarm",
+      "points": [
+        {
+          "price": 3.85,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T06:23:40Z"
+        }
+      ]
+    },
+    {
+      "product_id": "butter-garlic-125g",
+      "retailer": "woolworths",
+      "points": [
+        {
+          "price": 4.0,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:24:30Z"
+        }
+      ]
+    }
+  ],
+  "cheese-tasty-block-250g": [
+    {
+      "product_id": "cheese-tasty-block-250g",
+      "retailer": "coles",
+      "points": [
+        {
+          "price": 8.0,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:04:20Z"
+        }
+      ]
+    },
+    {
+      "product_id": "cheese-tasty-block-250g",
+      "retailer": "woolworths",
+      "points": [
+        {
+          "price": 8.0,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:24:26Z"
+        }
+      ]
+    }
+  ],
+  "free-range-large-eggs-18-pack-900g": [
+    {
+      "product_id": "free-range-large-eggs-18-pack-900g",
+      "retailer": "coles",
+      "points": [
+        {
+          "price": 13.2,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:04:07Z"
+        }
+      ]
+    },
+    {
+      "product_id": "free-range-large-eggs-18-pack-900g",
+      "retailer": "woolworths",
+      "points": [
+        {
+          "price": 13.2,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:24:25Z"
+        }
+      ]
+    }
+  ],
+  "full-cream-milk-2l": [
+    {
+      "product_id": "full-cream-milk-2l",
+      "retailer": "coles",
+      "points": [
+        {
+          "price": 3.55,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:03:33Z"
+        }
+      ]
+    },
+    {
+      "product_id": "full-cream-milk-2l",
+      "retailer": "woolworths",
+      "points": [
+        {
+          "price": 7.3,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:24:25Z"
+        }
+      ]
+    }
+  ],
+  "light-milk-1l-2": [
+    {
+      "product_id": "light-milk-1l-2",
+      "retailer": "coles",
+      "points": [
+        {
+          "price": 4.1,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:04:08Z"
+        }
+      ]
+    },
+    {
+      "product_id": "light-milk-1l-2",
+      "retailer": "woolworths",
+      "points": [
+        {
+          "price": 4.1,
+          "was_price": null,
+          "is_special": false,
+          "recorded_at": "2026-09-02T03:24:27Z"
+        }
+      ]
+    }
+  ]
+}

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "BasketWise API",
-    "description": "\nCompare an Australian grocery basket across **Coles, Woolworths, ALDI and Harris Farm**.\n\n### The three routes you need\n1. `GET /categories` \u2014 build the browse nav. Ids for requests, names for display.\n2. `GET /products` \u2014 list, filter, paginate, search.\n3. `POST /compare` \u2014 send the basket, get per-retailer totals and a recommendation.\n\n### Rules that keep us consistent\n* The basket stores the canonical `product_id` **only** \u2014 never a retailer's SKU.\n* The frontend never totals a basket itself; `POST /compare` owns that arithmetic.\n* Category labels come from `GET /categories`, never from a local map.\n\n### Generating a TypeScript client\n```bash\nnpx openapi-typescript https://basket.taskglass.work/openapi.json -o src/api/schema.d.ts\n```\n\nNo authentication. Data is rebuilt daily; `GET /health` reports the current `build_id`.\n",
+    "description": "\nCompare an Australian grocery basket across **Coles, Woolworths, ALDI and Harris Farm**.\n\n### The three routes you need\n1. `GET /categories` \u2014 build the browse nav. Ids for requests, names for display.\n2. `GET /products` \u2014 list, filter, paginate, search.\n3. `POST /compare` \u2014 send the basket, get three buying strategies.\n\n### Rules that keep us consistent\n* The basket stores the canonical `product_id` **only** \u2014 never a retailer's SKU.\n* The frontend never totals a basket itself; `POST /compare` owns that arithmetic.\n* Category labels come from `GET /categories`, never from a local map.\n\n### Generating a TypeScript client\n```bash\nnpx openapi-typescript https://basket.taskglass.work/openapi.json -o src/api/schema.d.ts\n```\n\nNo authentication. Data is rebuilt daily; `GET /health` reports the current `build_id`.\n",
     "contact": {
       "name": "BasketWise",
       "url": "https://basket.taskglass.work/docs"
@@ -388,8 +388,8 @@
         "tags": [
           "compare"
         ],
-        "summary": "Price a basket across every retailer",
-        "description": "Send the whole basket; get one total per retailer plus a recommendation.\n\n- `total` sums only the items that retailer actually stocks.\n- `missing_product_ids` lists what it does not stock, explicitly -- a cheap total with three missing items is not a real win, so show this in the UI.\n- `recommendation` is the cheapest retailer stocking the **entire** basket, and is `null` when no retailer stocks everything.\n- `unknown_product_ids` lists ids that do not exist at all (usually a stale basket).\n\nCall this again whenever the basket changes.",
+        "summary": "Price a basket as three buying strategies",
+        "description": "Send the whole basket; get three complete-basket options:\n\n- `recommended-split` \u2014 cheapest practical basket using at most two retailers (a single store if a second shop does not help).\n- `cheapest-single-store` \u2014 cheapest retailer that stocks every known item.\n- `lowest-possible-price` \u2014 cheapest offer per item, any number of retailers.\n\nA strategy that cannot fulfil the complete known basket returns `total: null` and an empty `breakdown` \u2014 never a silent partial total.\n`unknown_product_ids` lists ids that do not exist at all (usually a stale basket).\n`savings` is against the most expensive complete single-store basket.\n\nCall this again whenever the basket changes.",
         "operationId": "compare_compare_post",
         "requestBody": {
           "content": {
@@ -515,6 +515,137 @@
         ],
         "title": "Category"
       },
+      "CompareItem": {
+        "properties": {
+          "product_id": {
+            "type": "string",
+            "title": "Product Id"
+          },
+          "product_name": {
+            "type": "string",
+            "title": "Product Name"
+          },
+          "retailer_product_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Retailer Product Id"
+          },
+          "retailer_product_name": {
+            "type": "string",
+            "title": "Retailer Product Name"
+          },
+          "quantity": {
+            "type": "integer",
+            "title": "Quantity"
+          },
+          "unit_price": {
+            "type": "number",
+            "title": "Unit Price"
+          },
+          "line_total": {
+            "type": "number",
+            "title": "Line Total"
+          },
+          "image_url": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Image Url"
+          }
+        },
+        "type": "object",
+        "required": [
+          "product_id",
+          "product_name",
+          "retailer_product_name",
+          "quantity",
+          "unit_price",
+          "line_total"
+        ],
+        "title": "CompareItem"
+      },
+      "CompareOption": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "enum": [
+              "recommended-split",
+              "cheapest-single-store",
+              "lowest-possible-price"
+            ],
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "total": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Total",
+            "description": "Complete-basket total. null when this strategy cannot fulfil every known item."
+          },
+          "savings": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Savings",
+            "description": "baseline (most expensive complete single-store) minus total. null when total or baseline is missing."
+          },
+          "stores": {
+            "type": "integer",
+            "title": "Stores",
+            "description": "Number of retailer groups in breakdown."
+          },
+          "recommended": {
+            "type": "boolean",
+            "title": "Recommended"
+          },
+          "breakdown": {
+            "items": {
+              "$ref": "#/components/schemas/StoreBreakdown"
+            },
+            "type": "array",
+            "title": "Breakdown"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "description",
+          "stores",
+          "recommended",
+          "breakdown"
+        ],
+        "title": "CompareOption"
+      },
       "CompareRequest": {
         "properties": {
           "items": {
@@ -533,23 +664,12 @@
       },
       "CompareResponse": {
         "properties": {
-          "stores": {
+          "options": {
             "items": {
-              "$ref": "#/components/schemas/StoreComparison"
+              "$ref": "#/components/schemas/CompareOption"
             },
             "type": "array",
-            "title": "Stores"
-          },
-          "recommendation": {
-            "anyOf": [
-              {
-                "$ref": "#/components/schemas/Recommendation"
-              },
-              {
-                "type": "null"
-              }
-            ],
-            "description": "Cheapest retailer that stocks the WHOLE basket. null if no retailer stocks everything."
+            "title": "Options"
           },
           "unknown_product_ids": {
             "items": {
@@ -563,7 +683,7 @@
         },
         "type": "object",
         "required": [
-          "stores"
+          "options"
         ],
         "title": "CompareResponse"
       },
@@ -1402,7 +1522,7 @@
         ],
         "title": "ProductDetail"
       },
-      "Recommendation": {
+      "StoreBreakdown": {
         "properties": {
           "retailer": {
             "type": "string",
@@ -1414,56 +1534,25 @@
             ],
             "title": "Retailer"
           },
-          "total": {
+          "subtotal": {
             "type": "number",
-            "title": "Total"
-          }
-        },
-        "type": "object",
-        "required": [
-          "retailer",
-          "total"
-        ],
-        "title": "Recommendation"
-      },
-      "StoreComparison": {
-        "properties": {
-          "retailer": {
-            "type": "string",
-            "enum": [
-              "coles",
-              "woolworths",
-              "aldi",
-              "harrisfarm"
-            ],
-            "title": "Retailer"
+            "title": "Subtotal"
           },
-          "total": {
-            "type": "number",
-            "title": "Total",
-            "description": "Sum over items this retailer stocks. Missing items are excluded."
-          },
-          "missing_product_ids": {
+          "items": {
             "items": {
-              "type": "string"
+              "$ref": "#/components/schemas/CompareItem"
             },
             "type": "array",
-            "title": "Missing Product Ids",
-            "description": "Basket items this retailer does not stock. Returned explicitly, never silently dropped."
-          },
-          "available_count": {
-            "type": "integer",
-            "title": "Available Count"
+            "title": "Items"
           }
         },
         "type": "object",
         "required": [
           "retailer",
-          "total",
-          "missing_product_ids",
-          "available_count"
+          "subtotal",
+          "items"
         ],
-        "title": "StoreComparison"
+        "title": "StoreBreakdown"
       },
       "Subcategory": {
         "properties": {

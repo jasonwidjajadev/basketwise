@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react'
 import { Outlet, useSearchParams } from 'react-router'
 
+import { getCategories } from '@/api/browseApi'
 import CategorySidebar from '@/components/browse/CategorySidebar'
-import { getCategories } from '@/data/browseApi'
+
+const DEFAULT_CATEGORY = 'fruit-vegetables'
 
 export default function BrowseLayout() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [categories, setCategories] = useState([])
   const [categoriesLoading, setCategoriesLoading] = useState(true)
-  const [category, setCategory] = useState(() => searchParams.get('category'))
+  const [category, setCategory] = useState(
+    () => searchParams.get('category') || DEFAULT_CATEGORY,
+  )
   const [subcategory, setSubcategory] = useState(() =>
     searchParams.get('subcategory'),
   )
@@ -27,6 +31,18 @@ export default function BrowseLayout() {
       cancelled = true
     }
   }, [])
+
+  useEffect(() => {
+    if (searchParams.get('category')) return
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        next.set('category', DEFAULT_CATEGORY)
+        return next
+      },
+      { replace: true },
+    )
+  }, [searchParams, setSearchParams])
 
   function selectCategory(nextCategory, nextSubcategory = null) {
     setCategory(nextCategory)

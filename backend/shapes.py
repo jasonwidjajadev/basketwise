@@ -2,7 +2,7 @@
 
 Both the API (cold path) and scraper/tui/build_api_db.py (warm cache) serialize
 through here, so a pre-rendered response and a live one are byte-identical.
-Shapes follow project-management/Source-of_truth_v2.md sections 0.3, 0.4 and 0.7.
+Shapes follow Source-of-truth.md sections 0.3, 0.4 and 0.7.
 """
 from __future__ import annotations
 

@@ -3,7 +3,7 @@
 
 Runs on the BUILD machine, never on the serving host. Reads data/master.db and
 emits the canonical products -> offers -> price_history model from
-project-management/Source-of_truth_v2.md, plus an FTS5 index and pre-serialized
+Source-of-truth.md, plus an FTS5 index and pre-serialized
 "warm" JSON for the API's hot paths.
 
 Every expensive thing (dedupe, cross-retailer matching, taxonomy mapping, FTS,

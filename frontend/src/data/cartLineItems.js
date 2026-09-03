@@ -2,9 +2,9 @@
 // three heterogeneous mock catalogs — browse products, home essentials, or
 // meals) into one shape the basket sidebar can render without caring where
 // the id came from.
-import { BROWSE_PRODUCTS } from '@/data/browseProducts'
-import { essentials } from '@/data/essentials'
-import { meals } from '@/data/meals'
+import BROWSE_PRODUCTS from '@/mocks/browse/products.json'
+import { essentials } from './essentials.js'
+import { meals } from './meals.js'
 
 function cheapestPrice(product) {
   const prices = product.offers.map((offer) => offer.price)

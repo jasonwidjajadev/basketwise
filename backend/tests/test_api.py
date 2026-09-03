@@ -1,4 +1,4 @@
-"""Contract tests: these assert the shapes in Source-of_truth_v2.md, so if someone
+"""Contract tests: these assert the shapes in Source-of-truth.md, so if someone
 changes a field name the test fails before the frontend does.
 
   .venv/bin/python -m pytest tests -q
@@ -90,17 +90,31 @@ def test_product_detail_has_offers(client):
     assert client.get("/products/nope-does-not-exist").status_code == 404
 
 
-def test_compare_totals_and_recommendation(client):
+def test_compare_returns_three_options(client):
     ids = [r["id"] for r in db.db().execute(
         "SELECT id FROM products WHERE retailer_count>=2 LIMIT 4")]
     d = client.post("/compare", json={"items": [{"product_id": i, "quantity": 1} for i in ids]}).json()
-    assert d["stores"]
-    for s in d["stores"]:
-        assert {"retailer", "total", "missing_product_ids", "available_count"} <= s.keys()
-    if d["recommendation"]:
-        best = d["recommendation"]
-        complete = [s for s in d["stores"] if not s["missing_product_ids"] and s["available_count"]]
-        assert best["total"] == min(s["total"] for s in complete)
+    assert [o["id"] for o in d["options"]] == [
+        "recommended-split", "cheapest-single-store", "lowest-possible-price"]
+    rec = {o["id"]: o["recommended"] for o in d["options"]}
+    assert rec == {
+        "recommended-split": True,
+        "cheapest-single-store": False,
+        "lowest-possible-price": False,
+    }
+    for o in d["options"]:
+        assert {"id", "name", "description", "total", "savings", "stores", "recommended", "breakdown"} <= o.keys()
+        if o["total"] is None:
+            assert o["savings"] is None and o["stores"] == 0 and o["breakdown"] == [] and o["description"] == ""
+        else:
+            assert o["stores"] == len(o["breakdown"])
+            assert o["stores"] >= 1
+            for group in o["breakdown"]:
+                assert {"retailer", "subtotal", "items"} <= group.keys()
+                for item in group["items"]:
+                    assert {"product_id", "product_name", "retailer_product_id",
+                            "retailer_product_name", "quantity", "unit_price",
+                            "line_total", "image_url"} <= item.keys()
 
 
 def test_compare_quantity_scales_total(client):
@@ -108,15 +122,18 @@ def test_compare_quantity_scales_total(client):
         "SELECT id FROM products WHERE retailer_count>=2 LIMIT 3")]
     one = client.post("/compare", json={"items": [{"product_id": i, "quantity": 1} for i in ids]}).json()
     two = client.post("/compare", json={"items": [{"product_id": i, "quantity": 2} for i in ids]}).json()
-    by = lambda d: {s["retailer"]: s["total"] for s in d["stores"]}
-    for r, t in by(one).items():
-        assert abs(t * 2 - by(two)[r]) < 0.01
+    by = lambda d: {o["id"]: o["total"] for o in d["options"]}
+    for oid, t in by(one).items():
+        if t is None:
+            assert by(two)[oid] is None
+        else:
+            assert abs(t * 2 - by(two)[oid]) < 0.01
 
 
 def test_compare_reports_unknown_ids_explicitly(client):
     d = client.post("/compare", json={"items": [{"product_id": "nope", "quantity": 1}]}).json()
     assert d["unknown_product_ids"] == ["nope"]
-    assert d["recommendation"] is None
+    assert d["options"] == []
 
 
 def test_compare_rejects_zero_quantity(client):
@@ -172,6 +189,12 @@ def test_openapi_is_generated(client):
     spec = client.get("/openapi.json").json()
     assert {"/categories", "/products", "/compare"} <= spec["paths"].keys()
     assert "Product" in spec["components"]["schemas"]
+    compare_schema = spec["components"]["schemas"]["CompareResponse"]["properties"]
+    assert "options" in compare_schema and "stores" not in compare_schema
+    option_schema = spec["components"]["schemas"]["CompareOption"]
+    assert "total" in option_schema["properties"] and "savings" in option_schema["properties"]
+    item_schema = spec["components"]["schemas"]["CompareItem"]["properties"]
+    assert "image_url" in item_schema and "retailer_product_id" in item_schema
 
 
 def test_etag_gives_304(client):

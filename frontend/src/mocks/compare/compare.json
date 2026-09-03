@@ -1,0 +1,44 @@
+{
+  "stores": [
+    {
+      "retailer": "coles",
+      "total": 36.4,
+      "missing_product_ids": [],
+      "available_count": 5
+    },
+    {
+      "retailer": "woolworths",
+      "total": 43.9,
+      "missing_product_ids": [],
+      "available_count": 5
+    },
+    {
+      "retailer": "harrisfarm",
+      "total": 3.85,
+      "missing_product_ids": [
+        "cheese-tasty-block-250g",
+        "free-range-large-eggs-18-pack-900g",
+        "full-cream-milk-2l",
+        "light-milk-1l-2"
+      ],
+      "available_count": 1
+    },
+    {
+      "retailer": "aldi",
+      "total": 0.0,
+      "missing_product_ids": [
+        "butter-garlic-125g",
+        "cheese-tasty-block-250g",
+        "free-range-large-eggs-18-pack-900g",
+        "full-cream-milk-2l",
+        "light-milk-1l-2"
+      ],
+      "available_count": 0
+    }
+  ],
+  "recommendation": {
+    "retailer": "coles",
+    "total": 36.4
+  },
+  "unknown_product_ids": []
+}

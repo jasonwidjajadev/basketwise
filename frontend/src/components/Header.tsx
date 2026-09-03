@@ -8,7 +8,7 @@ import {
 
 import cartOutlineIcon from '@/assets/icons/cart-outline.svg'
 import menuIcon from '@/assets/icons/menu.svg'
-import icon from '@/assets/logo.svg'
+import icon from '@/assets/basketwise_logo/logo.svg'
 import CartSidebar from '@/components/CartSidebar'
 import SearchBar from '@/components/SearchBar'
 import { useCart } from '@/context/useCart'

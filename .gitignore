@@ -66,3 +66,11 @@ tmp/*.db
 
 # SQLite databases
 *.db
+*.db-shm
+*.db-wal
+
+# Scraper crawl runtime (stay on disk; not source)
+scraper/hyperscrape
+scraper/data/*.pid
+scraper/data/*.ndjson
+scraper/data/.notified_*

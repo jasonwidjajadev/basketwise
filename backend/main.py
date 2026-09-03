@@ -29,7 +29,7 @@ Compare an Australian grocery basket across **Coles, Woolworths, ALDI and Harris
 ### The three routes you need
 1. `GET /categories` — build the browse nav. Ids for requests, names for display.
 2. `GET /products` — list, filter, paginate, search.
-3. `POST /compare` — send the basket, get per-retailer totals and a recommendation.
+3. `POST /compare` — send the basket, get three buying strategies.
 
 ### Rules that keep us consistent
 * The basket stores the canonical `product_id` **only** — never a retailer's SKU.

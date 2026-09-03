@@ -1,0 +1,232 @@
+[
+  {
+    "id": "full-cream-milk-2l",
+    "name": "Full Cream Milk",
+    "brand": "Devondale",
+    "category": "dairy-eggs-fridge",
+    "subcategory": "milk",
+    "tags": ["halal", "kosher", "vegetarian"],
+    "size_value": 2000.0,
+    "size_unit": "ml",
+    "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/1/9/1/1913790.jpg",
+    "is_essential": true,
+    "min_price": 3.55,
+    "cheapest_retailer": "coles",
+    "unit_price": 1.78,
+    "unit_measure": "1L",
+    "was_price": null,
+    "has_special": false,
+    "retailer_count": 2,
+    "rating_avg": null,
+    "rating_count": null,
+    "offers": [
+      {
+        "retailer": "woolworths",
+        "price": 7.3
+      },
+      {
+        "retailer": "coles",
+        "price": 3.55
+      }
+    ]
+  },
+  {
+    "id": "light-milk-1l-2",
+    "name": "Light Milk",
+    "brand": "a2 Milk",
+    "category": "dairy-eggs-fridge",
+    "subcategory": "milk",
+    "tags": [],
+    "size_value": 1000.0,
+    "size_unit": "ml",
+    "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/9/7/6/9760047.jpg",
+    "is_essential": true,
+    "min_price": 4.1,
+    "cheapest_retailer": "coles",
+    "unit_price": 4.1,
+    "unit_measure": "1L",
+    "was_price": null,
+    "has_special": false,
+    "retailer_count": 2,
+    "rating_avg": null,
+    "rating_count": null,
+    "offers": [
+      {
+        "retailer": "woolworths",
+        "price": 4.1
+      },
+      {
+        "retailer": "coles",
+        "price": 4.1
+      }
+    ]
+  },
+  {
+    "id": "free-range-large-eggs-18-pack-900g",
+    "name": "Free Range Large Eggs 18 Pack",
+    "brand": "Sunny Queen",
+    "category": "dairy-eggs-fridge",
+    "subcategory": "eggs",
+    "tags": [],
+    "size_value": 900.0,
+    "size_unit": "g",
+    "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/8/9/5/8953577.jpg",
+    "is_essential": true,
+    "min_price": 13.2,
+    "cheapest_retailer": "coles",
+    "unit_price": 1.47,
+    "unit_measure": "100g",
+    "was_price": null,
+    "has_special": false,
+    "retailer_count": 2,
+    "rating_avg": null,
+    "rating_count": null,
+    "offers": [
+      {
+        "retailer": "woolworths",
+        "price": 13.2
+      },
+      {
+        "retailer": "coles",
+        "price": 13.2
+      }
+    ]
+  },
+  {
+    "id": "butter-garlic-125g",
+    "name": "Butter Garlic",
+    "brand": "Lurpak",
+    "category": "dairy-eggs-fridge",
+    "subcategory": "butter-margarine",
+    "tags": ["vegetarian"],
+    "size_value": 125.0,
+    "size_unit": "g",
+    "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/1/7/3/1730188.jpg",
+    "is_essential": true,
+    "min_price": 3.85,
+    "cheapest_retailer": "harrisfarm",
+    "unit_price": null,
+    "unit_measure": null,
+    "was_price": null,
+    "has_special": false,
+    "retailer_count": 3,
+    "rating_avg": null,
+    "rating_count": null,
+    "offers": [
+      {
+        "retailer": "woolworths",
+        "price": 4.0
+      },
+      {
+        "retailer": "coles",
+        "price": 4.0
+      },
+      {
+        "retailer": "harrisfarm",
+        "price": 3.85
+      }
+    ]
+  },
+  {
+    "id": "cheese-tasty-block-250g",
+    "name": "Cheese Tasty Block",
+    "brand": "Bega",
+    "category": "dairy-eggs-fridge",
+    "subcategory": "cheese",
+    "tags": [],
+    "size_value": 250.0,
+    "size_unit": "g",
+    "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/2/9/6/296712.jpg",
+    "is_essential": true,
+    "min_price": 8.0,
+    "cheapest_retailer": "coles",
+    "unit_price": 32.0,
+    "unit_measure": "1kg",
+    "was_price": null,
+    "has_special": false,
+    "retailer_count": 2,
+    "rating_avg": null,
+    "rating_count": null,
+    "offers": [
+      {
+        "retailer": "woolworths",
+        "price": 8.0
+      },
+      {
+        "retailer": "coles",
+        "price": 8.0
+      }
+    ]
+  },
+  {
+    "id": "afourer-mandarins-750g-0-75-kg",
+    "name": "Afourer Mandarins 750g",
+    "brand": "",
+    "category": "fruit-vegetables",
+    "subcategory": "fruit",
+    "tags": [],
+    "size_value": 750.0,
+    "size_unit": "g",
+    "image_url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/500/cd128892-f83c-4bc0-b3b4-ba07e7c7bfb7/{slug}",
+    "is_essential": false,
+    "min_price": null,
+    "cheapest_retailer": null,
+    "unit_price": null,
+    "unit_measure": null,
+    "was_price": null,
+    "has_special": false,
+    "retailer_count": 0,
+    "rating_avg": null,
+    "rating_count": null,
+    "offers": []
+  },
+  {
+    "id": "afourer-mandarins-loose-approx-0-13-kg-per-piece",
+    "name": "Afourer Mandarins Loose",
+    "brand": "",
+    "category": "fruit-vegetables",
+    "subcategory": "fruit",
+    "tags": [],
+    "size_value": 130.0,
+    "size_unit": "g",
+    "image_url": "https://dm.apac.cms.aldi.cx/is/image/aldiprodapac/product/jpg/scaleWidth/500/85837d45-bc05-4294-beb7-c3e770e6f5a0/{slug}",
+    "is_essential": false,
+    "min_price": null,
+    "cheapest_retailer": null,
+    "unit_price": null,
+    "unit_measure": null,
+    "was_price": null,
+    "has_special": false,
+    "retailer_count": 0,
+    "rating_avg": null,
+    "rating_count": null,
+    "offers": []
+  },
+  {
+    "id": "apple-cosmic-crisp-each",
+    "name": "Apple Cosmic Crisp each",
+    "brand": "Apple Cosmic Crisp Md",
+    "category": "fruit-vegetables",
+    "subcategory": "fruit",
+    "tags": [],
+    "size_value": 1.0,
+    "size_unit": "ea",
+    "image_url": "https://cdn0.woolworths.media/content/wowproductimages/large/918134.jpg",
+    "is_essential": false,
+    "min_price": 1.42,
+    "cheapest_retailer": "woolworths",
+    "unit_price": 1.42,
+    "unit_measure": "1EA",
+    "was_price": null,
+    "has_special": false,
+    "retailer_count": 1,
+    "rating_avg": null,
+    "rating_count": null,
+    "offers": [
+      {
+        "retailer": "woolworths",
+        "price": 1.42
+      }
+    ]
+  }
+]

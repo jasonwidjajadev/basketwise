@@ -1,7 +1,7 @@
 """Canonical BasketWise taxonomy: retailer source strings -> canonical IDs.
 
 CATEGORY_MAP / SUBCATEGORY_MAP / TAG_MAP / CANONICAL_SUBCATEGORIES are transcribed
-from the appendix of project-management/Source-of_truth_v2.md and are the single
+from the appendix of Source-of-truth.md and are the single
 source of truth for normalisation. Harris Farm is not in v2 (it was added to the
 crawler later); its map lives here and is mirrored into the doc.
 

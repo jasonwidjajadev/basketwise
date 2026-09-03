@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useOutletContext, useSearchParams } from 'react-router'
 
-import BrowseProductCard from '@/components/browse/BrowseProductCard'
+import { getProducts } from '@/api/browseApi'
+import ProductCard from '@/components/ProductCard'
 import RetailerFilter from '@/components/browse/RetailerFilter'
 import SortMenu from '@/components/browse/SortMenu'
 import { useCart } from '@/context/useCart'
-import { getProducts } from '@/data/browseApi'
 import { SORT_OPTIONS } from '@/lib/browseSort'
 
 const PAGE_SIZE = 24
-const RETAILER_VALUES = ['', 'woolworths', 'coles', 'aldi']
+const RETAILER_VALUES = ['', 'woolworths', 'coles', 'aldi', 'harrisfarm']
 
 export default function BrowsePage() {
   const { categories, category, subcategory } = useOutletContext()
@@ -165,7 +165,7 @@ export default function BrowsePage() {
                 className="animate-bw-fade-up"
                 style={{ animationDelay: `${Math.min(index * 30, 240)}ms` }}
               >
-                <BrowseProductCard
+                <ProductCard
                   product={product}
                   added={Boolean(addedIds[product.id])}
                   onAdd={() => add(product.id, 1)}

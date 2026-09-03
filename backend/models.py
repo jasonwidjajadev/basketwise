@@ -2,7 +2,7 @@
 the frontend runs `openapi-typescript` against /openapi.json to get its TS types,
 so this file is effectively the typed half of the source-of-truth contract.
 
-Shapes mirror project-management/Source-of_truth_v2.md sections 0.3, 0.4 and 0.7.
+Shapes mirror Source-of-truth.md sections 0.3, 0.4 and 0.7.
 """
 from __future__ import annotations
 
@@ -112,24 +112,43 @@ class CompareRequest(BaseModel):
     items: list[BasketItem]
 
 
-class StoreComparison(BaseModel):
-    retailer: Retailer
-    total: float = Field(description="Sum over items this retailer stocks. Missing items are excluded.")
-    missing_product_ids: list[str] = Field(
-        description="Basket items this retailer does not stock. Returned explicitly, never silently dropped.")
-    available_count: int
+CompareOptionId = Literal["recommended-split", "cheapest-single-store", "lowest-possible-price"]
 
 
-class Recommendation(BaseModel):
+class CompareItem(BaseModel):
+    product_id: str
+    product_name: str
+    retailer_product_id: str | None = None
+    retailer_product_name: str
+    quantity: int
+    unit_price: float
+    line_total: float
+    image_url: str | None = None
+
+
+class StoreBreakdown(BaseModel):
     retailer: Retailer
-    total: float
+    subtotal: float
+    items: list[CompareItem]
+
+
+class CompareOption(BaseModel):
+    id: CompareOptionId
+    name: str
+    description: str
+    total: float | None = Field(
+        default=None,
+        description="Complete-basket total. null when this strategy cannot fulfil every known item.")
+    savings: float | None = Field(
+        default=None,
+        description="baseline (most expensive complete single-store) minus total. null when total or baseline is missing.")
+    stores: int = Field(description="Number of retailer groups in breakdown.")
+    recommended: bool
+    breakdown: list[StoreBreakdown]
 
 
 class CompareResponse(BaseModel):
-    stores: list[StoreComparison]
-    recommendation: Recommendation | None = Field(
-        default=None,
-        description="Cheapest retailer that stocks the WHOLE basket. null if no retailer stocks everything.")
+    options: list[CompareOption]
     unknown_product_ids: list[str] = Field(
         default=[], description="Ids in the request that do not exist at all.")
 

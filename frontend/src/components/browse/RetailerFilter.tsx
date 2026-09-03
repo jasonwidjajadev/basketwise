@@ -5,6 +5,7 @@ const OPTIONS = [
   { value: 'woolworths', label: 'Woolworths' },
   { value: 'coles', label: 'Coles' },
   { value: 'aldi', label: 'ALDI' },
+  { value: 'harrisfarm', label: 'Harris Farm' },
 ]
 
 export default function RetailerFilter({ value, onChange }) {
