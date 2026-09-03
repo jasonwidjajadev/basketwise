@@ -3,7 +3,7 @@
 /* @import "tw-animate-css"; */
 /* @custom-variant dark (&:where(.dark, .dark *)); */
 
-@font-face {
+/* @font-face {
   font-family: 'EB Garamond';
   src: url('./assets/fonts/EB_Garamond/EBGaramond-VariableFont_wght.ttf')
     format('truetype');
@@ -19,12 +19,14 @@
   font-style: italic;
   font-weight: 400 800;
   font-display: swap;
-}
+} */
 
 @theme {
   --breakpoint-3xl: 120rem;
 
   /* BasketWise design system */
+  --color-taupe-two: #9d9894;
+
   --color-bw-page: #fbfaf7;
   --color-bw-surface: #ffffff;
   --color-bw-panel: #efede4;
@@ -46,7 +48,7 @@
   /*528px x 528px */
   --color-item-card-bg: #f2f1ed;
 
-  --font-eb-garamond: 'EB Garamond', serif;
+  /* --font-eb-garamond: 'EB Garamond', serif; */
   --font-newsreader: 'Newsreader', serif;
   --font-archivo: 'Archivo', system-ui, sans-serif;
 }
@@ -55,9 +57,11 @@
   0% {
     transform: scale(1);
   }
+
   45% {
     transform: scale(1.18);
   }
+
   100% {
     transform: scale(1);
   }
@@ -68,6 +72,7 @@
     opacity: 0;
     transform: translateY(6px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -91,6 +96,7 @@
   100% {
     opacity: 0.55;
   }
+
   50% {
     opacity: 1;
   }

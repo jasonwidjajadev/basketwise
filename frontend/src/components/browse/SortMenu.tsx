@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { MdExpandMore, MdSort } from 'react-icons/md'
 
-import { SORT_OPTIONS } from '@/lib/browseSort'
+import { SORT_OPTIONS } from '@/components/browse/browseSort'
 import { cn } from '@/lib/utils'
 
 export default function SortMenu({ value, onChange }) {
@@ -42,7 +42,7 @@ export default function SortMenu({ value, onChange }) {
         aria-haspopup="listbox"
         aria-expanded={open}
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-full border border-bw-line-strong bg-bw-surface px-4 py-2.25 font-archivo text-xs font-semibold text-bw-ink transition-colors focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
+        className="flex items-center gap-2 rounded-full border border-bw-line-strong bg-bw-surface px-4 py-2.25 text-xs font-semibold text-bw-ink transition-colors focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
       >
         <MdSort className="h-4 w-4 text-bw-subtle" />
         Sort: {current.label}
@@ -78,7 +78,7 @@ export default function SortMenu({ value, onChange }) {
               triggerRef.current?.focus()
             }}
             className={cn(
-              'block w-full border-b border-bw-line px-4 py-2.75 text-left font-archivo text-xs text-bw-ink last:border-b-0 hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
+              'block w-full border-b border-bw-line px-4 py-2.75 text-left text-xs text-bw-ink last:border-b-0 hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
               opt.value === value && 'bg-bw-panel font-semibold',
             )}
           >

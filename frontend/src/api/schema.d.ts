@@ -4,789 +4,789 @@
  */
 
 export interface paths {
-    "/categories": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Canonical categories with subcategories
-         * @description Returns every canonical BasketWise category that has products, each with its subcategories.
-         *
-         *     Use `id` in API requests and `name` for display. Do **not** build your own id-to-label map on the frontend -- this endpoint is the source of truth for both.
-         */
-        get: operations["get_categories_categories_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/products": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * List, filter and search canonical products
-         * @description Bounded listing of canonical products. Returns `[]` when nothing matches -- never 404.
-         *
-         *     **Load the landing page in two steps:** request a small first page (`?essential=true&limit=20`) for first paint, then page with `limit`/`offset` once the app has mounted. `limit` is hard-capped at 100 so the full 50k-product catalogue can never be pulled in one request.
-         *
-         *     Filters combine with AND. `q` searches product names and brands.
-         *
-         *     The **`X-Total-Count`** response header carries how many products match the filter ignoring `limit`/`offset` -- use it to render "24 of 1,240" and to know when to stop paging. The body stays a bare array.
-         */
-        get: operations["list_products_products_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/products/{product_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * One product with every retailer's offer
-         * @description The product plus one offer per retailer, cheapest first -- what the Compare page needs.
-         */
-        get: operations["get_product_products__product_id__get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/products/{product_id}/price-history": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Observed price history per retailer
-         * @description One series per retailer, oldest first. Backs a price sparkline and a "cheapest in 30 days" badge.
-         *
-         *     Coverage is currently thin -- the crawler has only recently begun recording daily observations, so expect one or two points per offer until it has run for a while.
-         */
-        get: operations["price_history_products__product_id__price_history_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/compare": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Price a basket across every retailer
-         * @description Send the whole basket; get one total per retailer plus a recommendation.
-         *
-         *     - `total` sums only the items that retailer actually stocks.
-         *     - `missing_product_ids` lists what it does not stock, explicitly -- a cheap total with three missing items is not a real win, so show this in the UI.
-         *     - `recommendation` is the cheapest retailer stocking the **entire** basket, and is `null` when no retailer stocks everything.
-         *     - `unknown_product_ids` lists ids that do not exist at all (usually a stale basket).
-         *
-         *     Call this again whenever the basket changes.
-         */
-        post: operations["compare_compare_post"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/health": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Liveness and data freshness */
-        get: operations["health_health_get"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+  '/categories': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Canonical categories with subcategories
+     * @description Returns every canonical BasketWise category that has products, each with its subcategories.
+     *
+     *     Use `id` in API requests and `name` for display. Do **not** build your own id-to-label map on the frontend -- this endpoint is the source of truth for both.
+     */
+    get: operations['get_categories_categories_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/products': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List, filter and search canonical products
+     * @description Bounded listing of canonical products. Returns `[]` when nothing matches -- never 404.
+     *
+     *     **Load the landing page in two steps:** request a small first page (`?essential=true&limit=20`) for first paint, then page with `limit`/`offset` once the app has mounted. `limit` is hard-capped at 100 so the full 50k-product catalogue can never be pulled in one request.
+     *
+     *     Filters combine with AND. `q` searches product names and brands.
+     *
+     *     The **`X-Total-Count`** response header carries how many products match the filter ignoring `limit`/`offset` -- use it to render "24 of 1,240" and to know when to stop paging. The body stays a bare array.
+     */
+    get: operations['list_products_products_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/products/{product_id}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * One product with every retailer's offer
+     * @description The product plus one offer per retailer, cheapest first -- what the Compare page needs.
+     */
+    get: operations['get_product_products__product_id__get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/products/{product_id}/price-history': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Observed price history per retailer
+     * @description One series per retailer, oldest first. Backs a price sparkline and a "cheapest in 30 days" badge.
+     *
+     *     Coverage is currently thin -- the crawler has only recently begun recording daily observations, so expect one or two points per offer until it has run for a while.
+     */
+    get: operations['price_history_products__product_id__price_history_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/compare': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Price a basket across every retailer
+     * @description Send the whole basket; get one total per retailer plus a recommendation.
+     *
+     *     - `total` sums only the items that retailer actually stocks.
+     *     - `missing_product_ids` lists what it does not stock, explicitly -- a cheap total with three missing items is not a real win, so show this in the UI.
+     *     - `recommendation` is the cheapest retailer stocking the **entire** basket, and is `null` when no retailer stocks everything.
+     *     - `unknown_product_ids` lists ids that do not exist at all (usually a stale basket).
+     *
+     *     Call this again whenever the basket changes.
+     */
+    post: operations['compare_compare_post']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/health': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Liveness and data freshness */
+    get: operations['health_health_get']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
-export type webhooks = Record<string, never>;
+export type webhooks = Record<string, never>
 export interface components {
-    schemas: {
-        /** BasketItem */
-        BasketItem: {
-            /**
-             * Product Id
-             * @example full-cream-milk-2l
-             */
-            product_id: string;
-            /**
-             * Quantity
-             * @description Must be > 0. Removing the last unit removes the item.
-             * @example 2
-             */
-            quantity: number;
-        };
-        /** Category */
-        Category: {
-            /**
-             * Id
-             * @example dairy-eggs-fridge
-             */
-            id: string;
-            /**
-             * Name
-             * @example Dairy, Eggs & Fridge
-             */
-            name: string;
-            /**
-             * Product Count
-             * @example 3546
-             */
-            product_count: number;
-            /**
-             * Subcategories
-             * @default []
-             */
-            subcategories: components["schemas"]["Subcategory"][];
-        };
-        /** CompareRequest */
-        CompareRequest: {
-            /** Items */
-            items: components["schemas"]["BasketItem"][];
-        };
-        /** CompareResponse */
-        CompareResponse: {
-            /** Stores */
-            stores: components["schemas"]["StoreComparison"][];
-            /** @description Cheapest retailer that stocks the WHOLE basket. null if no retailer stocks everything. */
-            recommendation?: components["schemas"]["Recommendation"] | null;
-            /**
-             * Unknown Product Ids
-             * @description Ids in the request that do not exist at all.
-             * @default []
-             */
-            unknown_product_ids: string[];
-        };
-        /** HTTPValidationError */
-        HTTPValidationError: {
-            /** Detail */
-            detail?: components["schemas"]["ValidationError"][];
-        };
-        /** Health */
-        Health: {
-            /** Status */
-            status: string;
-            /** Build Id */
-            build_id?: string | null;
-            /** Built At */
-            built_at?: string | null;
-            /** Product Count */
-            product_count: number;
-            /** Offer Count */
-            offer_count: number;
-            /** Retailers */
-            retailers: string[];
-        };
-        /**
-         * Offer
-         * @description One canonical product as sold by one retailer.
-         */
-        Offer: {
-            /** Id */
-            id: string;
-            /** Product Id */
-            product_id: string;
-            /**
-             * Retailer
-             * @enum {string}
-             */
-            retailer: "coles" | "woolworths" | "aldi" | "harrisfarm";
-            /** Retailer Product Id */
-            retailer_product_id?: string | null;
-            /** Retailer Product Name */
-            retailer_product_name: string;
-            /** Retailer Brand */
-            retailer_brand?: string | null;
-            /**
-             * Source Category
-             * @description Raw retailer taxonomy, preserved.
-             */
-            source_category?: string | null;
-            /** Source Subcategory */
-            source_subcategory?: string | null;
-            /** Price */
-            price: number;
-            /** Was Price */
-            was_price?: number | null;
-            /** Is Special */
-            is_special?: boolean | null;
-            /** Special Type */
-            special_type?: string | null;
-            /** Special End Date */
-            special_end_date?: string | null;
-            /** Size Value */
-            size_value?: number | null;
-            /** Size Unit */
-            size_unit?: string | null;
-            /** Unit Price */
-            unit_price?: number | null;
-            /** Product Url */
-            product_url?: string | null;
-            /** Image Url */
-            image_url?: string | null;
-            /** Is Available */
-            is_available?: boolean | null;
-            /** Last Updated */
-            last_updated?: string | null;
-        };
-        /** PriceHistory */
-        PriceHistory: {
-            /** Product Id */
-            product_id: string;
-            /** Retailer */
-            retailer: string;
-            /** Points */
-            points: components["schemas"]["PricePoint"][];
-        };
-        /** PricePoint */
-        PricePoint: {
-            /** Price */
-            price: number;
-            /** Was Price */
-            was_price?: number | null;
-            /** Is Special */
-            is_special?: boolean | null;
-            /** Recorded At */
-            recorded_at: string;
-        };
-        /**
-         * Product
-         * @description A canonical grocery -- what the user wants to buy, not one retailer's listing.
-         */
-        Product: {
-            /**
-             * Id
-             * @description Canonical id. The basket stores this.
-             * @example full-cream-milk-2l
-             */
-            id: string;
-            /**
-             * Name
-             * @example Full Cream Milk
-             */
-            name: string;
-            /**
-             * Brand
-             * @example Bega
-             */
-            brand?: string | null;
-            /**
-             * Category
-             * @example dairy-eggs-fridge
-             */
-            category?: string | null;
-            /**
-             * Subcategory
-             * @description null when no reliable canonical mapping exists yet.
-             * @example milk
-             */
-            subcategory?: string | null;
-            /**
-             * Tags
-             * @default []
-             * @example [
-             *       "gluten-free"
-             *     ]
-             */
-            tags: string[];
-            /**
-             * Size Value
-             * @description Normalised: grams, millilitres, packs or each.
-             * @example 2000
-             */
-            size_value?: number | null;
-            /**
-             * Size Unit
-             * @example ml
-             */
-            size_unit?: string | null;
-            /** Image Url */
-            image_url?: string | null;
-            /**
-             * Is Essential
-             * @default false
-             */
-            is_essential: boolean;
-            /**
-             * Min Price
-             * @description Cheapest current price across all retailers.
-             * @example 3.1
-             */
-            min_price?: number | null;
-            /**
-             * Cheapest Retailer
-             * @description Which retailer sells it at `min_price`.
-             * @example coles
-             */
-            cheapest_retailer?: string | null;
-            /**
-             * Unit Price
-             * @description Price per `unit_measure` at the cheapest retailer. Use with `unit_measure` to render "$1.55 / 100g" so a 500 g tub and a 1 kg tub compare honestly.
-             * @example 1.55
-             */
-            unit_price?: number | null;
-            /**
-             * Unit Measure
-             * @example 100g
-             */
-            unit_measure?: string | null;
-            /**
-             * Was Price
-             * @description Pre-special price at the cheapest retailer. null when not on special.
-             * @example 4.2
-             */
-            was_price?: number | null;
-            /**
-             * Has Special
-             * @description On special at at least one retailer.
-             * @default false
-             */
-            has_special: boolean;
-            /**
-             * Retailer Count
-             * @description How many retailers stock it.
-             * @default 0
-             * @example 3
-             */
-            retailer_count: number;
-            /**
-             * Rating Avg
-             * @description Retailer star rating. Sparse today -- the Woolworths detail crawl has not been run yet. Render only if present.
-             * @example 4.7
-             */
-            rating_avg?: number | null;
-            /**
-             * Rating Count
-             * @example 13
-             */
-            rating_count?: number | null;
-        };
-        /** ProductDetail */
-        ProductDetail: {
-            /**
-             * Id
-             * @description Canonical id. The basket stores this.
-             * @example full-cream-milk-2l
-             */
-            id: string;
-            /**
-             * Name
-             * @example Full Cream Milk
-             */
-            name: string;
-            /**
-             * Brand
-             * @example Bega
-             */
-            brand?: string | null;
-            /**
-             * Category
-             * @example dairy-eggs-fridge
-             */
-            category?: string | null;
-            /**
-             * Subcategory
-             * @description null when no reliable canonical mapping exists yet.
-             * @example milk
-             */
-            subcategory?: string | null;
-            /**
-             * Tags
-             * @default []
-             * @example [
-             *       "gluten-free"
-             *     ]
-             */
-            tags: string[];
-            /**
-             * Size Value
-             * @description Normalised: grams, millilitres, packs or each.
-             * @example 2000
-             */
-            size_value?: number | null;
-            /**
-             * Size Unit
-             * @example ml
-             */
-            size_unit?: string | null;
-            /** Image Url */
-            image_url?: string | null;
-            /**
-             * Is Essential
-             * @default false
-             */
-            is_essential: boolean;
-            /**
-             * Min Price
-             * @description Cheapest current price across all retailers.
-             * @example 3.1
-             */
-            min_price?: number | null;
-            /**
-             * Cheapest Retailer
-             * @description Which retailer sells it at `min_price`.
-             * @example coles
-             */
-            cheapest_retailer?: string | null;
-            /**
-             * Unit Price
-             * @description Price per `unit_measure` at the cheapest retailer. Use with `unit_measure` to render "$1.55 / 100g" so a 500 g tub and a 1 kg tub compare honestly.
-             * @example 1.55
-             */
-            unit_price?: number | null;
-            /**
-             * Unit Measure
-             * @example 100g
-             */
-            unit_measure?: string | null;
-            /**
-             * Was Price
-             * @description Pre-special price at the cheapest retailer. null when not on special.
-             * @example 4.2
-             */
-            was_price?: number | null;
-            /**
-             * Has Special
-             * @description On special at at least one retailer.
-             * @default false
-             */
-            has_special: boolean;
-            /**
-             * Retailer Count
-             * @description How many retailers stock it.
-             * @default 0
-             * @example 3
-             */
-            retailer_count: number;
-            /**
-             * Rating Avg
-             * @description Retailer star rating. Sparse today -- the Woolworths detail crawl has not been run yet. Render only if present.
-             * @example 4.7
-             */
-            rating_avg?: number | null;
-            /**
-             * Rating Count
-             * @example 13
-             */
-            rating_count?: number | null;
-            /**
-             * Offers
-             * @default []
-             */
-            offers: components["schemas"]["Offer"][];
-        };
-        /** Recommendation */
-        Recommendation: {
-            /**
-             * Retailer
-             * @enum {string}
-             */
-            retailer: "coles" | "woolworths" | "aldi" | "harrisfarm";
-            /** Total */
-            total: number;
-        };
-        /** StoreComparison */
-        StoreComparison: {
-            /**
-             * Retailer
-             * @enum {string}
-             */
-            retailer: "coles" | "woolworths" | "aldi" | "harrisfarm";
-            /**
-             * Total
-             * @description Sum over items this retailer stocks. Missing items are excluded.
-             */
-            total: number;
-            /**
-             * Missing Product Ids
-             * @description Basket items this retailer does not stock. Returned explicitly, never silently dropped.
-             */
-            missing_product_ids: string[];
-            /** Available Count */
-            available_count: number;
-        };
-        /** Subcategory */
-        Subcategory: {
-            /**
-             * Id
-             * @description Stable canonical id. Send this in API requests.
-             * @example milk
-             */
-            id: string;
-            /**
-             * Name
-             * @description Display label. Never derive this yourself.
-             * @example Milk
-             */
-            name: string;
-            /**
-             * Product Count
-             * @example 214
-             */
-            product_count: number;
-        };
-        /** ValidationError */
-        ValidationError: {
-            /** Location */
-            loc: (string | number)[];
-            /** Message */
-            msg: string;
-            /** Error Type */
-            type: string;
-            /** Input */
-            input?: unknown;
-            /** Context */
-            ctx?: Record<string, never>;
-        };
-    };
-    responses: never;
-    parameters: never;
-    requestBodies: never;
-    headers: never;
-    pathItems: never;
+  schemas: {
+    /** BasketItem */
+    BasketItem: {
+      /**
+       * Product Id
+       * @example full-cream-milk-2l
+       */
+      product_id: string
+      /**
+       * Quantity
+       * @description Must be > 0. Removing the last unit removes the item.
+       * @example 2
+       */
+      quantity: number
+    }
+    /** Category */
+    Category: {
+      /**
+       * Id
+       * @example dairy-eggs-fridge
+       */
+      id: string
+      /**
+       * Name
+       * @example Dairy, Eggs & Fridge
+       */
+      name: string
+      /**
+       * Product Count
+       * @example 3546
+       */
+      product_count: number
+      /**
+       * Subcategories
+       * @default []
+       */
+      subcategories: components['schemas']['Subcategory'][]
+    }
+    /** CompareRequest */
+    CompareRequest: {
+      /** Items */
+      items: components['schemas']['BasketItem'][]
+    }
+    /** CompareResponse */
+    CompareResponse: {
+      /** Stores */
+      stores: components['schemas']['StoreComparison'][]
+      /** @description Cheapest retailer that stocks the WHOLE basket. null if no retailer stocks everything. */
+      recommendation?: components['schemas']['Recommendation'] | null
+      /**
+       * Unknown Product Ids
+       * @description Ids in the request that do not exist at all.
+       * @default []
+       */
+      unknown_product_ids: string[]
+    }
+    /** HTTPValidationError */
+    HTTPValidationError: {
+      /** Detail */
+      detail?: components['schemas']['ValidationError'][]
+    }
+    /** Health */
+    Health: {
+      /** Status */
+      status: string
+      /** Build Id */
+      build_id?: string | null
+      /** Built At */
+      built_at?: string | null
+      /** Product Count */
+      product_count: number
+      /** Offer Count */
+      offer_count: number
+      /** Retailers */
+      retailers: string[]
+    }
+    /**
+     * Offer
+     * @description One canonical product as sold by one retailer.
+     */
+    Offer: {
+      /** Id */
+      id: string
+      /** Product Id */
+      product_id: string
+      /**
+       * Retailer
+       * @enum {string}
+       */
+      retailer: 'coles' | 'woolworths' | 'aldi' | 'harrisfarm'
+      /** Retailer Product Id */
+      retailer_product_id?: string | null
+      /** Retailer Product Name */
+      retailer_product_name: string
+      /** Retailer Brand */
+      retailer_brand?: string | null
+      /**
+       * Source Category
+       * @description Raw retailer taxonomy, preserved.
+       */
+      source_category?: string | null
+      /** Source Subcategory */
+      source_subcategory?: string | null
+      /** Price */
+      price: number
+      /** Was Price */
+      was_price?: number | null
+      /** Is Special */
+      is_special?: boolean | null
+      /** Special Type */
+      special_type?: string | null
+      /** Special End Date */
+      special_end_date?: string | null
+      /** Size Value */
+      size_value?: number | null
+      /** Size Unit */
+      size_unit?: string | null
+      /** Unit Price */
+      unit_price?: number | null
+      /** Product Url */
+      product_url?: string | null
+      /** Image Url */
+      image_url?: string | null
+      /** Is Available */
+      is_available?: boolean | null
+      /** Last Updated */
+      last_updated?: string | null
+    }
+    /** PriceHistory */
+    PriceHistory: {
+      /** Product Id */
+      product_id: string
+      /** Retailer */
+      retailer: string
+      /** Points */
+      points: components['schemas']['PricePoint'][]
+    }
+    /** PricePoint */
+    PricePoint: {
+      /** Price */
+      price: number
+      /** Was Price */
+      was_price?: number | null
+      /** Is Special */
+      is_special?: boolean | null
+      /** Recorded At */
+      recorded_at: string
+    }
+    /**
+     * Product
+     * @description A canonical grocery -- what the user wants to buy, not one retailer's listing.
+     */
+    Product: {
+      /**
+       * Id
+       * @description Canonical id. The basket stores this.
+       * @example full-cream-milk-2l
+       */
+      id: string
+      /**
+       * Name
+       * @example Full Cream Milk
+       */
+      name: string
+      /**
+       * Brand
+       * @example Bega
+       */
+      brand?: string | null
+      /**
+       * Category
+       * @example dairy-eggs-fridge
+       */
+      category?: string | null
+      /**
+       * Subcategory
+       * @description null when no reliable canonical mapping exists yet.
+       * @example milk
+       */
+      subcategory?: string | null
+      /**
+       * Tags
+       * @default []
+       * @example [
+       *       "gluten-free"
+       *     ]
+       */
+      tags: string[]
+      /**
+       * Size Value
+       * @description Normalised: grams, millilitres, packs or each.
+       * @example 2000
+       */
+      size_value?: number | null
+      /**
+       * Size Unit
+       * @example ml
+       */
+      size_unit?: string | null
+      /** Image Url */
+      image_url?: string | null
+      /**
+       * Is Essential
+       * @default false
+       */
+      is_essential: boolean
+      /**
+       * Min Price
+       * @description Cheapest current price across all retailers.
+       * @example 3.1
+       */
+      min_price?: number | null
+      /**
+       * Cheapest Retailer
+       * @description Which retailer sells it at `min_price`.
+       * @example coles
+       */
+      cheapest_retailer?: string | null
+      /**
+       * Unit Price
+       * @description Price per `unit_measure` at the cheapest retailer. Use with `unit_measure` to render "$1.55 / 100g" so a 500 g tub and a 1 kg tub compare honestly.
+       * @example 1.55
+       */
+      unit_price?: number | null
+      /**
+       * Unit Measure
+       * @example 100g
+       */
+      unit_measure?: string | null
+      /**
+       * Was Price
+       * @description Pre-special price at the cheapest retailer. null when not on special.
+       * @example 4.2
+       */
+      was_price?: number | null
+      /**
+       * Has Special
+       * @description On special at at least one retailer.
+       * @default false
+       */
+      has_special: boolean
+      /**
+       * Retailer Count
+       * @description How many retailers stock it.
+       * @default 0
+       * @example 3
+       */
+      retailer_count: number
+      /**
+       * Rating Avg
+       * @description Retailer star rating. Sparse today -- the Woolworths detail crawl has not been run yet. Render only if present.
+       * @example 4.7
+       */
+      rating_avg?: number | null
+      /**
+       * Rating Count
+       * @example 13
+       */
+      rating_count?: number | null
+    }
+    /** ProductDetail */
+    ProductDetail: {
+      /**
+       * Id
+       * @description Canonical id. The basket stores this.
+       * @example full-cream-milk-2l
+       */
+      id: string
+      /**
+       * Name
+       * @example Full Cream Milk
+       */
+      name: string
+      /**
+       * Brand
+       * @example Bega
+       */
+      brand?: string | null
+      /**
+       * Category
+       * @example dairy-eggs-fridge
+       */
+      category?: string | null
+      /**
+       * Subcategory
+       * @description null when no reliable canonical mapping exists yet.
+       * @example milk
+       */
+      subcategory?: string | null
+      /**
+       * Tags
+       * @default []
+       * @example [
+       *       "gluten-free"
+       *     ]
+       */
+      tags: string[]
+      /**
+       * Size Value
+       * @description Normalised: grams, millilitres, packs or each.
+       * @example 2000
+       */
+      size_value?: number | null
+      /**
+       * Size Unit
+       * @example ml
+       */
+      size_unit?: string | null
+      /** Image Url */
+      image_url?: string | null
+      /**
+       * Is Essential
+       * @default false
+       */
+      is_essential: boolean
+      /**
+       * Min Price
+       * @description Cheapest current price across all retailers.
+       * @example 3.1
+       */
+      min_price?: number | null
+      /**
+       * Cheapest Retailer
+       * @description Which retailer sells it at `min_price`.
+       * @example coles
+       */
+      cheapest_retailer?: string | null
+      /**
+       * Unit Price
+       * @description Price per `unit_measure` at the cheapest retailer. Use with `unit_measure` to render "$1.55 / 100g" so a 500 g tub and a 1 kg tub compare honestly.
+       * @example 1.55
+       */
+      unit_price?: number | null
+      /**
+       * Unit Measure
+       * @example 100g
+       */
+      unit_measure?: string | null
+      /**
+       * Was Price
+       * @description Pre-special price at the cheapest retailer. null when not on special.
+       * @example 4.2
+       */
+      was_price?: number | null
+      /**
+       * Has Special
+       * @description On special at at least one retailer.
+       * @default false
+       */
+      has_special: boolean
+      /**
+       * Retailer Count
+       * @description How many retailers stock it.
+       * @default 0
+       * @example 3
+       */
+      retailer_count: number
+      /**
+       * Rating Avg
+       * @description Retailer star rating. Sparse today -- the Woolworths detail crawl has not been run yet. Render only if present.
+       * @example 4.7
+       */
+      rating_avg?: number | null
+      /**
+       * Rating Count
+       * @example 13
+       */
+      rating_count?: number | null
+      /**
+       * Offers
+       * @default []
+       */
+      offers: components['schemas']['Offer'][]
+    }
+    /** Recommendation */
+    Recommendation: {
+      /**
+       * Retailer
+       * @enum {string}
+       */
+      retailer: 'coles' | 'woolworths' | 'aldi' | 'harrisfarm'
+      /** Total */
+      total: number
+    }
+    /** StoreComparison */
+    StoreComparison: {
+      /**
+       * Retailer
+       * @enum {string}
+       */
+      retailer: 'coles' | 'woolworths' | 'aldi' | 'harrisfarm'
+      /**
+       * Total
+       * @description Sum over items this retailer stocks. Missing items are excluded.
+       */
+      total: number
+      /**
+       * Missing Product Ids
+       * @description Basket items this retailer does not stock. Returned explicitly, never silently dropped.
+       */
+      missing_product_ids: string[]
+      /** Available Count */
+      available_count: number
+    }
+    /** Subcategory */
+    Subcategory: {
+      /**
+       * Id
+       * @description Stable canonical id. Send this in API requests.
+       * @example milk
+       */
+      id: string
+      /**
+       * Name
+       * @description Display label. Never derive this yourself.
+       * @example Milk
+       */
+      name: string
+      /**
+       * Product Count
+       * @example 214
+       */
+      product_count: number
+    }
+    /** ValidationError */
+    ValidationError: {
+      /** Location */
+      loc: (string | number)[]
+      /** Message */
+      msg: string
+      /** Error Type */
+      type: string
+      /** Input */
+      input?: unknown
+      /** Context */
+      ctx?: Record<string, never>
+    }
+  }
+  responses: never
+  parameters: never
+  requestBodies: never
+  headers: never
+  pathItems: never
 }
-export type $defs = Record<string, never>;
+export type $defs = Record<string, never>
 export interface operations {
-    get_categories_categories_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Category"][];
-                };
-            };
-        };
-    };
-    list_products_products_get: {
-        parameters: {
-            query?: {
-                /** @description Only curated Home Essentials. */
-                essential?: boolean | null;
-                /** @description Canonical category id. */
-                category?: string | null;
-                /** @description Canonical subcategory id. */
-                subcategory?: string | null;
-                /** @description Canonical tag id. */
-                tag?: string | null;
-                /** @description Full-text search over product names. */
-                q?: string | null;
-                /** @description Only products on special at some retailer. */
-                special?: boolean | null;
-                /** @description Only products this retailer stocks. */
-                retailer?: string | null;
-                /** @description Only products carried by 2+ retailers (comparable). */
-                multi_retailer?: boolean | null;
-                limit?: number;
-                offset?: number;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    /** @description Total matches ignoring limit/offset. */
-                    "X-Total-Count"?: number;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Product"][];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    get_product_products__product_id__get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                product_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProductDetail"];
-                };
-            };
-            /** @description No such canonical product id. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    price_history_products__product_id__price_history_get: {
-        parameters: {
-            query?: {
-                /** @description Look back this many days. */
-                days?: number;
-            };
-            header?: never;
-            path: {
-                product_id: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["PriceHistory"][];
-                };
-            };
-            /** @description No such canonical product id. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    compare_compare_post: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CompareRequest"];
-            };
-        };
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CompareResponse"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
-                };
-            };
-        };
-    };
-    health_health_get: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Successful Response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["Health"];
-                };
-            };
-        };
-    };
+  get_categories_categories_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Category'][]
+        }
+      }
+    }
+  }
+  list_products_products_get: {
+    parameters: {
+      query?: {
+        /** @description Only curated Home Essentials. */
+        essential?: boolean | null
+        /** @description Canonical category id. */
+        category?: string | null
+        /** @description Canonical subcategory id. */
+        subcategory?: string | null
+        /** @description Canonical tag id. */
+        tag?: string | null
+        /** @description Full-text search over product names. */
+        q?: string | null
+        /** @description Only products on special at some retailer. */
+        special?: boolean | null
+        /** @description Only products this retailer stocks. */
+        retailer?: string | null
+        /** @description Only products carried by 2+ retailers (comparable). */
+        multi_retailer?: boolean | null
+        limit?: number
+        offset?: number
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          /** @description Total matches ignoring limit/offset. */
+          'X-Total-Count'?: number
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Product'][]
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  get_product_products__product_id__get: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        product_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['ProductDetail']
+        }
+      }
+      /** @description No such canonical product id. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  price_history_products__product_id__price_history_get: {
+    parameters: {
+      query?: {
+        /** @description Look back this many days. */
+        days?: number
+      }
+      header?: never
+      path: {
+        product_id: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['PriceHistory'][]
+        }
+      }
+      /** @description No such canonical product id. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  compare_compare_post: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': components['schemas']['CompareRequest']
+      }
+    }
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['CompareResponse']
+        }
+      }
+      /** @description Validation Error */
+      422: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['HTTPValidationError']
+        }
+      }
+    }
+  }
+  health_health_get: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Successful Response */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': components['schemas']['Health']
+        }
+      }
+    }
+  }
 }

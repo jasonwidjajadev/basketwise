@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router'
 
 import { cn } from '@/lib/utils'
-import { startAnotherWayTabs } from '@/data/startAnotherWay'
+import { startAnotherWayTabs } from '@/components/home/startAnotherWay'
 
 export default function StartAnotherWay() {
   const [tab, setTab] = useState(0)
@@ -10,7 +10,7 @@ export default function StartAnotherWay() {
 
   return (
     <section id="start" className="mx-auto max-w-[1160px] px-6 pb-5 lg:px-10">
-      <h2 className="mb-4.5 font-newsreader text-[30px] font-normal tracking-[-.01em] text-bw-ink">
+      <h2 className="mb-4.5 text-[30px] font-normal tracking-[-.01em] text-bw-ink">
         No receipt? Start another way.
       </h2>
 
@@ -21,7 +21,7 @@ export default function StartAnotherWay() {
             type="button"
             onClick={() => setTab(i)}
             className={cn(
-              'rounded-full border px-4.5 py-2.5 font-archivo text-[13px] font-semibold transition-all',
+              'rounded-full border px-4.5 py-2.5 text-[13px] font-semibold transition-all',
               i === tab
                 ? 'border-bw-ink bg-bw-ink text-white'
                 : 'border-[#D9D6CA] bg-transparent text-bw-body',
@@ -39,7 +39,7 @@ export default function StartAnotherWay() {
 
         <Link
           to="/#essentials"
-          className="shrink-0 border-b border-bw-green pb-0.5 font-archivo text-[12.5px] font-semibold tracking-[.06em] text-bw-green uppercase"
+          className="shrink-0 border-b border-bw-green pb-0.5 text-[12.5px] font-semibold tracking-[.06em] text-bw-green uppercase"
         >
           Start →
         </Link>

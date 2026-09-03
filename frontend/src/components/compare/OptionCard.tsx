@@ -1,7 +1,6 @@
 import { MdCheck } from 'react-icons/md'
 
-import { cn } from '@/lib/utils'
-import { formatMoney } from '@/lib/format'
+import { cn, formatMoney } from '@/lib/utils'
 import SavingsBadge from '@/components/compare/SavingsBadge'
 import WhyButton from '@/components/compare/WhyButton'
 
@@ -26,9 +25,7 @@ export default function OptionCard({
         className="animate-bw-fade-up flex flex-col items-start gap-2 bg-bw-surface px-5 py-5.5 text-bw-subtle"
         style={{ animationDelay }}
       >
-        <h2 className="font-archivo text-[13px] font-semibold text-bw-ink">
-          {label}
-        </h2>
+        <h2 className="text-[13px] font-semibold text-bw-ink">{label}</h2>
         <p className="text-[12px] leading-relaxed text-bw-subtle italic">
           {note}
         </p>
@@ -68,23 +65,21 @@ export default function OptionCard({
     >
       <div className="flex items-center gap-2">
         {tag && (
-          <span className="rounded-full bg-bw-green px-2.25 py-0.75 font-archivo text-[10px] font-bold tracking-[.04em] text-white">
+          <span className="rounded-full bg-bw-green px-2.25 py-0.75 text-[10px] font-bold tracking-[.04em] text-white">
             {tag}
           </span>
         )}
         {showWhyButton && <WhyButton active={whyOpen} onClick={onToggleWhy} />}
       </div>
 
-      <h2 className="font-archivo text-[13px] font-semibold text-bw-ink">
-        {label}
-      </h2>
-      <p className="font-newsreader text-[27px] leading-none text-bw-ink">
+      <h2 className="text-[13px] font-semibold text-bw-ink">{label}</h2>
+      <p className="text-[27px] leading-none text-bw-ink">
         {formatMoney(option.total)}
       </p>
       <p className="text-[11px] text-bw-subtle">{stores.join(' + ')}</p>
 
       {isBest ? (
-        <span className="flex items-center gap-1 font-archivo text-[10.5px] font-bold text-bw-green">
+        <span className="flex items-center gap-1 text-[10.5px] font-bold text-bw-green">
           <MdCheck className="h-3 w-3" /> Lowest price here
         </span>
       ) : (

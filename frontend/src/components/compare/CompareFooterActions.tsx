@@ -5,7 +5,7 @@ export default function CompareFooterActions({ signedIn, saved, onSave }) {
     <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-end">
       <Link
         to="/browse"
-        className="flex items-center justify-center rounded-full border border-bw-line-strong bg-transparent px-5 py-3 font-archivo text-sm font-semibold text-bw-ink transition-colors hover:bg-bw-panel"
+        className="flex items-center justify-center rounded-full border border-bw-line-strong bg-transparent px-5 py-3 text-sm font-semibold text-bw-ink transition-colors hover:bg-bw-panel"
       >
         Continue editing basket
       </Link>
@@ -15,7 +15,7 @@ export default function CompareFooterActions({ signedIn, saved, onSave }) {
           type="button"
           onClick={onSave}
           disabled={saved}
-          className="flex items-center justify-center gap-1.5 rounded-full bg-bw-green px-5 py-3 font-archivo text-sm font-semibold text-white transition-all enabled:hover:bg-bw-green-hover disabled:cursor-default motion-safe:active:scale-[0.97]"
+          className="flex items-center justify-center gap-1.5 rounded-full bg-bw-green px-5 py-3 text-sm font-semibold text-white transition-all enabled:hover:bg-bw-green-hover disabled:cursor-default motion-safe:active:scale-[0.97]"
         >
           <span
             key={saved ? 'saved' : 'save'}
@@ -27,7 +27,7 @@ export default function CompareFooterActions({ signedIn, saved, onSave }) {
       ) : (
         <Link
           to="/signin"
-          className="flex items-center justify-center rounded-full bg-bw-green px-5 py-3 font-archivo text-sm font-semibold text-white transition-colors hover:bg-bw-green-hover"
+          className="flex items-center justify-center rounded-full bg-bw-green px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-bw-green-hover"
         >
           Sign in to save list
         </Link>

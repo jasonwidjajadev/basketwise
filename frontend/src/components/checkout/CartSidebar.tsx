@@ -43,9 +43,7 @@ function CartRow({
   if (!item) return null
 
   const priceLabel =
-    item.kind === 'meal'
-      ? fmt(item.totalPrice)
-      : fmt(item.unitPrice * quantity)
+    item.kind === 'meal' ? fmt(item.totalPrice) : fmt(item.unitPrice * quantity)
 
   return (
     <div
@@ -71,13 +69,11 @@ function CartRow({
               {item.name}
             </p>
             {item.kind === 'meal' && (
-              <p className="mt-0.5 text-[10.5px] text-bw-muted">
-                {item.meta}
-              </p>
+              <p className="mt-0.5 text-[10.5px] text-bw-muted">{item.meta}</p>
             )}
             <p
               key={priceLabel}
-              className="mt-0.5 animate-bw-fade-up text-[13px] text-bw-body"
+              className="animate-bw-fade-up mt-0.5 text-[13px] text-bw-body"
               style={{ animationDuration: '200ms' }}
             >
               {priceLabel}
@@ -88,7 +84,7 @@ function CartRow({
             <button
               type="button"
               onClick={onRemove}
-              className="shrink-0 text-[10.5px] font-bold tracking-[.04em] text-bw-muted uppercase underline underline-offset-2 transition-colors motion-safe:duration-150 hover:text-bw-ink"
+              className="shrink-0 text-[10.5px] font-bold tracking-[.04em] text-bw-muted uppercase underline underline-offset-2 transition-colors hover:text-bw-ink motion-safe:duration-150"
             >
               Remove
             </button>
@@ -121,7 +117,7 @@ function CartRow({
                 type="button"
                 onClick={onRemove}
                 aria-label="Remove from basket"
-                className="text-bw-muted transition-colors motion-safe:duration-150 hover:text-bw-ink"
+                className="text-bw-muted transition-colors hover:text-bw-ink motion-safe:duration-150"
               >
                 <MdDeleteOutline className="h-4 w-4" />
               </button>

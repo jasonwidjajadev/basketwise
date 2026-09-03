@@ -4,7 +4,7 @@
 export default function FaqRow({ question }) {
   return (
     <div className="border-b border-bw-line px-1 py-5">
-      <span className="font-archivo text-[12.5px] font-bold tracking-[.12em] text-bw-ink uppercase">
+      <span className="text-[12.5px] font-bold tracking-[.12em] text-bw-ink uppercase">
         {question}
       </span>
     </div>

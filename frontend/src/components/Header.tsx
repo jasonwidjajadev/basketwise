@@ -9,7 +9,7 @@ import {
 import cartOutlineIcon from '@/assets/icons/cart-outline.svg'
 import menuIcon from '@/assets/icons/menu.svg'
 import icon from '@/assets/basketwise_logo/logo.svg'
-import CartSidebar from '@/components/CartSidebar'
+import CartSidebar from '@/components/checkout/CartSidebar'
 import SearchBar from '@/components/SearchBar'
 import { useCart } from '@/context/useCart'
 import { cn } from '@/lib/utils'
@@ -48,7 +48,7 @@ export default function Header() {
                 className="h-6 w-6 shrink-0 object-contain"
               />
 
-              <span className="hidden font-newsreader text-xl tracking-[-.01em] text-bw-panel sm:block">
+              <span className="hidden text-xl tracking-[-.01em] text-bw-panel sm:block">
                 BasketWise
               </span>
             </Link>
@@ -98,7 +98,7 @@ export default function Header() {
                   type="button"
                   aria-label="Open cart"
                   onClick={() => setIsCartOpen(true)}
-                  className="flex items-center gap-2.5 rounded-full bg-bw-green px-3.25 py-1.75 font-archivo text-sm font-semibold text-white transition hover:bg-bw-green-hover"
+                  className="flex items-center gap-2.5 rounded-full bg-bw-green px-3.25 py-1.75 text-sm font-semibold text-white transition hover:bg-bw-green-hover"
                 >
                   <span className="relative flex h-5 w-5 shrink-0 items-center justify-center">
                     <img

@@ -1,44 +1,224 @@
 {
-  "stores": [
+  "options": [
     {
-      "retailer": "coles",
+      "id": "recommended-split",
+      "name": "Recommended split",
+      "description": "Coles and ALDI",
+      "total": 35.0,
+      "savings": 8.9,
+      "stores": 2,
+      "recommended": true,
+      "breakdown": [
+        {
+          "retailer": "coles",
+          "subtotal": 8.1,
+          "items": [
+            {
+              "product_id": "butter-garlic-125g",
+              "product_name": "Butter Garlic",
+              "retailer_product_id": "1730188",
+              "retailer_product_name": "Butter Garlic",
+              "quantity": 1,
+              "unit_price": 4.0,
+              "line_total": 4.0,
+              "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/1/7/3/1730188.jpg"
+            },
+            {
+              "product_id": "light-milk-1l-2",
+              "product_name": "Light Milk",
+              "retailer_product_id": "9760047",
+              "retailer_product_name": "Light Milk",
+              "quantity": 1,
+              "unit_price": 4.1,
+              "line_total": 4.1,
+              "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/9/7/6/9760047.jpg"
+            }
+          ]
+        },
+        {
+          "retailer": "aldi",
+          "subtotal": 26.9,
+          "items": [
+            {
+              "product_id": "cheese-tasty-block-250g",
+              "product_name": "Cheese Tasty Block",
+              "retailer_product_id": "aldi-cheese-250g",
+              "retailer_product_name": "Tasty Cheese Block 250g",
+              "quantity": 1,
+              "unit_price": 7.6,
+              "line_total": 7.6,
+              "image_url": null
+            },
+            {
+              "product_id": "free-range-large-eggs-18-pack-900g",
+              "product_name": "Free Range Large Eggs 18 Pack",
+              "retailer_product_id": "aldi-eggs-18pk",
+              "retailer_product_name": "Free Range Eggs 18 Pack",
+              "quantity": 1,
+              "unit_price": 12.7,
+              "line_total": 12.7,
+              "image_url": null
+            },
+            {
+              "product_id": "full-cream-milk-2l",
+              "product_name": "Full Cream Milk",
+              "retailer_product_id": "aldi-full-cream-milk-2l",
+              "retailer_product_name": "Full Cream Milk 2L",
+              "quantity": 2,
+              "unit_price": 3.3,
+              "line_total": 6.6,
+              "image_url": null
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cheapest-single-store",
+      "name": "Cheapest single store",
+      "description": "Coles",
       "total": 36.4,
-      "missing_product_ids": [],
-      "available_count": 5
+      "savings": 7.5,
+      "stores": 1,
+      "recommended": false,
+      "breakdown": [
+        {
+          "retailer": "coles",
+          "subtotal": 36.4,
+          "items": [
+            {
+              "product_id": "butter-garlic-125g",
+              "product_name": "Butter Garlic",
+              "retailer_product_id": "1730188",
+              "retailer_product_name": "Butter Garlic",
+              "quantity": 1,
+              "unit_price": 4.0,
+              "line_total": 4.0,
+              "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/1/7/3/1730188.jpg"
+            },
+            {
+              "product_id": "cheese-tasty-block-250g",
+              "product_name": "Cheese Tasty Block",
+              "retailer_product_id": "296712",
+              "retailer_product_name": "Cheese Tasty Block",
+              "quantity": 1,
+              "unit_price": 8.0,
+              "line_total": 8.0,
+              "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/2/9/6/296712.jpg"
+            },
+            {
+              "product_id": "free-range-large-eggs-18-pack-900g",
+              "product_name": "Free Range Large Eggs 18 Pack",
+              "retailer_product_id": "8953577",
+              "retailer_product_name": "Free Range Large Eggs 18 Pack",
+              "quantity": 1,
+              "unit_price": 13.2,
+              "line_total": 13.2,
+              "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/8/9/5/8953577.jpg"
+            },
+            {
+              "product_id": "full-cream-milk-2l",
+              "product_name": "Full Cream Milk",
+              "retailer_product_id": "439693",
+              "retailer_product_name": "Full Cream Milk",
+              "quantity": 2,
+              "unit_price": 3.55,
+              "line_total": 7.1,
+              "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/4/3/9/439693.jpg"
+            },
+            {
+              "product_id": "light-milk-1l-2",
+              "product_name": "Light Milk",
+              "retailer_product_id": "9760047",
+              "retailer_product_name": "Light Milk",
+              "quantity": 1,
+              "unit_price": 4.1,
+              "line_total": 4.1,
+              "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/9/7/6/9760047.jpg"
+            }
+          ]
+        }
+      ]
     },
     {
-      "retailer": "woolworths",
-      "total": 43.9,
-      "missing_product_ids": [],
-      "available_count": 5
-    },
-    {
-      "retailer": "harrisfarm",
-      "total": 3.85,
-      "missing_product_ids": [
-        "cheese-tasty-block-250g",
-        "free-range-large-eggs-18-pack-900g",
-        "full-cream-milk-2l",
-        "light-milk-1l-2"
-      ],
-      "available_count": 1
-    },
-    {
-      "retailer": "aldi",
-      "total": 0.0,
-      "missing_product_ids": [
-        "butter-garlic-125g",
-        "cheese-tasty-block-250g",
-        "free-range-large-eggs-18-pack-900g",
-        "full-cream-milk-2l",
-        "light-milk-1l-2"
-      ],
-      "available_count": 0
+      "id": "lowest-possible-price",
+      "name": "Lowest possible price",
+      "description": "Coles, ALDI and Harris Farm",
+      "total": 34.85,
+      "savings": 9.05,
+      "stores": 3,
+      "recommended": false,
+      "breakdown": [
+        {
+          "retailer": "harrisfarm",
+          "subtotal": 3.85,
+          "items": [
+            {
+              "product_id": "butter-garlic-125g",
+              "product_name": "Butter Garlic",
+              "retailer_product_id": "89422",
+              "retailer_product_name": "Lurpak Garlic Butter 125g",
+              "quantity": 1,
+              "unit_price": 3.85,
+              "line_total": 3.85,
+              "image_url": "https://cdn.shopify.com/s/files/1/0206/9470/files/5740900103641-70.jpg?v=1713928354"
+            }
+          ]
+        },
+        {
+          "retailer": "aldi",
+          "subtotal": 26.9,
+          "items": [
+            {
+              "product_id": "cheese-tasty-block-250g",
+              "product_name": "Cheese Tasty Block",
+              "retailer_product_id": "aldi-cheese-250g",
+              "retailer_product_name": "Tasty Cheese Block 250g",
+              "quantity": 1,
+              "unit_price": 7.6,
+              "line_total": 7.6,
+              "image_url": null
+            },
+            {
+              "product_id": "free-range-large-eggs-18-pack-900g",
+              "product_name": "Free Range Large Eggs 18 Pack",
+              "retailer_product_id": "aldi-eggs-18pk",
+              "retailer_product_name": "Free Range Eggs 18 Pack",
+              "quantity": 1,
+              "unit_price": 12.7,
+              "line_total": 12.7,
+              "image_url": null
+            },
+            {
+              "product_id": "full-cream-milk-2l",
+              "product_name": "Full Cream Milk",
+              "retailer_product_id": "aldi-full-cream-milk-2l",
+              "retailer_product_name": "Full Cream Milk 2L",
+              "quantity": 2,
+              "unit_price": 3.3,
+              "line_total": 6.6,
+              "image_url": null
+            }
+          ]
+        },
+        {
+          "retailer": "coles",
+          "subtotal": 4.1,
+          "items": [
+            {
+              "product_id": "light-milk-1l-2",
+              "product_name": "Light Milk",
+              "retailer_product_id": "9760047",
+              "retailer_product_name": "Light Milk",
+              "quantity": 1,
+              "unit_price": 4.1,
+              "line_total": 4.1,
+              "image_url": "https://shop.coles.com.au/wcsstore/Coles-CAS/images/9/7/6/9760047.jpg"
+            }
+          ]
+        }
+      ]
     }
   ],
-  "recommendation": {
-    "retailer": "coles",
-    "total": 36.4
-  },
   "unknown_product_ids": []
 }

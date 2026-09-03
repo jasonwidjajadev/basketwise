@@ -24,7 +24,7 @@ function CategoryAccordionList({
               aria-current={isActive && !subcategory ? 'true' : undefined}
               onClick={() => onHeaderClick(cat.id)}
               className={cn(
-                'flex w-full items-center justify-between gap-2.5 px-3.5 py-3.25 text-left font-archivo text-[13px] text-bw-ink transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
+                'flex w-full items-center justify-between gap-2.5 px-3.5 py-3.25 text-left text-[13px] text-bw-ink transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
                 isActive && !subcategory && 'bg-bw-panel font-semibold',
               )}
             >
@@ -59,7 +59,7 @@ function CategoryAccordionList({
                           onSelectSub(cat.id, isSubActive ? null : sub.id)
                         }
                         className={cn(
-                          'px-5 py-2.75 text-left font-archivo text-[12.5px] text-bw-body transition-colors hover:bg-bw-panel hover:text-bw-ink focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
+                          'px-5 py-2.75 text-left text-[12.5px] text-bw-body transition-colors hover:bg-bw-panel hover:text-bw-ink focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
                           isSubActive &&
                             'bg-bw-panel font-semibold text-bw-ink',
                         )}
@@ -99,7 +99,7 @@ export default function CategorySidebar({
   }
 
   const body = loading ? (
-    <p className="px-3.5 py-4 font-archivo text-[12.5px] text-bw-muted">
+    <p className="px-3.5 py-4 text-[12.5px] text-bw-muted">
       Loading categories…
     </p>
   ) : (
@@ -110,7 +110,7 @@ export default function CategorySidebar({
     <>
       {/* Desktop: permanent sidebar column */}
       <aside className="hidden w-64 shrink-0 border border-bw-line bg-bw-surface lg:block">
-        <div className="border-b border-bw-line px-3.5 py-3.5 font-archivo text-[11px] font-bold tracking-[.12em] text-bw-ink uppercase">
+        <div className="border-b border-bw-line px-3.5 py-3.5 text-[11px] font-bold tracking-[.12em] text-bw-ink uppercase">
           Categories
         </div>
         {body}
@@ -118,7 +118,7 @@ export default function CategorySidebar({
 
       {/* Mobile/tablet: same permanent accordion, stacked above the product grid */}
       <div className="border border-bw-line bg-bw-surface lg:hidden">
-        <div className="border-b border-bw-line px-3.5 py-3.5 font-archivo text-[11px] font-bold tracking-[.12em] text-bw-ink uppercase">
+        <div className="border-b border-bw-line px-3.5 py-3.5 text-[11px] font-bold tracking-[.12em] text-bw-ink uppercase">
           Categories
         </div>
         {body}

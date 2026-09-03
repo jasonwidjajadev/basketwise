@@ -19,14 +19,14 @@ const STEPS = [
 export default function HowItWorks() {
   return (
     <section className="mx-auto max-w-[1160px] px-6 pt-11 lg:px-10">
-      <p className="mb-5.5 font-archivo text-[11.5px] tracking-[.18em] text-bw-subtle uppercase">
+      <p className="mb-5.5 text-[11.5px] tracking-[.18em] text-bw-subtle uppercase">
         How BasketWise works
       </p>
 
       <div className="grid grid-cols-1 gap-px border border-bw-line bg-bw-line sm:grid-cols-3">
         {STEPS.map((step) => (
           <div key={step.number} className="bg-bw-page px-6 py-5.5">
-            <span className="font-newsreader text-[26px] text-bw-line-strong">
+            <span className="text-[26px] text-bw-line-strong">
               {step.number}
             </span>
             <p className="mt-1.5 mb-0.5 text-[15px] font-semibold text-bw-ink">

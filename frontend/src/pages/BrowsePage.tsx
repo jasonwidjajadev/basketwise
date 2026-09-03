@@ -6,7 +6,7 @@ import ProductCard from '@/components/ProductCard'
 import RetailerFilter from '@/components/browse/RetailerFilter'
 import SortMenu from '@/components/browse/SortMenu'
 import { useCart } from '@/context/useCart'
-import { SORT_OPTIONS } from '@/lib/browseSort'
+import { SORT_OPTIONS } from '@/components/browse/browseSort'
 
 const PAGE_SIZE = 24
 const RETAILER_VALUES = ['', 'woolworths', 'coles', 'aldi', 'harrisfarm']
@@ -103,7 +103,7 @@ export default function BrowsePage() {
   return (
     <div>
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-        <h1 className="font-newsreader text-[28px] font-normal tracking-[-.015em] text-bw-ink">
+        <h1 className="text-[28px] font-normal tracking-[-.015em] text-bw-ink">
           {heading}
         </h1>
         <span className="text-xs text-bw-muted">
@@ -146,9 +146,7 @@ export default function BrowsePage() {
         </div>
       ) : items.length === 0 ? (
         <div className="animate-bw-fade-up flex flex-col items-start gap-1.5 border border-bw-line bg-bw-surface px-8 py-12">
-          <h2 className="font-newsreader text-xl font-normal text-bw-ink">
-            No products found
-          </h2>
+          <h2 className="text-xl font-normal text-bw-ink">No products found</h2>
           <p className="max-w-[44ch] text-[13px] text-bw-muted">
             {`We don't have any products loaded for ${heading} yet.`}
           </p>
@@ -157,7 +155,7 @@ export default function BrowsePage() {
         <>
           <div
             key={requestKey}
-            className="grid grid-cols-2 gap-3.5 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
+            className="grid grid-cols-2 gap-x-3.5 gap-y-12 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
           >
             {items.map((product, index) => (
               <div
@@ -181,7 +179,7 @@ export default function BrowsePage() {
                 type="button"
                 onClick={loadMore}
                 disabled={loadingMore}
-                className="rounded-full border border-bw-ink px-5 py-2.75 font-archivo text-xs font-semibold text-bw-ink transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none disabled:opacity-50"
+                className="rounded-full border border-bw-ink px-5 py-2.75 text-xs font-semibold text-bw-ink transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none disabled:opacity-50"
               >
                 {loadingMore ? 'Loading…' : 'Load more'}
               </button>

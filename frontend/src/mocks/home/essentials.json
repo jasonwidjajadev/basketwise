@@ -497,9 +497,7 @@
     "retailer_count": 1,
     "rating_avg": null,
     "rating_count": null,
-    "offers": [
-      { "retailer": "woolworths", "price": 15.0 }
-    ]
+    "offers": [{ "retailer": "woolworths", "price": 15.0 }]
   },
   {
     "id": "smoked-chicken-breast-300g",
@@ -546,9 +544,7 @@
     "retailer_count": 1,
     "rating_avg": null,
     "rating_count": null,
-    "offers": [
-      { "retailer": "coles", "price": 0.83 }
-    ]
+    "offers": [{ "retailer": "coles", "price": 0.83 }]
   },
   {
     "id": "jazz-apples-approx-160g-each",
@@ -570,9 +566,7 @@
     "retailer_count": 1,
     "rating_avg": null,
     "rating_count": null,
-    "offers": [
-      { "retailer": "coles", "price": 1.26 }
-    ]
+    "offers": [{ "retailer": "coles", "price": 1.26 }]
   },
   {
     "id": "potatoes-sweet-500g",
@@ -594,8 +588,6 @@
     "retailer_count": 1,
     "rating_avg": null,
     "rating_count": null,
-    "offers": [
-      { "retailer": "coles", "price": 5.9 }
-    ]
+    "offers": [{ "retailer": "coles", "price": 5.9 }]
   }
 ]

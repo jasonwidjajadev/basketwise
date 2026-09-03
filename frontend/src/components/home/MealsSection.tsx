@@ -1,5 +1,5 @@
 import { useCart } from '@/context/useCart'
-import { meals } from '@/data/meals'
+import meals from '@/mocks/home/meals.json'
 import MealCard from '@/components/home/MealCard'
 
 const INGREDIENTS_PER_MEAL = 8
@@ -10,11 +10,11 @@ export default function MealsSection() {
   return (
     <section id="meals" className="mx-auto max-w-[1160px] px-6 pt-14 lg:px-10">
       <div className="border border-bw-line bg-bw-panel px-6 pt-10 pb-9 sm:px-10">
-        <p className="mb-3.5 font-archivo text-[10.5px] tracking-[.22em] text-bw-subtle uppercase">
+        <p className="mb-3.5 text-[10.5px] tracking-[.22em] text-bw-subtle uppercase">
           Cook it, shop it
         </p>
 
-        <h2 className="max-w-[22ch] font-newsreader text-[32px] leading-[1.14] font-normal tracking-[-.02em] text-bw-ink sm:text-[38px]">
+        <h2 className="max-w-[22ch] text-[32px] leading-[1.14] font-normal tracking-[-.02em] text-bw-ink sm:text-[38px]">
           Pick a meal, and every ingredient lands in your basket.
         </h2>
 

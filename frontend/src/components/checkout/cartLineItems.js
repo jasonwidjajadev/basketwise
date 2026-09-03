@@ -4,8 +4,8 @@
 // the id came from.
 import BROWSE_PRODUCTS from '@/mocks/browse/products.json'
 import HOME_ESSENTIALS from '@/mocks/home/essentials.json'
-import { essentials } from './essentials.js'
-import { meals } from './meals.js'
+import { essentials } from '../../_can_possibly_delete/data/essentials.js'
+import meals from '@/mocks/home/meals.json'
 
 function cheapestPrice(product) {
   const prices = product.offers.map((offer) => offer.price)

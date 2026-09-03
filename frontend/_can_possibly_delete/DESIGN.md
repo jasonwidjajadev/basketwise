@@ -2,87 +2,87 @@
 name: BasketWise
 description: Australia's independent grocery price comparison tool
 colors:
-  page: "#fbfaf7"
-  surface: "#ffffff"
-  panel: "#efede4"
-  line: "#e4e1d6"
-  line-strong: "#c9c6b8"
-  ink: "#1c1c1a"
-  ink-inverse-bg: "#14170f"
-  body: "#5c5b52"
-  muted: "#6e6d63"
-  subtle: "#8a897e"
-  on-dark: "#b9b7ac"
-  primary: "#1f4d2e"
-  primary-hover: "#2e7a47"
-  accent: "#f2c230"
-  accent-ink: "#2a2405"
-  danger: "#b0332b"
+  page: '#fbfaf7'
+  surface: '#ffffff'
+  panel: '#efede4'
+  line: '#e4e1d6'
+  line-strong: '#c9c6b8'
+  ink: '#1c1c1a'
+  ink-inverse-bg: '#14170f'
+  body: '#5c5b52'
+  muted: '#6e6d63'
+  subtle: '#8a897e'
+  on-dark: '#b9b7ac'
+  primary: '#1f4d2e'
+  primary-hover: '#2e7a47'
+  accent: '#f2c230'
+  accent-ink: '#2a2405'
+  danger: '#b0332b'
 typography:
   display:
-    fontFamily: "Newsreader, Georgia, serif"
-    fontSize: "clamp(1.875rem, 4vw, 3.25rem)"
+    fontFamily: 'Newsreader, Georgia, serif'
+    fontSize: 'clamp(1.875rem, 4vw, 3.25rem)'
     fontWeight: 400
     lineHeight: 1.1
-    letterSpacing: "-0.02em"
+    letterSpacing: '-0.02em'
   label:
-    fontFamily: "Archivo, system-ui, sans-serif"
-    fontSize: "0.6875rem"
+    fontFamily: 'Archivo, system-ui, sans-serif'
+    fontSize: '0.6875rem'
     fontWeight: 700
     lineHeight: 1.2
-    letterSpacing: "0.16em"
+    letterSpacing: '0.16em'
   body:
-    fontFamily: "Archivo, system-ui, sans-serif"
-    fontSize: "0.8125rem"
+    fontFamily: 'Archivo, system-ui, sans-serif'
+    fontSize: '0.8125rem'
     fontWeight: 400
     lineHeight: 1.6
-    letterSpacing: "normal"
+    letterSpacing: 'normal'
 rounded:
-  none: "0px"
-  sm: "2px"
-  xl: "12px"
-  2xl: "16px"
-  full: "9999px"
+  none: '0px'
+  sm: '2px'
+  xl: '12px'
+  2xl: '16px'
+  full: '9999px'
 spacing:
-  xs: "8px"
-  sm: "12px"
-  md: "24px"
-  lg: "40px"
-  container-max: "1160px"
+  xs: '8px'
+  sm: '12px'
+  md: '24px'
+  lg: '40px'
+  container-max: '1160px'
 components:
   button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "#ffffff"
-    rounded: "{rounded.full}"
-    padding: "13px 20px"
+    backgroundColor: '{colors.primary}'
+    textColor: '#ffffff'
+    rounded: '{rounded.full}'
+    padding: '13px 20px'
   button-primary-hover:
-    backgroundColor: "{colors.primary-hover}"
+    backgroundColor: '{colors.primary-hover}'
   button-card-cta:
-    backgroundColor: "{colors.primary}"
-    textColor: "#ffffff"
-    rounded: "{rounded.sm}"
-    padding: "9px 10px"
+    backgroundColor: '{colors.primary}'
+    textColor: '#ffffff'
+    rounded: '{rounded.sm}'
+    padding: '9px 10px'
   button-card-cta-active:
-    backgroundColor: "{colors.ink-inverse-bg}"
+    backgroundColor: '{colors.ink-inverse-bg}'
   button-ghost:
-    backgroundColor: "transparent"
-    textColor: "{colors.body}"
-    rounded: "{rounded.full}"
-    padding: "10px 18px"
+    backgroundColor: 'transparent'
+    textColor: '{colors.body}'
+    rounded: '{rounded.full}'
+    padding: '10px 18px'
   badge-accent:
-    backgroundColor: "{colors.accent}"
-    textColor: "{colors.accent-ink}"
-    rounded: "{rounded.none}"
-    padding: "3px 6px"
+    backgroundColor: '{colors.accent}'
+    textColor: '{colors.accent-ink}'
+    rounded: '{rounded.none}'
+    padding: '3px 6px'
   input-search:
-    backgroundColor: "rgba(255,255,255,0.1)"
-    textColor: "{colors.panel}"
-    rounded: "{rounded.full}"
-    padding: "10px 16px 10px 48px"
+    backgroundColor: 'rgba(255,255,255,0.1)'
+    textColor: '{colors.panel}'
+    rounded: '{rounded.full}'
+    padding: '10px 16px 10px 48px'
   card-browse-product:
-    backgroundColor: "{colors.surface}"
-    rounded: "{rounded.2xl}"
-    padding: "0"
+    backgroundColor: '{colors.surface}'
+    rounded: '{rounded.2xl}'
+    padding: '0'
 ---
 
 # Design System: BasketWise
@@ -96,6 +96,7 @@ BasketWise reads like a stocktake sheet turned into a storefront: ink on warm cr
 The system currently trusts placeholder photography blocks (a diagonal two-tone stripe pattern with a small monospace caption naming the intended shot) rather than faking real imagery — a deliberate honesty about what's real and what's a stand-in, which fits a product whose whole pitch is "we don't take a cut, we just show you the truth."
 
 **Key Characteristics:**
+
 - Warm off-white paper ground, near-black ink text — never pure white-on-black.
 - Deep pantry green is the only color allowed to mean "go" or "action."
 - Market mustard yellow is reserved for money signals: savings, count badges, the sign-in accent.
@@ -108,15 +109,19 @@ The system currently trusts placeholder photography blocks (a diagonal two-tone 
 Muted, warm neutrals built around unbleached paper and near-black ink, with exactly two saturated colors — pantry green and market mustard — each locked to a single job.
 
 ### Primary
+
 - **Deep Pantry Green** (`#1f4d2e`): The only "go" color — Add to cart, Compare basket, active CTAs, the "Start another way" link underline. Its hover state, **Fresh Pantry Green** (`#2e7a47`), is used exclusively on hover/focus, never at rest.
 
 ### Secondary
+
 - **Market Mustard** (`#f2c230`): Reserved for money and attention — the basket count badge, the "you save" badge on product cards, the sign-in link in the dark header. Paired with **Mustard Ink** (`#2a2405`) for on-accent text, never white.
 
 ### Tertiary
+
 - **Brick Red** (`#b0332b`): Strike-through / "was" pricing only. The system's one warning-adjacent color; not used for buttons or navigation.
 
 ### Neutral
+
 - **Warm Paper** (`#fbfaf7`): Page background — the base "ledger sheet."
 - **Bright White** (`#ffffff`): Card and panel surfaces sitting on top of the page.
 - **Oat Panel** (`#efede4`): Secondary surface for framed content blocks (the meals feature panel, mobile menu).
@@ -128,6 +133,7 @@ Muted, warm neutrals built around unbleached paper and near-black ink, with exac
 - **Pale Oat** (`#b9b7ac`): Text color for content sitting on the dark ink-inverse background.
 
 ### Named Rules
+
 **The Two-Color Rule.** Only pantry green and market mustard carry saturation. Every other token in the system is a neutral warm grey or off-white/off-black. If a new element needs a third saturated color, that's a sign it doesn't belong in this system as designed.
 
 **The No-Pure-Black Rule.** Text and dark surfaces are never `#000` or `#fff`-on-black; ink and its inverse both carry warmth (green- and paper-tinted respectively).
@@ -137,9 +143,10 @@ Muted, warm neutrals built around unbleached paper and near-black ink, with exac
 **Display Font:** Newsreader (with Georgia, serif fallback)
 **Body/Label Font:** Archivo (with system-ui, sans-serif fallback)
 
-**Character:** A literary serif for anything that should feel considered — headlines, prices, the wordmark — set in regular weight with italic-bold used as an emphasis device inline (see the hero: "Shop *smarter*, spend *less*"). Everything operational drops to Archivo, almost always uppercase and letter-spaced, reading closer to a shelf label than a UI string.
+**Character:** A literary serif for anything that should feel considered — headlines, prices, the wordmark — set in regular weight with italic-bold used as an emphasis device inline (see the hero: "Shop _smarter_, spend _less_"). Everything operational drops to Archivo, almost always uppercase and letter-spaced, reading closer to a shelf label than a UI string.
 
 ### Hierarchy
+
 - **Display** (400, `clamp(1.875rem, 4vw, 3.25rem)` / 34–52px, line-height 1.06–1.14): Section and hero headlines. Set in Newsreader; emphasis words within a headline switch to italic + bold (font-weight 700 italic), never a color change.
 - **Price** (400, 26px, line-height 1): A dedicated Newsreader role — product prices are typographically treated like headlines, not like body numerals.
 - **Title** (600, 14.5–15px): Card and list titles (meal name, product name context, step titles) — Archivo semibold, sentence case.
@@ -150,6 +157,7 @@ Muted, warm neutrals built around unbleached paper and near-black ink, with exac
 Note: `EB Garamond` is loaded as a variable font in `index.css` but has no assigned role in the implemented system yet — treat it as reserved, not a documented hierarchy role, until a component actually uses it.
 
 ### Named Rules
+
 **The Shelf-Label Rule.** Any text that is functional rather than expressive (a button, a nav item, an eyebrow, a badge) is uppercase Archivo with wide letter-spacing. Any text that is meant to be read and felt (headlines, prices) is Newsreader, sentence case, letter-spacing tightened slightly negative.
 
 ## Layout
@@ -159,6 +167,7 @@ A single centered container at **1160px max-width**, with `px-6` mobile gutters 
 Product and category grids run responsive column counts: 2 columns mobile → 3 at `sm` → 5–6 at `lg`, using CSS grid.
 
 ### Named Rules
+
 **The Hairline Gutter Rule.** Bordered grids (the homepage's `CategoryGrid`, "how it works" steps) are built by giving the grid container `bg-bw-line` (the hairline color) and a `gap-px`, so the 1px gaps between cells render as seams rather than literal `<hr>` elements or per-cell borders. Reuse this pattern for any new tessellated grid rather than adding individual cell borders — **except** the dedicated `/categories` hub page, which is a confirmed, deliberate departure from this rule (see Shapes).
 
 ## Elevation & Depth
@@ -168,15 +177,18 @@ Flat by design almost everywhere — depth and separation come from two devices:
 **Confirmed exception — the Browse product card.** `BrowseProductCard` carries `shadow-sm` on its outer container and `shadow-md` on its floating add/remove button and its "Save $X" badge. This is the system's one sanctioned use of elevation, scoped to that single component; it does not license shadows anywhere else.
 
 ### Shadow Vocabulary (Browse product card only)
+
 - **`shadow-sm`**: outer card container, giving it a faint lift off the page grid.
 - **`shadow-md`**: the circular add/remove control and the savings pill, both floating over the placeholder image.
 
 ### Named Rules
+
 **The Flat-By-Default Rule.** Never add `box-shadow` to a card, button, or panel — except the Browse product card, which is the system's one named elevation exception (see above). Everywhere else, if something needs to read as "above" the page, use a border and/or a darker flat fill — not elevation.
 
 ## Shapes
 
 A deliberately narrow radius vocabulary, with two component-scoped exceptions:
+
 - **Full pill** (`rounded-full`, 9999px): Every clickable chip, tab, and header/nav-level button (Basket button, ghost nav links, search input, tab toggles, circular icon buttons, the mustard count badge).
 - **2px nudge** (`rounded-sm`): Only on card-level CTA buttons and badges sitting inside a `ProductCard` (Add to cart, Save to list, the savings badge) — barely-there, closer to "eased" than "rounded."
 - **Square** (0px, default/unset): Everything else — panels, containers, the homepage's `CategoryGrid` cells, the search dropdown, the mobile menu. Squareness is the resting state; roundness is earned by being an interactive pill, a small in-card control, or one of the two named exceptions below.
@@ -188,16 +200,19 @@ Borders are always 1px, always the hairline oat color at rest, stepping up to `b
 ## Components
 
 ### Buttons
+
 - **Primary (pill):** `rounded-full`, `bg-bw-green` / white text, Archivo semibold, used for header/nav-level and section-level calls to action ("Basket", "Compare basket", ghost ring CTAs). Hover → `bg-bw-green-hover`. No shadow, no scale transform.
 - **Card CTA (squared):** `rounded-sm`, same green fill, smaller padding, used inside `ProductCard`/`MealCard`. Its "done" state doesn't fade the color — it swaps entirely to `bg-bw-ink-inverse-bg` ("In basket ✓"), keeping full contrast rather than dimming.
 - **Secondary/Outline:** transparent or surface background, 1px border in `bw-line-strong` (unselected) or `bw-ink` (selected/active, e.g. "Saved"), text in `bw-ink`.
 - **Ghost (tab/ghost nav):** transparent background, `bw-body` text at rest; selected state fills solid `bg-bw-ink` with white text (see `StartAnotherWay` tabs) rather than an underline or color-only change.
 
 ### Badges
+
 - **Accent badge:** `bg-bw-yellow` / `text-bw-yellow-ink`, square corners, bold uppercase-adjacent label — used for savings callouts and the basket-count pip (which is circular via `rounded-full` instead, ringed in `bw-green`).
 - **Tag badge:** `bg-bw-green` / white text, `rounded-full`, small, top-left overlay on product imagery.
 
 ### Cards / Containers
+
 - **Corner Style:** Square (0px radius) throughout, except the Browse product card (see below).
 - **Background:** `bw-surface` (white) on `bw-page`, or `bw-panel` (oat) for framed feature blocks.
 - **Shadow Strategy:** None — see Elevation & Depth — except the Browse product card (see below).
@@ -206,6 +221,7 @@ Borders are always 1px, always the hairline oat color at rest, stepping up to `b
 - **Placeholder imagery:** Where real product/hero photography is missing, use a repeating 135° two-tone diagonal-stripe background (`#F3F1EA`/`#EDEBE2` or similar close warm-neutral pair) with a centered, small monospace caption naming the intended shot — never a gray box or a broken-image icon.
 
 ### Browse Product Card (confirmed exception)
+
 - **Character:** The one component in the system permitted to feel "soft" — a rounded, lightly elevated tile rather than the ledger's flat square panels. Confined entirely to the Browse grid; do not extend this treatment to any other card (meal cards, home `ProductCard`, feature panels all stay flat/square).
 - **Corner Style:** `rounded-2xl` (16px) on the outer card, `rounded-xl` (12px) on the inset placeholder-image block.
 - **Shadow Strategy:** `shadow-sm` on the outer card, `shadow-md` on the floating add/remove button and the savings pill.
@@ -213,10 +229,12 @@ Borders are always 1px, always the hairline oat color at rest, stepping up to `b
 - **Savings pill:** `rounded-full`, solid `bw-green`, floating bottom-left over the image; shown only when the saving is both ≥10% of the cheapest price and ≥$0.20.
 
 ### Inputs / Fields
+
 - **Style:** `rounded-full`, translucent white fill (`bg-white/10`) on the dark header, no visible border at rest (`border-transparent`).
 - **Focus:** Border and ring switch to `bw-yellow` (`focus:border-bw-yellow focus:ring-2 focus:ring-bw-yellow/20`), fill brightens slightly (`bg-white/15`) — the accent color's one appearance outside money contexts.
 
 ### Navigation
+
 - **Header:** Solid `bw-ink-inverse-bg` bar, sticky top, `bw-on-dark` text. Section anchor links and account/browse/lists links use uppercase tracked Archivo labels; the one exception is "Sign in," which is styled in `bw-yellow` with an underline to stand apart as a secondary but noticeable action.
 - **Icons:** Material Design icon set (`react-icons/md`) for Browse/Lists/Account/menu affordances, mixed with hand-authored inline SVGs (search, cart-outline) that get a CSS `invert` filter to sit correctly on the dark header. Icons are functional, never decorative — every icon pairs with a visible or `aria-label` text equivalent.
 - **Mobile menu:** A square-cornered white dropdown panel (`bw-surface`/`bw-line` border) rather than a full-screen takeover, anchored under the menu button.
@@ -224,6 +242,7 @@ Borders are always 1px, always the hairline oat color at rest, stepping up to `b
 ## Do's and Don'ts
 
 ### Do:
+
 - **Do** keep pantry green and market mustard as the only saturated colors in any new UI; every other new token should land in the existing warm-neutral ramp.
 - **Do** use the Hairline Gutter Rule (`bg-bw-line` container + `gap-px`) for any new bordered grid rather than per-cell borders.
 - **Do** use the diagonal-stripe placeholder + mono caption pattern for any imagery slot that doesn't yet have a real asset, rather than a plain gray box.
@@ -233,6 +252,7 @@ Borders are always 1px, always the hairline oat color at rest, stepping up to `b
 - **Do** confine `rounded-xl`/`rounded-2xl` to the Browse product card, and `rounded-xl`/`rounded-lg` to the `/categories` hub page tiles — these are the system's two named radius exceptions, not a general license.
 
 ### Don't:
+
 - **Don't** add `box-shadow` anywhere outside the confirmed Browse-product-card exception — depth everywhere else comes from borders and flat color blocking only, never elevation.
 - **Don't** introduce a third saturated color; if something needs emphasis beyond green/mustard/red, reach for the neutral ramp or a stronger border, not a new hue.
 - **Don't** use a radius outside the established values (pill / 2px / square, plus the Browse product card's and `/categories` hub page's own exceptions) anywhere else in the system.

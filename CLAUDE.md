@@ -30,9 +30,10 @@ pnpm install
 pnpm dev
 pnpm build
 pnpm preview
-pnpm lint
-pnpm format
-pnpm format:check
+pnpm format # Formats/fixes files automatically.
+pnpm lint:fix #only auto-fix ESLint issues that have a safe fixer. Some lint errors still need manual changes.
+pnpm format:check # Checks formatting only. It should not modify anything.
+pnpm lint #Checks ESLint/code-quality rules. Depending on your script, it may or may not auto-fix.
 ```
 
 Folder map: [`frontend/README.md`](frontend/README.md).

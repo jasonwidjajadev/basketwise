@@ -82,9 +82,7 @@ export default function ComparePage() {
   return (
     // <div className="px-6 pt-9.5 pb-24 lg:px-8 xl:px-12 2xl:px-16">
     <div className="mx-auto px-6 pt-9.5 pb-24 lg:max-w-5xl xl:max-w-[1280px]">
-      <h1 className="font-newsreader text-[32px] text-bw-ink">
-        How do you want to shop?
-      </h1>
+      <h1 className="text-[32px] text-bw-ink">How do you want to shop?</h1>
       <p className="mt-1.5 text-[13px] text-bw-body">
         {data.isSingleItem
           ? "1 item — here's where it's cheapest"

@@ -11,7 +11,7 @@ export default function EssentialsSection() {
       className="mx-auto max-w-[1160px] px-6 pt-9.5 pb-2.5 lg:px-10"
     >
       <div className="mb-4 flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="font-archivo text-[13px] font-bold tracking-[.2em] text-bw-ink uppercase">
+        <h2 className="text-[13px] font-bold tracking-[.2em] text-bw-ink uppercase">
           Essentials
         </h2>
         <span className="text-xs text-bw-subtle">

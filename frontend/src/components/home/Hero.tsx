@@ -26,11 +26,11 @@ export default function Hero() {
       </div>
 
       <div className="flex flex-col justify-center border border-bw-line bg-bw-panel px-8 py-10 sm:px-13 sm:py-14">
-        <p className="mb-5 font-archivo text-[10.5px] tracking-[.22em] text-bw-subtle uppercase">
+        <p className="mb-5 text-[10.5px] tracking-[.22em] text-bw-subtle uppercase">
           Australia&rsquo;s grocery price companion
         </p>
 
-        <h1 className="font-newsreader text-[40px] leading-[1.06] font-normal tracking-[-.02em] text-bw-ink sm:text-[52px]">
+        <h1 className="text-[40px] leading-[1.06] font-normal tracking-[-.02em] text-bw-ink sm:text-[52px]">
           Shop <em className="font-bold italic">smarter</em>, spend{' '}
           <em className="font-bold italic">less</em>, on every{' '}
           <em className="font-bold italic">weekly</em> shop.
@@ -45,26 +45,26 @@ export default function Hero() {
         <div className="flex flex-wrap items-center gap-3.5">
           <Link
             to="/#essentials"
-            className="rounded-sm bg-bw-green px-5 py-3.5 font-archivo text-[13.5px] font-semibold text-white transition-colors hover:bg-bw-green-hover"
+            className="rounded-sm bg-bw-green px-5 py-3.5 text-[13.5px] font-semibold text-white transition-colors hover:bg-bw-green-hover"
           >
             Scan a receipt
           </Link>
 
-          <span className="font-archivo text-[11px] font-semibold tracking-[.14em] text-bw-subtle uppercase">
+          <span className="text-[11px] font-semibold tracking-[.14em] text-bw-subtle uppercase">
             Or
           </span>
 
           <div className="flex flex-wrap gap-2.5">
             <Link
               to="/#start"
-              className="rounded-sm border border-bw-green px-5 py-3.5 font-archivo text-[13.5px] font-semibold text-bw-green transition-colors hover:bg-bw-green hover:text-white"
+              className="rounded-sm border border-bw-green px-5 py-3.5 text-[13.5px] font-semibold text-bw-green transition-colors hover:bg-bw-green hover:text-white"
             >
               Look for groceries
             </Link>
 
             <Link
               to="/#start"
-              className="rounded-sm border border-bw-green px-5 py-3.5 font-archivo text-[13.5px] font-semibold text-bw-green transition-colors hover:bg-bw-green hover:text-white"
+              className="rounded-sm border border-bw-green px-5 py-3.5 text-[13.5px] font-semibold text-bw-green transition-colors hover:bg-bw-green hover:text-white"
             >
               Get Meal Plans
             </Link>

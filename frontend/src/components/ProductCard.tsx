@@ -14,6 +14,7 @@ import woolworthsGreyscale from '@/assets/product_card/woolies_grey.webp'
 import { cn } from '@/lib/utils'
 
 const POP_DURATION_MS = 420
+const PRODUCT_NAME_MAX_LENGTH = 24
 
 const RETAILER_LABELS = {
   woolworths: 'Woolworths',
@@ -41,26 +42,9 @@ const RETAILER_LOGOS = {
   },
 } as const
 
-const RETAILER_ORDER = [
-  'woolworths',
-  'coles',
-  'aldi',
-  'harrisfarm',
-] as const
+const RETAILER_ORDER = ['woolworths', 'coles', 'aldi', 'harrisfarm'] as const
 
 type Retailer = (typeof RETAILER_ORDER)[number]
-
-function fmt(n: number) {
-  return `$${n.toFixed(2)}`
-}
-
-function truncateWords(text: string, maxWords = 4) {
-  const words = text.trim().split(/\s+/)
-
-  return words.length > maxWords
-    ? `${words.slice(0, maxWords).join(' ')}...`
-    : text
-}
 
 type ProductOffer = {
   retailer: Retailer
@@ -89,6 +73,16 @@ type ProductCardProps = {
   onRemove: () => void
 }
 
+function fmt(n: number) {
+  return `$${n.toFixed(2)}`
+}
+
+function truncateText(text: string, maxLength = PRODUCT_NAME_MAX_LENGTH) {
+  if (text.length <= maxLength) return text
+
+  return `${text.slice(0, maxLength).trim()}...`
+}
+
 export default function ProductCard({
   product,
   added,
@@ -102,9 +96,9 @@ export default function ProductCard({
   const [justAdded, setJustAdded] = useState(false)
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null)
 
-  const popTimeout = useRef<
-    ReturnType<typeof setTimeout> | undefined
-  >(undefined)
+  const popTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  )
 
   const imageSrc =
     product.image_url && failedImageUrl !== product.image_url
@@ -130,13 +124,11 @@ export default function ProductCard({
 
   const cheapestRetailer =
     product.cheapest_retailer &&
-    offersByRetailer.get(product.cheapest_retailer)?.price ===
-      cheapestPrice
+    offersByRetailer.get(product.cheapest_retailer)?.price === cheapestPrice
       ? product.cheapest_retailer
-      : RETAILER_ORDER.find(
-          (retailer) =>
-            offersByRetailer.get(retailer)?.price === cheapestPrice,
-        ) ?? null
+      : (RETAILER_ORDER.find(
+          (retailer) => offersByRetailer.get(retailer)?.price === cheapestPrice,
+        ) ?? null)
 
   function handleToggle() {
     if (added) {
@@ -149,122 +141,106 @@ export default function ProductCard({
 
     clearTimeout(popTimeout.current)
 
-    popTimeout.current = setTimeout(
-      () => setJustAdded(false),
-      POP_DURATION_MS,
-    )
+    popTimeout.current = setTimeout(() => setJustAdded(false), POP_DURATION_MS)
   }
 
   return (
-    <div className="flex flex-col overflow-hidden bg-bw-surface">
-      <div className="p-3 pb-0">
-        <div className="group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-dashed border-bw-line-strong bg-white">
-          <img
-            src={imageSrc}
-            alt={product.name}
-            onError={() => {
-              if (product.image_url) {
-                setFailedImageUrl(product.image_url)
-              }
-            }}
-            className="h-full w-full object-contain p-2 transition-transform duration-300 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-          />
+    <div className="flex w-full flex-col bg-white">
+      <div className="group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-dashed border-bw-line-strong bg-white">
+        {product.has_special && (
+          <div className="absolute top-2 left-2 z-10 flex flex-col items-center gap-1">
+            <span className="rounded-full bg-bw-yellow px-2 py-1 text-[10px] font-semibold text-bw-yellow-ink">
+              Special
+            </span>
 
-          <button
-            type="button"
-            onClick={handleToggle}
-            aria-label={
-              added ? 'Remove from basket' : 'Add to basket'
+            {product.was_price != null && (
+              <span className="text-[10px] text-bw-muted">
+                was{' '}
+                <span className="line-through">{fmt(product.was_price)}</span>
+              </span>
+            )}
+          </div>
+        )}
+
+        <img
+          src={imageSrc}
+          alt={product.name}
+          onError={() => {
+            if (product.image_url) {
+              setFailedImageUrl(product.image_url)
             }
-            className={cn(
-              'absolute right-3 bottom-3 flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-colors focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:ring-offset-2 focus-visible:outline-none',
-              added
-                ? 'bg-bw-green text-white'
-                : 'bg-bw-surface text-bw-ink hover:bg-bw-green hover:text-white',
-              justAdded && 'animate-[bw-pop_420ms_ease]',
-            )}
-          >
-            {added ? (
-              <MdCheck className="h-5 w-5" />
-            ) : (
-              <MdAdd className="h-5 w-5" />
-            )}
-          </button>
-        </div>
+          }}
+          className="h-[132px] w-[144px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+        />
+
+        <button
+          type="button"
+          onClick={handleToggle}
+          aria-label={added ? 'Remove from basket' : 'Add to basket'}
+          title={added ? 'Remove from basket' : 'Add to basket'}
+          className={cn(
+            'absolute right-2 bottom-2 flex h-8 w-8 items-center justify-center rounded-full border border-bw-line bg-white text-bw-ink transition-colors',
+            'hover:border-bw-green hover:bg-bw-green hover:text-white',
+            'focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
+            added && 'border-bw-green bg-bw-green text-white',
+            justAdded && 'animate-[bw-pop_420ms_ease]',
+          )}
+        >
+          {added ? (
+            <MdCheck className="h-4 w-4" />
+          ) : (
+            <MdAdd className="h-4 w-4" />
+          )}
+        </button>
       </div>
 
-      <div className="flex flex-1 flex-col px-4 pt-3.5 pb-4">
-        <div>
-          <p className="mb-0.5 text-[11px] font-medium tracking-[0.02em] text-bw-muted">
-            {brand}
+      <div className="pt-3">
+        <p className="mb-1 text-[11px] leading-none text-bw-muted">{brand}</p>
+
+        <p
+          title={product.name}
+          className="min-h-[18px] cursor-default text-[13px] leading-[1.3] font-medium text-bw-ink"
+        >
+          {truncateText(product.name)}
+        </p>
+
+        {(size || unitPrice) && (
+          <p className="mt-1 text-[11px] text-bw-muted">
+            {size}
+
+            {size && unitPrice ? ' · ' : ''}
+
+            {unitPrice}
           </p>
+        )}
+      </div>
 
-          <p className="text-[15px] leading-snug font-semibold text-bw-ink">
-            {truncateWords(product.name)}
-          </p>
+      <div className="mt-3 grid grid-cols-4 gap-1">
+        {RETAILER_ORDER.map((retailer) => {
+          const offer = offersByRetailer.get(retailer)
+          const logos = RETAILER_LOGOS[retailer]
+          const label = RETAILER_LABELS[retailer]
+          const isCheapest = retailer === cheapestRetailer
 
-          {(size || unitPrice) && (
-            <p className="mt-1 text-[12px] text-bw-muted">
-              {size}
-              {size && unitPrice ? ' · ' : ''}
-              {unitPrice}
-            </p>
-          )}
+          return (
+            <div key={retailer} className="flex min-w-0 flex-col items-center">
+              <img
+                src={isCheapest ? logos.color : logos.greyscale}
+                alt={label}
+                className="h-6 w-6 object-contain"
+              />
 
-          {product.has_special && (
-            <div className="mt-2 flex items-center gap-2 text-[11px]">
-              <span className="rounded-full bg-bw-yellow px-2 py-1 font-archivo font-semibold text-bw-yellow-ink">
-                Special
-              </span>
-
-              {product.was_price != null && (
-                <span className="text-bw-muted">
-                  Was{' '}
-                  <span className="line-through">
-                    {fmt(product.was_price)}
-                  </span>
-                </span>
-              )}
-            </div>
-          )}
-        </div>
-
-        <div className="mt-4 grid grid-cols-4 gap-2">
-          {RETAILER_ORDER.map((retailer) => {
-            const offer = offersByRetailer.get(retailer)
-            const logos = RETAILER_LOGOS[retailer]
-            const label = RETAILER_LABELS[retailer]
-            const isCheapest = retailer === cheapestRetailer
-
-            return (
-              <div
-                key={retailer}
-                className="flex min-w-0 flex-col items-center gap-1.5"
+              <span
+                className={cn(
+                  'mt-1 text-[12px] leading-none font-medium',
+                  offer ? 'text-taupe-two' : 'text-bw-subtle',
+                )}
               >
-                <img
-                  src={
-                    isCheapest
-                      ? logos.color
-                      : logos.greyscale
-                  }
-                  alt={label}
-                  className="h-8 w-8 rounded-md object-contain"
-                />
-
-                <span
-                  className={cn(
-                    'font-newsreader text-base leading-none',
-                    offer
-                      ? 'text-bw-ink'
-                      : 'text-bw-subtle',
-                  )}
-                >
-                  {offer ? fmt(offer.price) : '—'}
-                </span>
-              </div>
-            )
-          })}
-        </div>
+                {offer ? fmt(offer.price) : '—'}
+              </span>
+            </div>
+          )
+        })}
       </div>
     </div>
   )

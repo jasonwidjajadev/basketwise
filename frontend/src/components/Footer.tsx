@@ -20,7 +20,7 @@ const LEGAL_LINKS = [
 function FooterColumn({ heading, links }) {
   return (
     <div className="flex flex-col gap-2.25 text-sm">
-      <span className="font-archivo text-[11px] tracking-[.14em] text-bw-muted uppercase">
+      <span className="text-[11px] tracking-[.14em] text-bw-muted uppercase">
         {heading}
       </span>
 
@@ -40,9 +40,7 @@ export default function Footer() {
     <footer className="mt-20 w-full bg-bw-ink-inverse-bg px-6 pt-13 pb-7.5 text-bw-on-dark lg:px-10">
       <div className="mx-auto grid max-w-[1160px] grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-[1.4fr_repeat(3,1fr)]">
         <div>
-          <p className="mb-2.5 font-newsreader text-2xl text-bw-panel">
-            BasketWise
-          </p>
+          <p className="mb-2.5 text-2xl text-bw-panel">BasketWise</p>
           <p className="max-w-[34ch] text-[13px] leading-relaxed">
             Independent grocery price tracking across Australia. We don&rsquo;t
             take a cut from any retailer.
