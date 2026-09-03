@@ -23,7 +23,6 @@ frontend/
 │   │   └── mascots/
 │   ├── components/
 │   │   ├── browse/
-│   │   │   ├── BrowseProductCard.tsx
 │   │   │   ├── CategorySidebar.tsx
 │   │   │   ├── RetailerFilter.tsx
 │   │   │   └── SortMenu.tsx
@@ -45,7 +44,6 @@ frontend/
 │   │   │   ├── HowItWorks.tsx
 │   │   │   ├── MealCard.tsx
 │   │   │   ├── MealsSection.tsx
-│   │   │   ├── ProductCard.tsx
 │   │   │   └── StartAnotherWay.tsx
 │   │   ├── CartSidebar.tsx
 │   │   ├── Footer.tsx

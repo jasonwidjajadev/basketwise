@@ -2,696 +2,799 @@
   {
     "id": "fruit-vegetables",
     "name": "Fruit & Vegetables",
-    "product_count": 948,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "fruit",
         "name": "Fruit",
-        "product_count": 191
+        "product_count": 0
       },
       {
         "id": "vegetables",
         "name": "Vegetables",
-        "product_count": 411
+        "product_count": 0
       },
       {
-        "id": "herbs",
-        "name": "Herbs",
-        "product_count": 51
+        "id": "herbs-sprouts",
+        "name": "Herbs & Sprouts",
+        "product_count": 0
       },
       {
         "id": "salads",
         "name": "Salads",
-        "product_count": 158
+        "product_count": 0
       },
       {
         "id": "prepared-vegetables",
         "name": "Prepared Vegetables",
-        "product_count": 23
+        "product_count": 0
       },
       {
-        "id": "health-foods",
-        "name": "Health Foods",
-        "product_count": 8
-      },
-      {
-        "id": "nuts-dried-fruit",
-        "name": "Nuts & Dried Fruit",
-        "product_count": 50
+        "id": "flowers",
+        "name": "Flowers",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "meat-seafood",
     "name": "Meat & Seafood",
-    "product_count": 1391,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "beef",
         "name": "Beef",
-        "product_count": 401
+        "product_count": 0
       },
       {
         "id": "poultry",
         "name": "Poultry",
-        "product_count": 245
+        "product_count": 0
       },
       {
         "id": "lamb",
         "name": "Lamb",
-        "product_count": 51
+        "product_count": 0
       },
       {
         "id": "pork",
         "name": "Pork",
-        "product_count": 61
+        "product_count": 0
       },
       {
         "id": "mince",
         "name": "Mince",
-        "product_count": 14
+        "product_count": 0
       },
       {
         "id": "sausages-burgers",
         "name": "Sausages & Burgers",
-        "product_count": 68
-      },
-      {
-        "id": "seafood",
-        "name": "Seafood",
-        "product_count": 154
+        "product_count": 0
       },
       {
         "id": "ham",
         "name": "Ham",
-        "product_count": 10
+        "product_count": 0
       },
       {
-        "id": "bbq-meat",
-        "name": "BBQ Meat",
-        "product_count": 30
-      },
-      {
-        "id": "deli-meats",
-        "name": "Deli Meats",
-        "product_count": 26
-      },
-      {
-        "id": "deli-specialties",
-        "name": "Deli Specialties",
-        "product_count": 11
-      },
-      {
-        "id": "dips-pate",
-        "name": "Dips & Pate",
-        "product_count": 6
-      },
-      {
-        "id": "frozen-seafood",
-        "name": "Frozen Seafood",
-        "product_count": 7
+        "id": "seafood",
+        "name": "Seafood",
+        "product_count": 0
       },
       {
         "id": "roasts-slow-cooked",
         "name": "Roasts & Slow Cooked",
-        "product_count": 12
+        "product_count": 0
       },
       {
-        "id": "sausages-frankfurts",
-        "name": "Sausages & Frankfurts",
-        "product_count": 1
+        "id": "game",
+        "name": "Game",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "deli-chilled",
     "name": "Deli & Chilled",
-    "product_count": 1257,
+    "product_count": 0,
     "subcategories": [
-      {
-        "id": "deli-meat",
-        "name": "Deli Meat",
-        "product_count": 169
-      },
-      {
-        "id": "dips-antipasto",
-        "name": "Dips & Antipasto",
-        "product_count": 113
-      },
-      {
-        "id": "chilled-meals",
-        "name": "Chilled Meals",
-        "product_count": 411
-      },
       {
         "id": "deli-meats",
         "name": "Deli Meats",
-        "product_count": 60
-      },
-      {
-        "id": "deli-specialties",
-        "name": "Deli Specialties",
-        "product_count": 161
+        "product_count": 0
       },
       {
         "id": "ham-bacon-smallgoods",
         "name": "Ham, Bacon & Smallgoods",
-        "product_count": 4
+        "product_count": 0
       },
       {
         "id": "sausages-frankfurts",
         "name": "Sausages & Frankfurts",
-        "product_count": 6
+        "product_count": 0
+      },
+      {
+        "id": "antipasto",
+        "name": "Antipasto",
+        "product_count": 0
+      },
+      {
+        "id": "dips-spreads",
+        "name": "Dips & Spreads",
+        "product_count": 0
+      },
+      {
+        "id": "gourmet-cheese",
+        "name": "Gourmet Cheese",
+        "product_count": 0
+      },
+      {
+        "id": "platters",
+        "name": "Platters",
+        "product_count": 0
+      },
+      {
+        "id": "ready-to-eat",
+        "name": "Ready to Eat",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "dairy-eggs-fridge",
     "name": "Dairy, Eggs & Fridge",
-    "product_count": 3546,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "milk",
         "name": "Milk",
-        "product_count": 247
+        "product_count": 0
       },
       {
         "id": "long-life-milk",
         "name": "Long Life Milk",
-        "product_count": 11
+        "product_count": 0
       },
       {
         "id": "eggs",
         "name": "Eggs",
-        "product_count": 71
-      },
-      {
-        "id": "yoghurt",
-        "name": "Yoghurt",
-        "product_count": 496
+        "product_count": 0
       },
       {
         "id": "cheese",
         "name": "Cheese",
-        "product_count": 1114
+        "product_count": 0
+      },
+      {
+        "id": "yoghurt",
+        "name": "Yoghurt",
+        "product_count": 0
       },
       {
         "id": "butter-margarine",
         "name": "Butter & Margarine",
-        "product_count": 101
+        "product_count": 0
       },
       {
         "id": "cream-custard",
         "name": "Cream & Custard",
-        "product_count": 48
+        "product_count": 0
       },
       {
-        "id": "chilled-meals",
-        "name": "Chilled Meals",
-        "product_count": 313
+        "id": "dairy-desserts",
+        "name": "Dairy Desserts",
+        "product_count": 0
       },
       {
-        "id": "juice-cordial-iced-tea",
-        "name": "Cordials, Juices & Iced Teas",
-        "product_count": 5
+        "id": "chilled-juice",
+        "name": "Chilled Juice",
+        "product_count": 0
       },
       {
-        "id": "cream-custard-desserts",
-        "name": "Cream, Custard & Desserts",
-        "product_count": 18
+        "id": "fresh-pasta-sauces",
+        "name": "Fresh Pasta & Sauces",
+        "product_count": 0
       },
       {
-        "id": "dips-antipasto",
-        "name": "Dips & Antipasto",
-        "product_count": 130
-      },
-      {
-        "id": "dips-pate",
-        "name": "Dips & Pate",
-        "product_count": 61
-      },
-      {
-        "id": "prepared-vegetables",
-        "name": "Prepared Vegetables",
-        "product_count": 1
+        "id": "ready-meals",
+        "name": "Ready Meals",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "bakery",
     "name": "Bakery",
-    "product_count": 1379,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "bread",
         "name": "Bread",
-        "product_count": 25
+        "product_count": 0
+      },
+      {
+        "id": "rolls-buns",
+        "name": "Rolls & Buns",
+        "product_count": 0
+      },
+      {
+        "id": "wraps-flatbreads",
+        "name": "Wraps & Flatbreads",
+        "product_count": 0
+      },
+      {
+        "id": "pizza-bases",
+        "name": "Pizza Bases",
+        "product_count": 0
+      },
+      {
+        "id": "cakes-sweet-treats",
+        "name": "Cakes & Sweet Treats",
+        "product_count": 0
+      },
+      {
+        "id": "breakfast-bakery",
+        "name": "Breakfast Bakery",
+        "product_count": 0
+      },
+      {
+        "id": "savoury-bakery",
+        "name": "Savoury Bakery",
+        "product_count": 0
+      },
+      {
+        "id": "bake-at-home",
+        "name": "Bake at Home",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "pantry",
     "name": "Pantry",
-    "product_count": 10924,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "breakfast",
         "name": "Breakfast",
-        "product_count": 329
+        "product_count": 0
       },
       {
-        "id": "pasta-rice-grains",
-        "name": "Pasta, Rice & Grains",
-        "product_count": 650
+        "id": "coffee",
+        "name": "Coffee",
+        "product_count": 0
       },
       {
-        "id": "canned-food",
-        "name": "Canned Food",
-        "product_count": 1405
+        "id": "tea",
+        "name": "Tea",
+        "product_count": 0
       },
       {
-        "id": "sauces",
-        "name": "Sauces",
-        "product_count": 481
-      },
-      {
-        "id": "condiments-dressings",
-        "name": "Condiments & Dressings",
-        "product_count": 784
+        "id": "jams-honey-spreads",
+        "name": "Jams, Honey & Spreads",
+        "product_count": 0
       },
       {
         "id": "oils-vinegars",
         "name": "Oils & Vinegars",
-        "product_count": 278
+        "product_count": 0
       },
       {
-        "id": "spreads",
-        "name": "Spreads",
-        "product_count": 326
+        "id": "sauces",
+        "name": "Sauces",
+        "product_count": 0
+      },
+      {
+        "id": "canned-food",
+        "name": "Canned Food",
+        "product_count": 0
+      },
+      {
+        "id": "soups-noodles",
+        "name": "Soups & Noodles",
+        "product_count": 0
+      },
+      {
+        "id": "pasta-rice-grains",
+        "name": "Pasta, Rice & Grains",
+        "product_count": 0
       },
       {
         "id": "baking",
         "name": "Baking",
-        "product_count": 728
+        "product_count": 0
       },
       {
         "id": "herbs-spices",
         "name": "Herbs & Spices",
-        "product_count": 673
+        "product_count": 0
       },
       {
-        "id": "breakfast-spreads",
-        "name": "Breakfast & Spreads",
-        "product_count": 89
+        "id": "stocks-gravy",
+        "name": "Stocks & Gravy",
+        "product_count": 0
       },
       {
-        "id": "cooking-sauces",
-        "name": "Cooking Sauces",
-        "product_count": 312
+        "id": "condiments",
+        "name": "Condiments",
+        "product_count": 0
       },
       {
-        "id": "cream-custard-desserts",
-        "name": "Cream, Custard & Desserts",
-        "product_count": 1
-      },
-      {
-        "id": "health-foods",
-        "name": "Health Foods",
-        "product_count": 13
-      },
-      {
-        "id": "long-life-milk",
-        "name": "Long Life Milk",
-        "product_count": 5
-      },
-      {
-        "id": "snack-bars",
-        "name": "Muesli & Snack Bars",
-        "product_count": 18
+        "id": "desserts",
+        "name": "Desserts",
+        "product_count": 0
       },
       {
         "id": "nuts-dried-fruit",
         "name": "Nuts & Dried Fruit",
-        "product_count": 75
-      },
-      {
-        "id": "tea-coffee",
-        "name": "Tea & Coffee",
-        "product_count": 905
+        "product_count": 0
       }
     ]
   },
   {
     "id": "snacks-confectionery",
     "name": "Snacks & Confectionery",
-    "product_count": 3574,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "chips",
         "name": "Chips",
-        "product_count": 695
+        "product_count": 0
       },
       {
         "id": "chocolate",
         "name": "Chocolate",
-        "product_count": 1456
+        "product_count": 0
       },
       {
         "id": "lollies",
         "name": "Lollies",
-        "product_count": 156
+        "product_count": 0
       },
       {
         "id": "biscuits",
         "name": "Biscuits",
-        "product_count": 463
+        "product_count": 0
       },
       {
-        "id": "nuts-dried-fruit",
-        "name": "Nuts & Dried Fruit",
-        "product_count": 193
+        "id": "crackers",
+        "name": "Crackers",
+        "product_count": 0
       },
       {
-        "id": "health-foods",
-        "name": "Health Foods",
-        "product_count": 4
+        "id": "snack-bars",
+        "name": "Snack Bars",
+        "product_count": 0
+      },
+      {
+        "id": "nuts-snacks",
+        "name": "Nuts & Snacks",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "frozen",
     "name": "Frozen",
-    "product_count": 2077,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "frozen-vegetables",
         "name": "Frozen Vegetables",
-        "product_count": 100
+        "product_count": 0
       },
       {
         "id": "frozen-fruit",
         "name": "Frozen Fruit",
-        "product_count": 63
-      },
-      {
-        "id": "frozen-meals",
-        "name": "Frozen Meals",
-        "product_count": 182
-      },
-      {
-        "id": "frozen-pizza",
-        "name": "Frozen Pizza",
-        "product_count": 15
+        "product_count": 0
       },
       {
         "id": "frozen-meat",
         "name": "Frozen Meat",
-        "product_count": 98
+        "product_count": 0
       },
       {
         "id": "frozen-seafood",
         "name": "Frozen Seafood",
-        "product_count": 182
+        "product_count": 0
+      },
+      {
+        "id": "frozen-meals",
+        "name": "Frozen Meals",
+        "product_count": 0
+      },
+      {
+        "id": "frozen-pizza",
+        "name": "Frozen Pizza",
+        "product_count": 0
+      },
+      {
+        "id": "frozen-chips-wedges",
+        "name": "Frozen Chips & Wedges",
+        "product_count": 0
+      },
+      {
+        "id": "frozen-party-food",
+        "name": "Frozen Party Food",
+        "product_count": 0
       },
       {
         "id": "ice-cream",
         "name": "Ice Cream",
-        "product_count": 412
-      },
-      {
-        "id": "bbq-meat",
-        "name": "BBQ Meat",
-        "product_count": 1
+        "product_count": 0
       },
       {
         "id": "frozen-desserts",
         "name": "Frozen Desserts",
-        "product_count": 49
+        "product_count": 0
       }
     ]
   },
   {
     "id": "drinks",
     "name": "Drinks",
-    "product_count": 2278,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "water",
         "name": "Water",
-        "product_count": 149
+        "product_count": 0
       },
       {
         "id": "soft-drinks",
         "name": "Soft Drinks",
-        "product_count": 382
+        "product_count": 0
       },
       {
         "id": "juice-cordial",
-        "name": "Juices & Cordials",
-        "product_count": 312
+        "name": "Juice & Cordial",
+        "product_count": 0
       },
       {
         "id": "sports-energy",
-        "name": "Sports & Energy Drinks",
-        "product_count": 50
+        "name": "Sports & Energy",
+        "product_count": 0
       },
       {
         "id": "iced-tea-kombucha",
         "name": "Iced Tea & Kombucha",
-        "product_count": 4
+        "product_count": 0
+      },
+      {
+        "id": "flavoured-milk",
+        "name": "Flavoured Milk",
+        "product_count": 0
+      },
+      {
+        "id": "coffee-drinks",
+        "name": "Coffee Drinks",
+        "product_count": 0
       },
       {
         "id": "tea-coffee",
         "name": "Tea & Coffee",
-        "product_count": 123
+        "product_count": 0
       },
       {
-        "id": "chilled-drinks",
-        "name": "Chilled Drinks",
-        "product_count": 1
-      },
-      {
-        "id": "juice-cordial-iced-tea",
-        "name": "Cordials, Juices & Iced Teas",
-        "product_count": 83
-      },
-      {
-        "id": "long-life-milk",
-        "name": "Long Life Milk",
-        "product_count": 25
+        "id": "non-alcoholic-drinks",
+        "name": "Non-Alcoholic Drinks",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "cleaning-household",
     "name": "Cleaning & Household",
-    "product_count": 2881,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "laundry",
         "name": "Laundry",
-        "product_count": 431
+        "product_count": 0
       },
       {
         "id": "household-cleaning",
         "name": "Household Cleaning",
-        "product_count": 668
+        "product_count": 0
       },
       {
         "id": "dishwashing",
         "name": "Dishwashing",
-        "product_count": 149
-      },
-      {
-        "id": "bathroom-cleaning",
-        "name": "Bathroom Cleaning",
-        "product_count": 102
+        "product_count": 0
       },
       {
         "id": "kitchen-cleaning",
         "name": "Kitchen Cleaning",
-        "product_count": 262
+        "product_count": 0
+      },
+      {
+        "id": "bathroom-cleaning",
+        "name": "Bathroom Cleaning",
+        "product_count": 0
       },
       {
         "id": "paper-products",
-        "name": "Toilet Paper, Tissues & Paper Towels",
-        "product_count": 67
+        "name": "Paper Products",
+        "product_count": 0
       },
       {
         "id": "food-storage",
         "name": "Food Storage",
-        "product_count": 157
+        "product_count": 0
       },
       {
         "id": "air-fresheners",
         "name": "Air Fresheners",
-        "product_count": 137
+        "product_count": 0
+      },
+      {
+        "id": "brooms-mops",
+        "name": "Brooms & Mops",
+        "product_count": 0
       },
       {
         "id": "pest-control",
         "name": "Pest Control",
-        "product_count": 118
+        "product_count": 0
       }
     ]
   },
   {
     "id": "health-beauty",
     "name": "Health & Beauty",
-    "product_count": 7133,
+    "product_count": 0,
     "subcategories": [
       {
-        "id": "personal-care",
-        "name": "Personal Care",
-        "product_count": 756
-      },
-      {
-        "id": "skincare",
-        "name": "Skincare",
-        "product_count": 765
-      },
-      {
-        "id": "hair-care",
-        "name": "Hair Care",
-        "product_count": 1449
-      },
-      {
-        "id": "oral-care",
-        "name": "Oral Care",
-        "product_count": 151
-      },
-      {
-        "id": "health",
-        "name": "Health",
-        "product_count": 937
-      },
-      {
-        "id": "beauty",
-        "name": "Beauty",
-        "product_count": 751
+        "id": "vitamins-supplements",
+        "name": "Vitamins & Supplements",
+        "product_count": 0
       },
       {
         "id": "sports-nutrition",
-        "name": "Diet & Sports Nutrition",
-        "product_count": 128
+        "name": "Sports Nutrition",
+        "product_count": 0
       },
       {
         "id": "first-aid-medicinal",
         "name": "First Aid & Medicinal",
-        "product_count": 244
+        "product_count": 0
       },
       {
-        "id": "health-foods",
-        "name": "Health Foods",
-        "product_count": 226
+        "id": "dental-care",
+        "name": "Dental Care",
+        "product_count": 0
       },
       {
-        "id": "pasta-rice-grains",
-        "name": "Pasta, Rice & Grains",
-        "product_count": 1
+        "id": "hair-care",
+        "name": "Hair Care",
+        "product_count": 0
       },
       {
-        "id": "vitamins-supplements",
-        "name": "Vitamins & Supplements",
-        "product_count": 151
+        "id": "skin-care",
+        "name": "Skin Care",
+        "product_count": 0
+      },
+      {
+        "id": "cosmetics",
+        "name": "Cosmetics",
+        "product_count": 0
+      },
+      {
+        "id": "personal-care",
+        "name": "Personal Care",
+        "product_count": 0
+      },
+      {
+        "id": "shower-bath",
+        "name": "Shower & Bath",
+        "product_count": 0
+      },
+      {
+        "id": "deodorant",
+        "name": "Deodorant",
+        "product_count": 0
+      },
+      {
+        "id": "shaving-hair-removal",
+        "name": "Shaving & Hair Removal",
+        "product_count": 0
+      },
+      {
+        "id": "period-continence-care",
+        "name": "Period & Continence Care",
+        "product_count": 0
+      },
+      {
+        "id": "sun-protection",
+        "name": "Sun Protection",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "baby",
     "name": "Baby",
-    "product_count": 993,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "baby-food",
         "name": "Baby Food",
-        "product_count": 132
+        "product_count": 0
       },
       {
         "id": "baby-formula",
         "name": "Baby Formula",
-        "product_count": 85
+        "product_count": 0
       },
       {
         "id": "nappies-wipes",
         "name": "Nappies & Wipes",
-        "product_count": 17
+        "product_count": 0
+      },
+      {
+        "id": "bottles-feeding",
+        "name": "Bottles & Feeding",
+        "product_count": 0
+      },
+      {
+        "id": "bath-skincare",
+        "name": "Bath & Skincare",
+        "product_count": 0
+      },
+      {
+        "id": "baby-medicinal",
+        "name": "Baby Medicinal",
+        "product_count": 0
+      },
+      {
+        "id": "dummies-teethers",
+        "name": "Dummies & Teethers",
+        "product_count": 0
+      },
+      {
+        "id": "baby-clothing",
+        "name": "Baby Clothing",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "pet",
     "name": "Pet",
-    "product_count": 1304,
+    "product_count": 0,
     "subcategories": [
-      {
-        "id": "dog",
-        "name": "Dog",
-        "product_count": 678
-      },
       {
         "id": "cat",
         "name": "Cat",
-        "product_count": 481
+        "product_count": 0
       },
       {
-        "id": "other-pets",
-        "name": "Other Pets",
-        "product_count": 36
+        "id": "dog",
+        "name": "Dog",
+        "product_count": 0
+      },
+      {
+        "id": "birds",
+        "name": "Birds",
+        "product_count": 0
+      },
+      {
+        "id": "fish",
+        "name": "Fish",
+        "product_count": 0
+      },
+      {
+        "id": "small-pets",
+        "name": "Small Pets",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "liquor",
     "name": "Liquor",
-    "product_count": 3583,
+    "product_count": 0,
     "subcategories": [
       {
         "id": "beer",
         "name": "Beer",
-        "product_count": 482
+        "product_count": 0
       },
       {
         "id": "wine",
         "name": "Wine",
-        "product_count": 1210
+        "product_count": 0
       },
       {
         "id": "spirits",
         "name": "Spirits",
-        "product_count": 665
+        "product_count": 0
       },
       {
-        "id": "cider-rtd",
-        "name": "Cider & RTD",
-        "product_count": 239
+        "id": "premixed-drinks",
+        "name": "Premixed Drinks",
+        "product_count": 0
+      }
+    ]
+  },
+  {
+    "id": "home-garden",
+    "name": "Home & Garden",
+    "product_count": 0,
+    "subcategories": [
+      {
+        "id": "kitchenware-storage",
+        "name": "Kitchenware & Storage",
+        "product_count": 0
+      },
+      {
+        "id": "dining-entertaining",
+        "name": "Dining & Entertaining",
+        "product_count": 0
+      },
+      {
+        "id": "home-decor",
+        "name": "Home Decor",
+        "product_count": 0
+      },
+      {
+        "id": "bedding",
+        "name": "Bedding",
+        "product_count": 0
+      },
+      {
+        "id": "bathroom",
+        "name": "Bathroom",
+        "product_count": 0
+      },
+      {
+        "id": "outdoor-living",
+        "name": "Outdoor Living",
+        "product_count": 0
+      },
+      {
+        "id": "party-supplies",
+        "name": "Party Supplies",
+        "product_count": 0
+      },
+      {
+        "id": "stationery",
+        "name": "Stationery",
+        "product_count": 0
+      },
+      {
+        "id": "reusable-bags",
+        "name": "Reusable Bags",
+        "product_count": 0
       }
     ]
   },
   {
     "id": "electronics",
     "name": "Electronics",
-    "product_count": 74,
-    "subcategories": []
-  },
-  {
-    "id": "home-garden",
-    "name": "Home & Garden",
-    "product_count": 1933,
+    "product_count": 0,
     "subcategories": [
       {
-        "id": "air-fresheners",
-        "name": "Air Fresheners",
-        "product_count": 6
+        "id": "small-appliances",
+        "name": "Small Appliances",
+        "product_count": 0
       },
       {
-        "id": "kitchen-cleaning",
-        "name": "Kitchen Cleaning",
-        "product_count": 1
-      },
+        "id": "electronics-accessories",
+        "name": "Electronics & Accessories",
+        "product_count": 0
+      }
+    ]
+  },
+  {
+    "id": "tobacco",
+    "name": "Tobacco",
+    "product_count": 0,
+    "subcategories": [
       {
-        "id": "pest-control",
-        "name": "Pest Control",
-        "product_count": 2
+        "id": "tobacco",
+        "name": "Tobacco",
+        "product_count": 0
       }
     ]
   }

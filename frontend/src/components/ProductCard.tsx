@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { MdAdd, MdCheck, MdClose } from 'react-icons/md'
+import { MdAdd, MdCheck } from 'react-icons/md'
 
 import { formatSize } from '@/api/client'
 import aldiColor from '@/assets/product_card/aldi_color.webp'
@@ -23,20 +23,47 @@ const RETAILER_LABELS = {
 } as const
 
 const RETAILER_LOGOS = {
-  woolworths: { color: woolworthsColor, greyscale: woolworthsGreyscale },
-  coles: { color: colesColor, greyscale: colesGreyscale },
-  aldi: { color: aldiColor, greyscale: aldiGreyscale },
-  harrisfarm: { color: harrisColor, greyscale: harrisGreyscale },
+  woolworths: {
+    color: woolworthsColor,
+    greyscale: woolworthsGreyscale,
+  },
+  coles: {
+    color: colesColor,
+    greyscale: colesGreyscale,
+  },
+  aldi: {
+    color: aldiColor,
+    greyscale: aldiGreyscale,
+  },
+  harrisfarm: {
+    color: harrisColor,
+    greyscale: harrisGreyscale,
+  },
 } as const
 
-const RETAILER_ORDER = ['woolworths', 'coles', 'aldi', 'harrisfarm'] as const
+const RETAILER_ORDER = [
+  'woolworths',
+  'coles',
+  'aldi',
+  'harrisfarm',
+] as const
+
+type Retailer = (typeof RETAILER_ORDER)[number]
 
 function fmt(n: number) {
   return `$${n.toFixed(2)}`
 }
 
+function truncateWords(text: string, maxWords = 4) {
+  const words = text.trim().split(/\s+/)
+
+  return words.length > maxWords
+    ? `${words.slice(0, maxWords).join(' ')}...`
+    : text
+}
+
 type ProductOffer = {
-  retailer: string
+  retailer: Retailer
   price: number
 }
 
@@ -47,6 +74,11 @@ type ProductCardProduct = {
   size_value?: number | null
   size_unit?: string | null
   image_url?: string | null
+  unit_price?: number | null
+  unit_measure?: string | null
+  was_price?: number | null
+  has_special?: boolean
+  cheapest_retailer?: Retailer | null
   offers: ProductOffer[]
 }
 
@@ -63,137 +95,175 @@ export default function ProductCard({
   onAdd,
   onRemove,
 }: ProductCardProps) {
-  const offers = product.offers ?? []
   const offersByRetailer = new Map(
-    offers.map((offer) => [offer.retailer, offer]),
+    product.offers.map((offer) => [offer.retailer, offer]),
   )
-  const prices = offers.map((offer) => offer.price)
-  const cheapestPrice = prices.length > 0 ? Math.min(...prices) : undefined
-  const priciestPrice = prices.length > 0 ? Math.max(...prices) : undefined
-  const saving =
-    offers.length > 1 && cheapestPrice != null && priciestPrice != null
-      ? priciestPrice - cheapestPrice
-      : 0
-  const showSaving =
-    cheapestPrice != null && saving >= 0.2 && saving >= cheapestPrice * 0.1
 
   const [justAdded, setJustAdded] = useState(false)
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null)
-  const popTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  )
+
+  const popTimeout = useRef<
+    ReturnType<typeof setTimeout> | undefined
+  >(undefined)
+
   const imageSrc =
     product.image_url && failedImageUrl !== product.image_url
       ? product.image_url
       : productDefault
-  const brand = product.brand?.trim()
+
+  const brand = product.brand?.trim() || 'No brand'
   const size = formatSize(product)
+
+  const unitPrice =
+    product.unit_price != null && product.unit_measure
+      ? `${fmt(product.unit_price)} / ${product.unit_measure}`
+      : null
+
+  const availableOffers = product.offers.filter((offer) =>
+    Number.isFinite(offer.price),
+  )
+
+  const cheapestPrice =
+    availableOffers.length > 0
+      ? Math.min(...availableOffers.map((offer) => offer.price))
+      : null
+
+  const cheapestRetailer =
+    product.cheapest_retailer &&
+    offersByRetailer.get(product.cheapest_retailer)?.price ===
+      cheapestPrice
+      ? product.cheapest_retailer
+      : RETAILER_ORDER.find(
+          (retailer) =>
+            offersByRetailer.get(retailer)?.price === cheapestPrice,
+        ) ?? null
 
   function handleToggle() {
     if (added) {
       onRemove()
       return
     }
+
     onAdd()
     setJustAdded(true)
+
     clearTimeout(popTimeout.current)
-    popTimeout.current = setTimeout(() => setJustAdded(false), POP_DURATION_MS)
+
+    popTimeout.current = setTimeout(
+      () => setJustAdded(false),
+      POP_DURATION_MS,
+    )
   }
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-2xl border border-bw-line bg-bw-surface shadow-sm">
+    <div className="flex flex-col overflow-hidden bg-bw-surface">
       <div className="p-3 pb-0">
-        <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-dashed border-bw-line-strong bg-bw-panel">
+        <div className="group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-dashed border-bw-line-strong bg-white">
           <img
             src={imageSrc}
-            alt=""
+            alt={product.name}
             onError={() => {
               if (product.image_url) {
                 setFailedImageUrl(product.image_url)
               }
             }}
-            className="h-full w-full object-contain p-2"
+            className="h-full w-full object-contain p-2 transition-transform duration-300 ease-out group-hover:scale-105 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
           />
 
-          {showSaving && (
-            <span
-              className="absolute bottom-2 left-2 rounded-full bg-bw-green px-3 py-1.5 font-archivo text-xs font-semibold text-white shadow-md"
-              title="Shown when this saving is at least 10% of the cheapest price and at least $0.20"
-            >
-              Save {fmt(saving)}
-            </span>
-          )}
+          <button
+            type="button"
+            onClick={handleToggle}
+            aria-label={
+              added ? 'Remove from basket' : 'Add to basket'
+            }
+            className={cn(
+              'absolute right-3 bottom-3 flex h-10 w-10 items-center justify-center rounded-full shadow-md transition-colors focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:ring-offset-2 focus-visible:outline-none',
+              added
+                ? 'bg-bw-green text-white'
+                : 'bg-bw-surface text-bw-ink hover:bg-bw-green hover:text-white',
+              justAdded && 'animate-[bw-pop_420ms_ease]',
+            )}
+          >
+            {added ? (
+              <MdCheck className="h-5 w-5" />
+            ) : (
+              <MdAdd className="h-5 w-5" />
+            )}
+          </button>
         </div>
       </div>
 
-      <div className="px-4 pt-3.5 pb-4">
-        <div className="mb-2.5">
-          <div className="flex items-baseline justify-between gap-2">
-            <p className="text-[15px] leading-snug font-semibold text-bw-ink">
-              {product.name}
+      <div className="flex flex-1 flex-col px-4 pt-3.5 pb-4">
+        <div>
+          <p className="mb-0.5 text-[11px] font-medium tracking-[0.02em] text-bw-muted">
+            {brand}
+          </p>
+
+          <p className="text-[15px] leading-snug font-semibold text-bw-ink">
+            {truncateWords(product.name)}
+          </p>
+
+          {(size || unitPrice) && (
+            <p className="mt-1 text-[12px] text-bw-muted">
+              {size}
+              {size && unitPrice ? ' · ' : ''}
+              {unitPrice}
             </p>
-            {size ? (
-              <p className="shrink-0 text-[12px] text-bw-muted">{size}</p>
-            ) : null}
-          </div>
-          {brand ? (
-            <p className="mt-0.5 text-[12px] text-bw-muted">{brand}</p>
-          ) : null}
+          )}
+
+          {product.has_special && (
+            <div className="mt-2 flex items-center gap-2 text-[11px]">
+              <span className="rounded-full bg-bw-yellow px-2 py-1 font-archivo font-semibold text-bw-yellow-ink">
+                Special
+              </span>
+
+              {product.was_price != null && (
+                <span className="text-bw-muted">
+                  Was{' '}
+                  <span className="line-through">
+                    {fmt(product.was_price)}
+                  </span>
+                </span>
+              )}
+            </div>
+          )}
         </div>
 
-        <div className="flex items-start justify-between gap-2">
-          <div className="flex flex-1 items-center justify-between">
-            {RETAILER_ORDER.map((retailer) => {
-              const offer = offersByRetailer.get(retailer)
-              const isCheapest =
-                offer?.price != null && offer.price === cheapestPrice
-              const logos = RETAILER_LOGOS[retailer]
-              const label = RETAILER_LABELS[retailer]
-              return (
-                <div
-                  key={retailer}
-                  className="flex flex-col items-center gap-1.5"
-                >
-                  <img
-                    src={isCheapest ? logos.color : logos.greyscale}
-                    alt={label}
-                    className="h-8 w-8 rounded-md object-contain"
-                  />
-                  <span
-                    className={cn(
-                      'font-newsreader text-base leading-none text-bw-muted',
-                      isCheapest && 'text-xl font-bold text-bw-green',
-                    )}
-                  >
-                    {offer?.price != null ? fmt(offer.price) : 'N/A'}
-                  </span>
-                </div>
-              )
-            })}
-          </div>
+        <div className="mt-4 grid grid-cols-4 gap-2">
+          {RETAILER_ORDER.map((retailer) => {
+            const offer = offersByRetailer.get(retailer)
+            const logos = RETAILER_LOGOS[retailer]
+            const label = RETAILER_LABELS[retailer]
+            const isCheapest = retailer === cheapestRetailer
 
-          <div className="flex h-8 w-9 shrink-0 items-center justify-center">
-            <button
-              type="button"
-              onClick={handleToggle}
-              aria-label={added ? 'Remove from basket' : 'Add to basket'}
-              title={added ? 'Remove from basket' : 'Add to basket'}
-              className={cn(
-                'curso group flex h-9 w-9 items-center justify-center rounded-full bg-bw-panel text-bw-ink shadow-sm transition-colors focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:ring-offset-2 focus-visible:outline-none motion-reduce:animate-none',
-                added && 'bg-bw-green text-white',
-                justAdded && 'animate-[bw-pop_420ms_ease]',
-              )}
-            >
-              {added ? (
-                <>
-                  <MdCheck className="h-5 w-5 group-hover:hidden group-focus-visible:hidden" />
-                  <MdClose className="hidden h-5 w-5 group-hover:block group-focus-visible:block" />
-                </>
-              ) : (
-                <MdAdd className="h-5 w-5" />
-              )}
-            </button>
-          </div>
+            return (
+              <div
+                key={retailer}
+                className="flex min-w-0 flex-col items-center gap-1.5"
+              >
+                <img
+                  src={
+                    isCheapest
+                      ? logos.color
+                      : logos.greyscale
+                  }
+                  alt={label}
+                  className="h-8 w-8 rounded-md object-contain"
+                />
+
+                <span
+                  className={cn(
+                    'font-newsreader text-base leading-none',
+                    offer
+                      ? 'text-bw-ink'
+                      : 'text-bw-subtle',
+                  )}
+                >
+                  {offer ? fmt(offer.price) : '—'}
+                </span>
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { MdExpandMore } from 'react-icons/md'
 
 import { cn } from '@/lib/utils'
@@ -23,7 +22,7 @@ function CategoryAccordionList({
               type="button"
               aria-expanded={isExpanded}
               aria-current={isActive && !subcategory ? 'true' : undefined}
-              onClick={() => onHeaderClick(cat.id, isExpanded)}
+              onClick={() => onHeaderClick(cat.id)}
               className={cn(
                 'flex w-full items-center justify-between gap-2.5 px-3.5 py-3.25 text-left font-archivo text-[13px] text-bw-ink transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
                 isActive && !subcategory && 'bg-bw-panel font-semibold',
@@ -86,21 +85,15 @@ export default function CategorySidebar({
   subcategory,
   onSelect,
 }) {
-  const [expandedCategory, setExpandedCategory] = useState(category)
-
-  function handleHeaderClick(catId, isExpanded) {
-    const switchingCategory = catId !== category
-    setExpandedCategory(isExpanded ? null : catId)
-    if (switchingCategory) {
-      onSelect(catId, null)
-    }
+  function handleHeaderClick(catId) {
+    onSelect(catId, null)
   }
 
   const listProps = {
     categories,
     category,
     subcategory,
-    expandedCategory,
+    expandedCategory: category,
     onHeaderClick: handleHeaderClick,
     onSelectSub: onSelect,
   }

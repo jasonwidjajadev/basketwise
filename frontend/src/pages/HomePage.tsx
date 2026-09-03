@@ -8,7 +8,7 @@ import StartAnotherWay from '@/components/home/StartAnotherWay'
 
 export default function HomePage() {
   return (
-    <div className="bg-bw-page font-archivo text-bw-ink">
+    <div className="font-archivo text-bw-ink">
       <HowItWorks />
       <Hero />
       <StartAnotherWay />

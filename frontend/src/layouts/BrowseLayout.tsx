@@ -10,12 +10,9 @@ export default function BrowseLayout() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [categories, setCategories] = useState([])
   const [categoriesLoading, setCategoriesLoading] = useState(true)
-  const [category, setCategory] = useState(
-    () => searchParams.get('category') || DEFAULT_CATEGORY,
-  )
-  const [subcategory, setSubcategory] = useState(() =>
-    searchParams.get('subcategory'),
-  )
+
+  const category = searchParams.get('category') || DEFAULT_CATEGORY
+  const subcategory = searchParams.get('subcategory')
 
   useEffect(() => {
     let cancelled = false
@@ -45,8 +42,6 @@ export default function BrowseLayout() {
   }, [searchParams, setSearchParams])
 
   function selectCategory(nextCategory, nextSubcategory = null) {
-    setCategory(nextCategory)
-    setSubcategory(nextSubcategory)
     setSearchParams(
       (prev) => {
         const next = new URLSearchParams(prev)

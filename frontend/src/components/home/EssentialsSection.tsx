@@ -1,9 +1,9 @@
 import { useCart } from '@/context/useCart'
-import { essentials } from '@/data/essentials'
-import ProductCard from '@/components/home/ProductCard'
+import ProductCard from '@/components/ProductCard'
+import essentials from '@/mocks/home/essentials.json'
 
 export default function EssentialsSection() {
-  const { addedIds, savedIds, add, toggleSaved } = useCart()
+  const { addedIds, add, remove } = useCart()
 
   return (
     <section
@@ -25,9 +25,8 @@ export default function EssentialsSection() {
             key={product.id}
             product={product}
             added={Boolean(addedIds[product.id])}
-            saved={Boolean(savedIds[product.id])}
             onAdd={() => add(product.id, 1)}
-            onToggleSave={() => toggleSaved(product.id)}
+            onRemove={() => remove(product.id)}
           />
         ))}
       </div>

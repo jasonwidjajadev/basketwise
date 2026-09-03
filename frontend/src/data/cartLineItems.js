@@ -3,6 +3,7 @@
 // meals) into one shape the basket sidebar can render without caring where
 // the id came from.
 import BROWSE_PRODUCTS from '@/mocks/browse/products.json'
+import HOME_ESSENTIALS from '@/mocks/home/essentials.json'
 import { essentials } from './essentials.js'
 import { meals } from './meals.js'
 
@@ -19,6 +20,16 @@ export function getCartLineItem(productId) {
       name: browseProduct.name,
       shotCaption: browseProduct.name.toLowerCase(),
       unitPrice: cheapestPrice(browseProduct),
+    }
+  }
+
+  const homeEssential = HOME_ESSENTIALS.find((p) => p.id === productId)
+  if (homeEssential) {
+    return {
+      kind: 'product',
+      name: homeEssential.name,
+      shotCaption: homeEssential.name.toLowerCase(),
+      unitPrice: cheapestPrice(homeEssential),
     }
   }
 
