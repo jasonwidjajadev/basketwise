@@ -172,7 +172,10 @@ export default function ProductCard({
 
   return (
     <div className="flex w-full flex-col bg-white">
-      <div className="group relative flex aspect-square items-center justify-center overflow-hidden rounded-xl border border-dashed border-bw-line-strong bg-white">
+      {/* rounded-xl  */}
+      <div className="group relative flex aspect-square items-center justify-center overflow-hidden 
+        border border-dashed border-bw-line-strong bg-white"
+      >
         {product.has_special && (
           <div className="absolute top-2 left-2 z-10 flex flex-col items-center gap-1">
             <span className="rounded-full bg-bw-yellow px-2 py-1 text-[10px] font-semibold text-bw-yellow-ink">

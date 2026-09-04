@@ -16,7 +16,7 @@ export default function HomePage() {
         <div className="mx-auto w-full max-w-7xl">
           <Hero />
           {/* <HowItWorks /> */}
-          <StartAnotherWay />
+          {/* <StartAnotherWay /> */}
           <EssentialsSection />
           <CategoryGrid />
           <MealsSection />
