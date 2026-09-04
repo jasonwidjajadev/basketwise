@@ -38,7 +38,7 @@ export default function FaqSection() {
   const [openQuestion, setOpenQuestion] = useState<number | null>(null)
 
   return (
-    <section id="faq" className="mx-auto w-full max-w-[820px] pt-19">
+    <section id="faq" className="mx-auto w-full max-w-[820px] py-15">
       <h2 className="mb-2 text-center text-3xl font-bold tracking-[-0.03em] text-bw-ink">
         FAQS
       </h2>

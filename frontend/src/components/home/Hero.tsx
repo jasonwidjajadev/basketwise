@@ -87,7 +87,7 @@ export default function Hero() {
         </div>
 
         <div className="px-1 pt-3 pb-1">
-          <p className="max-w-[60ch] text-xs leading-relaxed text-bw-muted pl-2 ">
+          <p className="max-w-[60ch] pl-2 text-xs leading-relaxed text-bw-muted">
             <span className="font-semibold text-bw-ink">
               Fresh every week
             </span>{' '}
@@ -132,7 +132,7 @@ export default function Hero() {
             onDragLeave={() => setIsDragging(false)}
             onDrop={handleDrop}
             className={[
-              'mt-7 flex min-h-[180px] cursor-pointer flex-col items-center justify-center border border-dashed px-6 py-7 text-center transition-colors',
+              'mt-7 flex min-h-[180px] cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed px-6 py-7 text-center transition-colors',
               isDragging
                 ? 'border-bw-green bg-bw-green-light'
                 : 'border-bw-line-strong bg-white/65 hover:border-bw-green',
@@ -192,14 +192,13 @@ export default function Hero() {
               >
                 Dairy
               </Link>
-  
+
               <Link
                 to="/browse?category=meat-seafood"
                 className="rounded-full border border-bw-line bg-white px-4 py-2 text-xs font-medium text-bw-ink transition-colors hover:border-bw-ink"
               >
                 Meat
               </Link>
-
 
               <Link
                 to="/browse?category=snacks-confectionery"

@@ -172,8 +172,8 @@ export default function ProductCard({
 
   return (
     <div className="flex w-full flex-col bg-white">
-      {/* rounded-xl  */}
       <div className="group relative flex aspect-square items-center justify-center overflow-hidden 
+        rounded-2xl
         border border-dashed border-bw-line-strong bg-white"
       >
         {product.has_special && (
