@@ -170,7 +170,7 @@ export default function ProductCard({
               setFailedImageUrl(product.image_url)
             }
           }}
-          className="h-[132px] w-[144px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          className="h-[148px] w-[160px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
 
         <button
