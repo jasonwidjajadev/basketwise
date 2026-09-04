@@ -28,17 +28,24 @@ const faqs = [
 
 export default function FaqSection() {
   return (
-    <section id="faq" className="mx-auto max-w-[820px] px-6 pt-19 lg:px-10">
+    <section
+      id="faq"
+      className="mx-auto w-full max-w-[820px] pt-19"
+    >
       <h2 className="mb-1.5 text-center text-[36px] font-normal tracking-[-.02em] text-bw-ink sm:text-[44px]">
         FAQ
       </h2>
+
       <p className="mb-8 text-center text-[13px] text-bw-subtle">
         Everything about prices, receipts and stores.
       </p>
 
       <div className="border-t border-bw-line">
         {faqs.map((faq) => (
-          <div key={faq.question} className="border-b border-bw-line px-1 py-5">
+          <div
+            key={faq.question}
+            className="border-b border-bw-line px-1 py-5"
+          >
             <span className="text-[12.5px] font-bold tracking-[.12em] text-bw-ink uppercase">
               {faq.question}
             </span>

@@ -9,15 +9,20 @@ import StartAnotherWay from '@/components/home/StartAnotherWay'
 
 export default function HomePage() {
   return (
-    <div className="text-bw-ink">
+    <div>
       <HomeGuestBar />
-      <Hero />
-      <HowItWorks />
-      <StartAnotherWay />
-      <EssentialsSection />
-      <CategoryGrid />
-      <MealsSection />
-      <FaqSection />
+
+      <main className="w-full px-6 lg:px-8 xl:px-12 2xl:px-16">
+        <div className="mx-auto w-full max-w-7xl">
+          <Hero />
+          <HowItWorks />
+          <StartAnotherWay />
+          <EssentialsSection />
+          <CategoryGrid />
+          <MealsSection />
+          <FaqSection />
+        </div>
+      </main>
     </div>
   )
 }

@@ -1,8 +1,12 @@
 import { Link } from 'react-router'
 
-export default function CompareFooterActions({ signedIn, saved, onSave }) {
+export default function CompareFooterActions({
+  signedIn,
+  saved,
+  onSave,
+}) {
   return (
-    <div className="flex flex-col-reverse gap-2.5 sm:flex-row sm:justify-end">
+    <div className="flex w-full flex-col-reverse gap-2.5 sm:flex-row sm:items-center sm:justify-between">
       <Link
         to="/browse"
         className="flex items-center justify-center rounded-full border border-bw-line-strong bg-transparent px-5 py-3 text-sm font-semibold text-bw-ink transition-colors hover:bg-bw-panel"
@@ -19,7 +23,11 @@ export default function CompareFooterActions({ signedIn, saved, onSave }) {
         >
           <span
             key={saved ? 'saved' : 'save'}
-            className={saved ? 'motion-safe:animate-[bw-pop_360ms_ease]' : ''}
+            className={
+              saved
+                ? 'motion-safe:animate-[bw-pop_360ms_ease]'
+                : ''
+            }
           >
             {saved ? 'Saved ✓' : 'Save list'}
           </span>

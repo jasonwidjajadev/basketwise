@@ -2,7 +2,7 @@ const STEPS = [
   {
     number: '01',
     title: 'Upload your receipt',
-    body: "Take a photo of last week\'s receipt and upload it to BaskWise.",
+    body: "Take a photo of last week's receipt and upload it to BaskWise.",
   },
   {
     number: '02',
@@ -18,7 +18,7 @@ const STEPS = [
 
 export default function HowItWorks() {
   return (
-    <section className="mx-auto max-w-[1160px] px-6 pt-11 lg:px-10">
+    <section className="w-full pt-11">
       <p className="mb-5.5 text-[11.5px] tracking-[.18em] text-bw-subtle uppercase">
         How BasketWise works
       </p>
@@ -29,9 +29,11 @@ export default function HowItWorks() {
             <span className="text-[26px] text-bw-line-strong">
               {step.number}
             </span>
+
             <p className="mt-1.5 mb-0.5 text-[15px] font-semibold text-bw-ink">
               {step.title}
             </p>
+
             <p className="text-[13px] leading-normal text-bw-muted">
               {step.body}
             </p>

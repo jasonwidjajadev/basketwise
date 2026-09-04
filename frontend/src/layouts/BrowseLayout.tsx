@@ -62,7 +62,9 @@ export default function BrowseLayout() {
   }
 
   return (
-    <div className="animate-bw-fade-up flex w-full flex-col gap-4 px-6 py-6 lg:min-h-[calc(100svh-4rem)] lg:flex-row lg:items-start lg:gap-7 lg:px-8 xl:px-12 2xl:px-16">
+    <div className="animate-bw-fade-up flex w-full flex-col gap-4 px-6 py-6 
+      lg:min-h-[calc(100svh-4rem)] lg:flex-row lg:items-start lg:gap-7 lg:px-8 xl:px-12 2xl:px-16"
+    >
       <CategorySidebar
         categories={categories}
         loading={categoriesLoading}

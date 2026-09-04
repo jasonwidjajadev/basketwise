@@ -21,7 +21,7 @@ export default function StartAnotherWay() {
   const active = startAnotherWayTabs[tab]
 
   return (
-    <section id="start" className="mx-auto max-w-[1160px] px-6 pb-5 lg:px-10">
+    <section id="start" className="w-full pb-5">
       <h2 className="mb-4.5 text-[30px] font-normal tracking-[-.01em] text-bw-ink">
         No receipt? Start another way.
       </h2>

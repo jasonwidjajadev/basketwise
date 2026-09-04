@@ -3,7 +3,7 @@ import { Link } from 'react-router'
 export default function HomeGuestBar() {
   return (
     <section className="w-full bg-[#252522] text-white">
-      <div className="flex h-[46px] items-center justify-between px-6 lg:px-10">
+      <div className="flex h-[46px] items-center justify-between px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="flex items-center gap-3 text-sm uppercase tracking-[0.08em] text-white/65">
           <span>HI THERE</span>
           <span>GUEST</span>

@@ -2,7 +2,7 @@ import { Link } from 'react-router'
 
 export default function Hero() {
   return (
-    <section className="mx-auto grid max-w-[1160px] grid-cols-1 items-stretch gap-7 px-6 pt-11 pb-16 lg:grid-cols-[1.05fr_.95fr] lg:px-10">
+    <section className="grid w-full grid-cols-1 items-stretch gap-7 pt-11 pb-16 lg:grid-cols-[1.05fr_.95fr]">
       <div
         className="relative flex min-h-[420px] items-center justify-center border border-bw-line"
         style={{
@@ -18,6 +18,7 @@ export default function Hero() {
           <p className="text-[12.5px] font-bold text-bw-ink">
             Fresh every week
           </p>
+
           <p className="mt-0.5 text-xs leading-snug text-bw-muted">
             We track over 40,000 products across the big four, so you always
             know where the good stuff is cheapest.

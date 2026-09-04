@@ -8,7 +8,7 @@ export default function MealsSection() {
   const { addedIds, add } = useCart()
 
   return (
-    <section id="meals" className="mx-auto max-w-[1160px] px-6 pt-14 lg:px-10">
+    <section id="meals" className="w-full pt-14">
       <div className="border border-bw-line bg-bw-panel px-6 pt-10 pb-9 sm:px-10">
         <p className="mb-3.5 text-[10.5px] tracking-[.22em] text-bw-subtle uppercase">
           Cook it, shop it
