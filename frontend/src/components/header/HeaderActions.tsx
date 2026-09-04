@@ -13,10 +13,12 @@ import { cn } from '@/lib/utils'
 
 type HeaderActionsProps = {
   onOpenCart: () => void
+  onOpenSignIn: () => void
 }
 
 export default function HeaderActions({
   onOpenCart,
+  onOpenSignIn,
 }: HeaderActionsProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
 
@@ -63,9 +65,11 @@ export default function HeaderActions({
           </li>
 
           <li>
-            <Link
-              to="/account"
+            <button
+              type="button"
               aria-label="My Lists"
+              aria-haspopup="dialog"
+              onClick={onOpenSignIn}
               className="flex items-center gap-2 font-medium tracking-[0.04em] text-white/70 transition-colors hover:text-white"
             >
               <MdOutlineListAlt className="h-5 w-5" />
@@ -73,13 +77,15 @@ export default function HeaderActions({
               <span className="hidden min-[1300px]:inline">
                 MY LISTS
               </span>
-            </Link>
+            </button>
           </li>
 
           <li>
-            <Link
-              to="/signin"
+            <button
+              type="button"
               aria-label="Sign in"
+              aria-haspopup="dialog"
+              onClick={onOpenSignIn}
               className="flex items-center gap-2 font-medium tracking-[0.04em] text-white/70 transition-colors hover:text-white"
             >
               <MdOutlinePerson className="h-5 w-5" />
@@ -87,7 +93,7 @@ export default function HeaderActions({
               <span className="hidden min-[1300px]:inline">
                 SIGN IN
               </span>
-            </Link>
+            </button>
           </li>
 
           <li>
@@ -172,23 +178,31 @@ export default function HeaderActions({
               BROWSE
             </Link>
 
-            <Link
-              to="/account"
-              onClick={() => setIsMenuOpen(false)}
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              onClick={() => {
+                setIsMenuOpen(false)
+                onOpenSignIn()
+              }}
               className="flex items-center gap-3 px-4 py-3 text-xs font-medium tracking-[0.04em] hover:bg-bw-panel"
             >
               <MdOutlineListAlt className="h-5 w-5" />
               MY LISTS
-            </Link>
+            </button>
 
-            <Link
-              to="/signin"
-              onClick={() => setIsMenuOpen(false)}
+            <button
+              type="button"
+              aria-haspopup="dialog"
+              onClick={() => {
+                setIsMenuOpen(false)
+                onOpenSignIn()
+              }}
               className="flex items-center gap-3 px-4 py-3 text-xs font-medium tracking-[0.04em] hover:bg-bw-panel"
             >
               <MdOutlinePerson className="h-5 w-5" />
               SIGN IN
-            </Link>
+            </button>
           </div>
         )}
       </div>

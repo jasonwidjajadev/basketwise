@@ -1,10 +1,14 @@
 import { Link } from 'react-router'
 
+import { useSignInModal } from '@/context/SignInModalContext'
+
 export default function CompareFooterActions({
   signedIn,
   saved,
   onSave,
 }) {
+  const { openSignIn } = useSignInModal()
+
   return (
     <div className="flex w-full flex-col-reverse gap-2.5 sm:flex-row sm:items-center sm:justify-between">
       <Link
@@ -33,12 +37,14 @@ export default function CompareFooterActions({
           </span>
         </button>
       ) : (
-        <Link
-          to="/signin"
+        <button
+          type="button"
+          onClick={openSignIn}
+          aria-haspopup="dialog"
           className="flex items-center justify-center rounded-full bg-bw-green px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-bw-green-hover"
         >
           Sign in to save list
-        </Link>
+        </button>
       )}
     </div>
   )

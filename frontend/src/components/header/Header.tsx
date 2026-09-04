@@ -5,9 +5,11 @@ import icon from '@/assets/basketwise_logo/logo.svg'
 import CartSidebar from '@/components/checkout/CartSidebar'
 import HeaderActions from '@/components/header/HeaderActions'
 import SearchBar from '@/components/header/SearchBar'
+import { useSignInModal } from '@/context/SignInModalContext'
 
 export default function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false)
+  const { openSignIn } = useSignInModal()
 
   return (
     <>
@@ -41,6 +43,7 @@ export default function Header() {
           <div className="justify-self-end">
             <HeaderActions
               onOpenCart={() => setIsCartOpen(true)}
+              onOpenSignIn={openSignIn}
             />
           </div>
         </div>
