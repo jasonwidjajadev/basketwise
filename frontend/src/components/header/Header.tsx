@@ -27,10 +27,12 @@ export default function Header() {
                 alt=""
                 className="h-6 w-6 shrink-0 object-contain"
               />
-
-              <span className="whitespace-nowrap text-xl font-semibold tracking-[-0.025em] text-white">
+              <p className="text-center text-2xl font-bold leading-none tracking-[0.05em] text-[#f4f2ea]">
                 BASKETWISE
-              </span>
+              </p>
+              {/* <span className="whitespace-nowrap  text-2xl font-medium tracking-[-0.025em] text-white">
+                BASKETWISE
+              </span> */}
             </Link>
           </div>
 

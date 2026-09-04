@@ -201,7 +201,7 @@ export default function ProductCard({
               setFailedImageUrl(product.image_url)
             }
           }}
-          className="h-[148px] w-[160px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          className="h-[168px] w-[180px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
 
         <button
@@ -242,7 +242,7 @@ export default function ProductCard({
 
         <p
           title={product.name}
-          className="min-h-[18px] cursor-default text-[13px] leading-[1.3] font-medium text-bw-ink"
+          className="min-h-[18px] cursor-default text-sm leading-[1.3] font-semibold text-bw-ink"
         >
           {truncateText(product.name)}
         </p>
@@ -260,18 +260,10 @@ export default function ProductCard({
 
       <div className="mt-3 grid w-full grid-cols-4">
         {RETAILER_ORDER.map((retailer) => {
-          const offer =
-            offersByRetailer.get(retailer)
-
-          const logos =
-            RETAILER_LOGOS[retailer]
-
-          const label =
-            RETAILER_LABELS[retailer]
-
-          const isCheapest =
-            retailer === cheapestRetailer
-
+          const offer = offersByRetailer.get(retailer)
+          const logos = RETAILER_LOGOS[retailer]
+          const label = RETAILER_LABELS[retailer]
+          const isCheapest = (retailer === cheapestRetailer)
           return (
             <div
               key={retailer}
@@ -291,7 +283,7 @@ export default function ProductCard({
                 className={cn(
                   'mt-1 text-xs leading-none font-medium',
                   isCheapest
-                    ? 'text-black'
+                    ? 'text-black font-bold'
                     : 'text-taupe-two',
                 )}
               >

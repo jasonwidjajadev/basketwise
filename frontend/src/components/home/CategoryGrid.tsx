@@ -1,53 +1,192 @@
+import { useEffect, useRef, useState } from 'react'
+import { Link } from 'react-router'
+import { MdChevronLeft, MdChevronRight } from 'react-icons/md'
+
+import pantry from '@/assets/images/categories/pantry.png'
+import bakery from '@/assets/images/categories/bakery.png'
+import frozen from '@/assets/images/categories/frozen.png'
+import meatSeafood from '@/assets/images/categories/meat-seafood.png'
+import fruitVegetables from '@/assets/images/categories/fruit-vegetables.png'
+import dairyEggs from '@/assets/images/categories/dairy-eggs-fridge.png'
+import snacks from '@/assets/images/categories/snacks-confectionery.png'
+import drinks from '@/assets/images/categories/drinks.png'
+import { cn } from '@/lib/utils'
+
 const categories = [
-  { name: 'Fruit & veg', count: '1,240 items' },
-  { name: 'Meat & seafood', count: '860 items' },
-  { name: 'Dairy & eggs', count: '1,015 items' },
-  { name: 'Bakery', count: '480 items' },
-  { name: 'Pantry staples', count: '3,190 items' },
-  { name: 'Frozen', count: '1,470 items' },
-  { name: 'Drinks', count: '2,050 items' },
-  { name: 'Snacks', count: '1,830 items' },
-  { name: 'Baby', count: '610 items' },
-  { name: 'Health & beauty', count: '2,410 items' },
-  { name: 'Household', count: '1,690 items' },
-  { name: 'Pet', count: '740 items' },
+  {
+    name: 'Pantry',
+    image: pantry,
+    to: '/browse?category=pantry',
+  },
+  {
+    name: 'Bakery',
+    image: bakery,
+    to: '/browse?category=bakery',
+  },
+  {
+    name: 'Meat & Seafood',
+    image: meatSeafood,
+    to: '/browse?category=meat-seafood',
+  },
+  {
+    name: 'Dairy, Eggs & Fridge',
+    image: dairyEggs,
+    to: '/browse?category=dairy-eggs-fridge',
+  },
+  {
+    name: 'Fruit & Vegetables',
+    image: fruitVegetables,
+    to: '/browse?category=fruit-vegetables',
+  },
+  {
+    name: 'Frozen',
+    image: frozen,
+    to: '/browse?category=frozen',
+  },
+  {
+    name: 'Snacks & Confectionery',
+    image: snacks,
+    to: '/browse?category=snacks-confectionery',
+  },
+  {
+    name: 'Drinks',
+    image: drinks,
+    to: '/browse?category=drinks',
+  },
 ]
 
 export default function CategoryGrid() {
-  return (
-    <section id="browse" className="w-full pt-14">
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-6">
-        <div>
-          <h2 className="mb-2 text-[34px] font-normal tracking-[-.015em] text-bw-ink">
-            Browse all groceries
-          </h2>
+  const sliderRef = useRef<HTMLDivElement | null>(null)
 
-          <p className="max-w-[52ch] text-sm text-bw-muted">
-            Categories for people who don't know exactly what to search for.
-          </p>
-        </div>
+  const [canScrollLeft, setCanScrollLeft] = useState(false)
+  const [canScrollRight, setCanScrollRight] = useState(true)
+
+  function updateScrollState() {
+    const slider = sliderRef.current
+
+    if (!slider) return
+
+    const maxScrollLeft = slider.scrollWidth - slider.clientWidth
+
+    setCanScrollLeft(slider.scrollLeft > 2)
+    setCanScrollRight(slider.scrollLeft < maxScrollLeft - 2)
+  }
+
+  function scroll(direction: 'left' | 'right') {
+    const slider = sliderRef.current
+
+    if (!slider) return
+
+    const firstCard = slider.firstElementChild as HTMLElement | null
+
+    if (!firstCard) return
+
+    const styles = window.getComputedStyle(slider)
+    const gap = Number.parseFloat(styles.columnGap || styles.gap || '0')
+
+    const amount = firstCard.offsetWidth + gap
+
+    slider.scrollBy({
+      left: direction === 'left' ? -amount : amount,
+      behavior: 'smooth',
+    })
+  }
+
+  useEffect(() => {
+    updateScrollState()
+
+    window.addEventListener('resize', updateScrollState)
+
+    return () => {
+      window.removeEventListener('resize', updateScrollState)
+    }
+  }, [])
+
+  return (
+    <section id="browse" className="w-full py-14">
+      <div className="mb-5 flex items-center justify-between gap-6">
+        <h2 className="text-base font-bold tracking-[.2em] text-bw-ink uppercase">
+          Shop by category
+        </h2>
+
+        <Link
+          to="/browse"
+          className="text-xs font-medium tracking-[0.08em] text-bw-muted uppercase transition-colors hover:text-bw-ink"
+        >
+          View all groceries →
+        </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-px border border-bw-line bg-bw-line sm:grid-cols-3 lg:grid-cols-6">
-        {categories.map((category, i) => (
-          <a
-            key={category.name}
-            href="#browse"
-            className="flex flex-col gap-1.5 bg-bw-surface px-4 pt-4.5 pb-5 text-bw-ink transition-colors hover:bg-bw-panel"
-          >
-            <span className="text-[15px] text-bw-line-strong">
-              {String(i + 1).padStart(2, '0')}
-            </span>
+      <div className="relative">
+        <div
+          ref={sliderRef}
+          onScroll={updateScrollState}
+          className="
+            flex snap-x snap-mandatory gap-4
+            overflow-x-auto scroll-smooth
+            [scrollbar-width:none]
+            [&::-webkit-scrollbar]:hidden
+          "
+        >
+          {categories.map((category) => (
+            <Link
+              key={category.name}
+              to={category.to}
+              className="
+                group relative block
+                w-[84%] shrink-0 snap-start
+                overflow-hidden rounded-2xl
+                sm:w-[68%]
+                md:w-[56%]
+                lg:w-[46%]
+              "
+            >
+              <div className="aspect-[2.6/1] w-full overflow-hidden">
+                <img
+                  src={category.image}
+                  alt=""
+                  className="h-full w-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.035]"
+                />
+              </div>
 
-            <span className="text-[13.5px] font-semibold">
-              {category.name}
-            </span>
+              <div className="absolute inset-0 bg-black/15 transition-colors duration-300 group-hover:bg-black/20" />
 
-            <span className="text-[11.5px] text-bw-subtle">
-              {category.count}
-            </span>
-          </a>
-        ))}
+              <span className="absolute inset-0 flex items-center justify-center px-6 text-center text-xl font-semibold tracking-[0.08em] text-white uppercase sm:text-2xl">
+                {category.name}
+              </span>
+            </Link>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          aria-label="Previous category"
+          disabled={!canScrollLeft}
+          onClick={() => scroll('left')}
+          className={cn(
+            'absolute top-1/2 left-4 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-white transition-colors',
+            canScrollLeft
+              ? 'bg-black/45 hover:bg-black/60'
+              : 'pointer-events-none bg-black/20 opacity-0',
+          )}
+        >
+          <MdChevronLeft className="h-6 w-6" />
+        </button>
+
+        <button
+          type="button"
+          aria-label="Next category"
+          disabled={!canScrollRight}
+          onClick={() => scroll('right')}
+          className={cn(
+            'absolute top-1/2 right-4 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full text-white transition-colors',
+            canScrollRight
+              ? 'bg-black/45 hover:bg-black/60'
+              : 'pointer-events-none bg-black/20 opacity-0',
+          )}
+        >
+          <MdChevronRight className="h-6 w-6" />
+        </button>
       </div>
     </section>
   )

@@ -1,20 +1,290 @@
 [
   {
-    "id": "m1",
-    "shot": "spaghetti bolognese",
+    "id": "spaghetti-bolognese",
     "name": "Spaghetti Bolognese",
-    "meta": "Serves 4 · 9 ingredients · $15.50"
+    "meta": "4 serves · 8 ingredients",
+    "serves": 4,
+    "ingredients": [
+      {
+        "product_id": "beef-mince-500g",
+        "name": "Beef mince",
+        "quantity": 1
+      },
+      {
+        "product_id": "spaghetti-500g",
+        "name": "Spaghetti",
+        "quantity": 1
+      },
+      {
+        "product_id": "passata-700g",
+        "name": "Passata",
+        "quantity": 1
+      },
+      {
+        "product_id": "brown-onion-1kg",
+        "name": "Brown onion",
+        "quantity": 1
+      },
+      {
+        "product_id": "garlic-bulb",
+        "name": "Garlic",
+        "quantity": 1
+      },
+      {
+        "product_id": "carrots-1kg",
+        "name": "Carrots",
+        "quantity": 1
+      },
+      {
+        "product_id": "parmesan-200g",
+        "name": "Parmesan",
+        "quantity": 1
+      },
+      {
+        "product_id": "olive-oil-500ml",
+        "name": "Olive oil",
+        "quantity": 1
+      }
+    ]
   },
   {
-    "id": "m2",
-    "shot": "chicken stir-fry",
-    "name": "Chicken Stir-fry",
-    "meta": "Serves 4 · 11 ingredients · $24.70"
+    "id": "chicken-stir-fry-rice",
+    "name": "Chicken Stir-Fry & Rice",
+    "meta": "4 serves · 8 ingredients",
+    "serves": 4,
+    "ingredients": [
+      {
+        "product_id": "chicken-breast-500g",
+        "name": "Chicken breast",
+        "quantity": 1
+      },
+      {
+        "product_id": "jasmine-rice-1kg",
+        "name": "Jasmine rice",
+        "quantity": 1
+      },
+      {
+        "product_id": "broccoli-head",
+        "name": "Broccoli",
+        "quantity": 1
+      },
+      {
+        "product_id": "red-capsicum",
+        "name": "Red capsicum",
+        "quantity": 1
+      },
+      {
+        "product_id": "carrots-1kg",
+        "name": "Carrots",
+        "quantity": 1
+      },
+      {
+        "product_id": "stir-fry-sauce-200ml",
+        "name": "Stir-fry sauce",
+        "quantity": 1
+      },
+      {
+        "product_id": "garlic-bulb",
+        "name": "Garlic",
+        "quantity": 1
+      },
+      {
+        "product_id": "spring-onions-bunch",
+        "name": "Spring onions",
+        "quantity": 1
+      }
+    ]
   },
   {
-    "id": "m3",
-    "shot": "greek salad",
-    "name": "Greek Salad",
-    "meta": "Serves 4 · 8 ingredients · $20.80"
+    "id": "beef-tacos",
+    "name": "Beef Tacos",
+    "meta": "4 serves · 8 ingredients",
+    "serves": 4,
+    "ingredients": [
+      {
+        "product_id": "beef-mince-500g",
+        "name": "Beef mince",
+        "quantity": 1
+      },
+      {
+        "product_id": "tortillas-10-pack",
+        "name": "Tortillas",
+        "quantity": 1
+      },
+      {
+        "product_id": "taco-seasoning-30g",
+        "name": "Taco seasoning",
+        "quantity": 1
+      },
+      {
+        "product_id": "iceberg-lettuce",
+        "name": "Iceberg lettuce",
+        "quantity": 1
+      },
+      {
+        "product_id": "tomatoes-500g",
+        "name": "Tomatoes",
+        "quantity": 1
+      },
+      {
+        "product_id": "cheese-tasty-block-250g",
+        "name": "Tasty cheese",
+        "quantity": 1
+      },
+      {
+        "product_id": "salsa-300g",
+        "name": "Salsa",
+        "quantity": 1
+      },
+      {
+        "product_id": "sour-cream-300ml",
+        "name": "Sour cream",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "chicken-curry-rice",
+    "name": "Chicken Curry & Rice",
+    "meta": "4 serves · 8 ingredients",
+    "serves": 4,
+    "ingredients": [
+      {
+        "product_id": "chicken-breast-500g",
+        "name": "Chicken breast",
+        "quantity": 1
+      },
+      {
+        "product_id": "basmati-rice-1kg",
+        "name": "Basmati rice",
+        "quantity": 1
+      },
+      {
+        "product_id": "coconut-milk-400ml",
+        "name": "Coconut milk",
+        "quantity": 1
+      },
+      {
+        "product_id": "curry-paste-200g",
+        "name": "Curry paste",
+        "quantity": 1
+      },
+      {
+        "product_id": "brown-onion-1kg",
+        "name": "Brown onion",
+        "quantity": 1
+      },
+      {
+        "product_id": "garlic-bulb",
+        "name": "Garlic",
+        "quantity": 1
+      },
+      {
+        "product_id": "baby-spinach-120g",
+        "name": "Baby spinach",
+        "quantity": 1
+      },
+      {
+        "product_id": "greek-yoghurt-500g",
+        "name": "Greek yoghurt",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "chicken-tray-bake",
+    "name": "Chicken Tray Bake",
+    "meta": "4 serves · 8 ingredients",
+    "serves": 4,
+    "ingredients": [
+      {
+        "product_id": "chicken-thigh-600g",
+        "name": "Chicken thighs",
+        "quantity": 1
+      },
+      {
+        "product_id": "potatoes-2kg",
+        "name": "Potatoes",
+        "quantity": 1
+      },
+      {
+        "product_id": "carrots-1kg",
+        "name": "Carrots",
+        "quantity": 1
+      },
+      {
+        "product_id": "broccoli-head",
+        "name": "Broccoli",
+        "quantity": 1
+      },
+      {
+        "product_id": "red-onion-1kg",
+        "name": "Red onion",
+        "quantity": 1
+      },
+      {
+        "product_id": "garlic-bulb",
+        "name": "Garlic",
+        "quantity": 1
+      },
+      {
+        "product_id": "olive-oil-500ml",
+        "name": "Olive oil",
+        "quantity": 1
+      },
+      {
+        "product_id": "mixed-herbs-20g",
+        "name": "Mixed herbs",
+        "quantity": 1
+      }
+    ]
+  },
+  {
+    "id": "vegetable-chickpea-curry",
+    "name": "Vegetable Chickpea Curry",
+    "meta": "4 serves · 8 ingredients",
+    "serves": 4,
+    "ingredients": [
+      {
+        "product_id": "chickpeas-400g",
+        "name": "Chickpeas",
+        "quantity": 1
+      },
+      {
+        "product_id": "basmati-rice-1kg",
+        "name": "Basmati rice",
+        "quantity": 1
+      },
+      {
+        "product_id": "coconut-milk-400ml",
+        "name": "Coconut milk",
+        "quantity": 1
+      },
+      {
+        "product_id": "curry-paste-200g",
+        "name": "Curry paste",
+        "quantity": 1
+      },
+      {
+        "product_id": "sweet-potato-1kg",
+        "name": "Sweet potato",
+        "quantity": 1
+      },
+      {
+        "product_id": "baby-spinach-120g",
+        "name": "Baby spinach",
+        "quantity": 1
+      },
+      {
+        "product_id": "brown-onion-1kg",
+        "name": "Brown onion",
+        "quantity": 1
+      },
+      {
+        "product_id": "garlic-bulb",
+        "name": "Garlic",
+        "quantity": 1
+      }
+    ]
   }
 ]

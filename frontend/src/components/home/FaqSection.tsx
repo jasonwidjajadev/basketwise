@@ -1,56 +1,97 @@
+import { useState } from 'react'
+import { MdKeyboardArrowDown } from 'react-icons/md'
+
 const faqs = [
   {
-    question: 'Where do the prices come from',
+    question: 'What is BasketWise?',
     answer:
-      'We collect published shelf prices from Coles, Woolworths, ALDI and IGA several times a day, then normalise them per unit so a 500g tub and a 1kg tub are genuinely comparable.',
+      'BasketWise helps you build a grocery list, compare the same basket across retailers and choose the cheapest option that still fits your day.',
   },
   {
-    question: 'How accurate is receipt scanning',
+    question: 'How does BasketWise find the cheapest practical option?',
     answer:
-      'About 97% of line items match first pass. Anything ambiguous gets shown to you as a quick two-tap confirmation rather than being guessed at.',
+      'We compare your basket as a whole, rather than chasing individual specials. You see a clear single-store option first, then a split-shop option only when the extra saving may be worth the time.',
   },
   {
-    question: 'Do you get paid by supermarkets',
+    question: 'Do I need to visit more than one store?',
     answer:
-      'No. BasketWise takes no retailer commissions or placement fees. If a cheaper option exists, you see it — including the one nobody pays us to show.',
+      'No. We always show a one-store total. If another retailer could save you meaningfully more, we make the trade-off clear so you can decide whether it is worthwhile.',
   },
   {
-    question: 'Can I split a basket across stores',
+    question: 'Where does the price information come from?',
     answer:
-      'Yes. Every basket shows a single-store total and a split total, with the driving detour and time cost so you can decide if the saving is worth it.',
+      'BasketWise compares price information from the retailers it covers and shows each store’s price alongside your items. Prices can change, so it is always worth confirming before you shop.',
   },
   {
-    question: 'Which areas are covered',
+    question: 'Do I need an account?',
     answer:
-      'All metro areas plus roughly 400 regional postcodes. Enter your postcode and we only show stores you can actually reach.',
+      'No. You can browse, build a basket and compare prices as a guest. Create an account only when you want to save a list and return to it later.',
+  },
+  {
+    question: 'Is BasketWise free to use?',
+    answer:
+      'Yes. Browsing groceries, building a basket and comparing your options are free.',
   },
 ]
 
 export default function FaqSection() {
+  const [openQuestion, setOpenQuestion] = useState<number | null>(null)
+
   return (
-    <section
-      id="faq"
-      className="mx-auto w-full max-w-[820px] pt-19"
-    >
-      <h2 className="mb-1.5 text-center text-[36px] font-normal tracking-[-.02em] text-bw-ink sm:text-[44px]">
-        FAQ
+    <section id="faq" className="mx-auto w-full max-w-[820px] pt-19">
+      <h2 className="mb-2 text-center text-3xl font-bold tracking-[-0.03em] text-bw-ink">
+        FAQS
       </h2>
 
-      <p className="mb-8 text-center text-[13px] text-bw-subtle">
-        Everything about prices, receipts and stores.
+      <p className="mb-10 text-center text-[14px] text-bw-subtle">
+        Our goal is a less expensive, less confusing weekly shop.
       </p>
 
-      <div className="border-t border-bw-line">
-        {faqs.map((faq) => (
-          <div
-            key={faq.question}
-            className="border-b border-bw-line px-1 py-5"
-          >
-            <span className="text-[12.5px] font-bold tracking-[.12em] text-bw-ink uppercase">
-              {faq.question}
-            </span>
-          </div>
-        ))}
+      <div className="border-t border-bw-green">
+        {faqs.map((faq, index) => {
+          const isOpen = openQuestion === index
+          const answerId = `faq-answer-${index}`
+
+          return (
+            <article key={faq.question} className="border-b border-bw-green">
+              <button
+                type="button"
+                aria-expanded={isOpen}
+                aria-controls={answerId}
+                onClick={() =>
+                  setOpenQuestion((currentQuestion) =>
+                    currentQuestion === index ? null : index,
+                  )
+                }
+                className="flex w-full items-center justify-between gap-6 px-1 py-6 text-left sm:py-7"
+              >
+                <span className="text-[17px] leading-[1.15] font-semibold tracking-[-0.015em] text-bw-ink sm:text-[19px]">
+                  {faq.question}
+                </span>
+
+                <MdKeyboardArrowDown
+                  aria-hidden="true"
+                  className={`size-9 shrink-0 text-bw-green transition-transform duration-200 ${
+                    isOpen ? 'rotate-180' : ''
+                  }`}
+                />
+              </button>
+
+              <div
+                id={answerId}
+                className={`grid overflow-hidden transition-[grid-template-rows] duration-300 ease-out ${
+                  isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+                }`}
+              >
+                <div className="overflow-hidden">
+                  <p className="max-w-[68ch] px-1 pb-6 pr-10 text-[15px] leading-relaxed text-bw-muted sm:pb-7">
+                    {faq.answer}
+                  </p>
+                </div>
+              </div>
+            </article>
+          )
+        })}
       </div>
     </section>
   )

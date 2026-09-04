@@ -4,15 +4,17 @@ export default function HomeGuestBar() {
   const { openSignIn } = useSignInModal()
 
   return (
-    <section className="w-full bg-[#252522] text-white">
+    <section className="sticky top-[60px] z-30 w-full bg-[#252522] text-white">
       <div className="flex h-[46px] items-center justify-between px-6 lg:px-8 xl:px-12 2xl:px-16">
         <div className="flex items-center gap-3 text-sm uppercase tracking-[0.08em] text-white/65">
-          <span>HI THERE</span>
-          <span>GUEST</span>
+            {/* <a href="#faq">
+              <span>HOW DOES IT WORK?</span>
+            </a> */}
+            <span>HI THERE GUEST</span>
         </div>
 
         <div className="hidden items-center gap-3 text-sm uppercase tracking-[0.07em] text-white/55 sm:flex">
-          <span>COMPARE AS A GUEST. SIGN IN TO SAVE.</span>
+          <span>COMPARE AS A GUEST. SIGN IN TO ACCESS YOUR LISTS.</span>
 
           <button
             type="button"
