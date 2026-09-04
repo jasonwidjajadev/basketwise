@@ -42,7 +42,12 @@ const RETAILER_LOGOS = {
   },
 } as const
 
-const RETAILER_ORDER = ['woolworths', 'coles', 'aldi', 'harrisfarm'] as const
+const RETAILER_ORDER = [
+  'woolworths',
+  'coles',
+  'aldi',
+  'harrisfarm',
+] as const
 
 type Retailer = (typeof RETAILER_ORDER)[number]
 
@@ -77,7 +82,10 @@ function fmt(n: number) {
   return `$${n.toFixed(2)}`
 }
 
-function truncateText(text: string, maxLength = PRODUCT_NAME_MAX_LENGTH) {
+function truncateText(
+  text: string,
+  maxLength = PRODUCT_NAME_MAX_LENGTH,
+) {
   if (text.length <= maxLength) return text
 
   return `${text.slice(0, maxLength).trim()}...`
@@ -90,18 +98,24 @@ export default function ProductCard({
   onRemove,
 }: ProductCardProps) {
   const offersByRetailer = new Map(
-    product.offers.map((offer) => [offer.retailer, offer]),
+    product.offers.map((offer) => [
+      offer.retailer,
+      offer,
+    ]),
   )
 
   const [justAdded, setJustAdded] = useState(false)
-  const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null)
+  const [failedImageUrl, setFailedImageUrl] =
+    useState<string | null>(null)
 
-  const popTimeout = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  )
+  const popTimeout =
+    useRef<ReturnType<typeof setTimeout> | undefined>(
+      undefined,
+    )
 
   const imageSrc =
-    product.image_url && failedImageUrl !== product.image_url
+    product.image_url &&
+    failedImageUrl !== product.image_url
       ? product.image_url
       : productDefault
 
@@ -109,25 +123,34 @@ export default function ProductCard({
   const size = formatSize(product)
 
   const unitPrice =
-    product.unit_price != null && product.unit_measure
+    product.unit_price != null &&
+    product.unit_measure
       ? `${fmt(product.unit_price)} / ${product.unit_measure}`
       : null
 
-  const availableOffers = product.offers.filter((offer) =>
-    Number.isFinite(offer.price),
+  const availableOffers = product.offers.filter(
+    (offer) => Number.isFinite(offer.price),
   )
 
   const cheapestPrice =
     availableOffers.length > 0
-      ? Math.min(...availableOffers.map((offer) => offer.price))
+      ? Math.min(
+          ...availableOffers.map(
+            (offer) => offer.price,
+          ),
+        )
       : null
 
   const cheapestRetailer =
     product.cheapest_retailer &&
-    offersByRetailer.get(product.cheapest_retailer)?.price === cheapestPrice
+    offersByRetailer.get(
+      product.cheapest_retailer,
+    )?.price === cheapestPrice
       ? product.cheapest_retailer
       : (RETAILER_ORDER.find(
-          (retailer) => offersByRetailer.get(retailer)?.price === cheapestPrice,
+          (retailer) =>
+            offersByRetailer.get(retailer)?.price ===
+            cheapestPrice,
         ) ?? null)
 
   function handleToggle() {
@@ -141,7 +164,10 @@ export default function ProductCard({
 
     clearTimeout(popTimeout.current)
 
-    popTimeout.current = setTimeout(() => setJustAdded(false), POP_DURATION_MS)
+    popTimeout.current = setTimeout(
+      () => setJustAdded(false),
+      POP_DURATION_MS,
+    )
   }
 
   return (
@@ -156,7 +182,9 @@ export default function ProductCard({
             {product.was_price != null && (
               <span className="text-[10px] text-bw-muted">
                 was{' '}
-                <span className="line-through">{fmt(product.was_price)}</span>
+                <span className="line-through">
+                  {fmt(product.was_price)}
+                </span>
               </span>
             )}
           </div>
@@ -176,14 +204,24 @@ export default function ProductCard({
         <button
           type="button"
           onClick={handleToggle}
-          aria-label={added ? 'Remove from basket' : 'Add to basket'}
-          title={added ? 'Remove from basket' : 'Add to basket'}
+          aria-label={
+            added
+              ? 'Remove from basket'
+              : 'Add to basket'
+          }
+          title={
+            added
+              ? 'Remove from basket'
+              : 'Add to basket'
+          }
           className={cn(
             'absolute right-2 bottom-2 flex h-8 w-8 items-center justify-center rounded-full border border-bw-line bg-white text-bw-ink transition-colors',
             'hover:border-bw-green hover:bg-bw-green hover:text-white',
             'focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
-            added && 'border-bw-green bg-bw-green text-white',
-            justAdded && 'animate-[bw-pop_420ms_ease]',
+            added &&
+              'border-bw-green bg-bw-green text-white',
+            justAdded &&
+              'animate-[bw-pop_420ms_ease]',
           )}
         >
           {added ? (
@@ -195,7 +233,9 @@ export default function ProductCard({
       </div>
 
       <div className="pt-3">
-        <p className="mb-1 text-[11px] leading-none text-bw-muted">{brand}</p>
+        <p className="mb-1 text-[11px] leading-none text-bw-muted">
+          {brand}
+        </p>
 
         <p
           title={product.name}
@@ -215,28 +255,44 @@ export default function ProductCard({
         )}
       </div>
 
-      <div className="mt-3 grid grid-cols-4 gap-1">
+      <div className="mt-3 grid w-full grid-cols-4">
         {RETAILER_ORDER.map((retailer) => {
-          const offer = offersByRetailer.get(retailer)
-          const logos = RETAILER_LOGOS[retailer]
-          const label = RETAILER_LABELS[retailer]
-          const isCheapest = retailer === cheapestRetailer
+          const offer =
+            offersByRetailer.get(retailer)
+
+          const logos =
+            RETAILER_LOGOS[retailer]
+
+          const label =
+            RETAILER_LABELS[retailer]
+
+          const isCheapest =
+            retailer === cheapestRetailer
 
           return (
-            <div key={retailer} className="flex min-w-0 flex-col items-center">
+            <div
+              key={retailer}
+              className="flex min-w-0 flex-col items-center"
+            >
               <img
-                src={isCheapest ? logos.color : logos.greyscale}
+                src={
+                  isCheapest
+                    ? logos.color
+                    : logos.greyscale
+                }
                 alt={label}
-                className="h-6 w-6 object-contain"
+                className="aspect-square w-[55%] object-contain"
               />
 
               <span
                 className={cn(
-                  'mt-1 text-[12px] leading-none font-medium',
-                  offer ? 'text-taupe-two' : 'text-bw-subtle',
+                  'mt-1 text-xs leading-none font-medium',
+                  isCheapest
+                    ? 'text-black'
+                    : 'text-taupe-two',
                 )}
               >
-                {offer ? fmt(offer.price) : '—'}
+                {offer ? fmt(offer.price) : ''}
               </span>
             </div>
           )
