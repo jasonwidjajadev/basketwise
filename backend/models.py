@@ -12,6 +12,12 @@ from pydantic import BaseModel, Field
 
 Retailer = Literal["coles", "woolworths", "aldi", "harrisfarm"]
 
+class ProductOffer(BaseModel):
+    """Lightweight retailer price used on product cards."""
+
+    retailer: Retailer
+    price: float
+
 
 class Subcategory(BaseModel):
     id: str = Field(examples=["milk"], description="Stable canonical id. Send this in API requests.")
@@ -60,6 +66,10 @@ class Product(BaseModel):
                                                  "detail crawl has not been run yet. Render only if present.")
     rating_count: int | None = Field(default=None, examples=[13])
 
+    offers: list[ProductOffer] = Field(
+        default_factory=list,
+        description="Current retailer prices for this canonical product."
+    )
 
 class PricePoint(BaseModel):
     price: float
@@ -100,7 +110,7 @@ class Offer(BaseModel):
 
 
 class ProductDetail(Product):
-    offers: list[Offer] = []
+    offers: list[Offer] = Field(default_factory=list)
 
 
 class BasketItem(BaseModel):

@@ -15,8 +15,8 @@ router = APIRouter(tags=["catalogue"])
     response_model=list[Category],
     summary="Canonical categories with subcategories",
     description=(
-        "Returns every canonical BasketWise category that has products, each with its "
-        "subcategories.\n\n"
+        "Returns the full canonical BasketWise category tree, including categories "
+        "and subcategories with zero currently mapped products.\n\n"
         "Use `id` in API requests and `name` for display. Do **not** build your own "
         "id-to-label map on the frontend -- this endpoint is the source of truth for both."
     ),

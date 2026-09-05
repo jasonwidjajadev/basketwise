@@ -213,9 +213,14 @@ def enrich(rows: list[dict]) -> None:
              if (m := C.normalize_subcategory(store, lvl))), None)
         # A subcategory only counts if it belongs to the mapped category (v2 rule:
         # prefer NULL over a mapping that contradicts itself).
-        if r["sub"] and r["cat"] and r["sub"] not in C.CANONICAL_SUBCATEGORIES.get(r["cat"], []):
-            if r["sub"] not in C.SUBCATEGORY_NAME:
-                r["sub"] = None
+        if (
+            r["sub"]
+            and (
+                not r["cat"]
+                or r["sub"] not in C.CANONICAL_SUBCATEGORIES.get(r["cat"], [])
+            )
+        ):
+            r["sub"] = None
         # Collection labels are weak evidence; the per-product `dietary` claim is strong.
         r["tags"] = sorted(set(C.normalize_tags(store, src_cat, src_sub))
                            | set(C.tags_from_dietary(r["dietary"])))
@@ -402,11 +407,6 @@ def build(dry_run: bool) -> int:
         for pos, sid in enumerate(subs):
             db.execute("INSERT INTO subcategories VALUES (?,?,?,?,0)", (sid, cid, C.subcategory_name(sid), pos))
     # subcategories discovered in data but absent from the v2 starter list
-    for (cid, sid) in db.execute(
-            "SELECT DISTINCT category, subcategory FROM products "
-            "WHERE category IS NOT NULL AND subcategory IS NOT NULL").fetchall():
-        db.execute("INSERT OR IGNORE INTO subcategories VALUES (?,?,?,999,0)",
-                   (sid, cid, C.subcategory_name(sid)))
 
     db.execute("UPDATE categories SET product_count="
                "(SELECT COUNT(*) FROM products p WHERE p.category=categories.id)")
