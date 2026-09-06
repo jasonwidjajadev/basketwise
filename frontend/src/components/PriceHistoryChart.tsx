@@ -4,15 +4,13 @@
  * Deliberately dependency-free -- the project ships no charting library and a
  * six-point line does not justify adding one.
  *
- * Reads /products/{id}/price-trend, which merges the immutable artifact with every
- * crawl uploaded to Supabase. Crawls are irregular (six days so far, with gaps), so
- * the x-axis is scaled by real date rather than by index: a three-day gap has to
- * look like a three-day gap, otherwise the chart implies daily sampling we do not
- * have.
+ * The series is fetched by PriceHistoryPanel (/products/{id}/price-history) and
+ * passed in, so the panel's range bar and this chart share one request. Crawls are
+ * irregular, so the x-axis is scaled by real date rather than by index: a three-day
+ * gap has to look like a three-day gap, otherwise the chart implies daily sampling
+ * we do not have.
  */
-import { useEffect, useState } from 'react'
-
-import { getPriceTrend, RETAILER_LABEL } from '@/api/client'
+import { RETAILER_LABEL } from '@/api/client'
 
 import type { PriceHistory, Retailer } from '@/api/client'
 
@@ -36,35 +34,12 @@ const shortDate = (iso: string) =>
   })
 
 export default function PriceHistoryChart({
-  productId,
+  series,
 }: {
-  productId: string
+  series: PriceHistory[]
 }) {
-  // Keyed by product so staleness is derived at render instead of reset by a
-  // setState in the effect body -- the latter trips react-hooks/set-state-in-effect.
-  const [res, setRes] = useState<{
-    id: string
-    series: PriceHistory[] | null
-  }>({ id: '', series: null })
-
-  useEffect(() => {
-    const ac = new AbortController()
-    getPriceTrend(productId, 30, ac.signal)
-      .then((d) => setRes({ id: productId, series: d }))
-      .catch((e) => {
-        if (e?.name !== 'AbortError') setRes({ id: productId, series: null })
-      })
-    return () => ac.abort()
-  }, [productId])
-
-  if (res.id !== productId)
-    return <div className="h-[220px] animate-pulse rounded-lg bg-gray-100" />
-
   // A missing chart is better than a broken page: the offers above still answer
   // "what does this cost right now".
-  if (res.series === null) return null
-  const series = res.series
-
   const points = series.flatMap((s) => s.points)
   if (points.length === 0) return null
 

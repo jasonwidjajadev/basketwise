@@ -8,11 +8,8 @@ import type { Offer, ProductDetail, Retailer } from '@/api/client'
 
 import productDefault from '@/assets/product_card/product_default.png'
 
-import LedgerBreakdown from '@/components/compare/LedgerBreakdown'
 import OptionCard from '@/components/compare/OptionCard'
-import PriceHistoryChart from '@/components/PriceHistoryChart'
-
-import { thumbnailUrl } from '@/lib/imageThumbnail'
+import PriceHistoryPanel from '@/components/PriceHistoryPanel'
 
 function uiOption(offer: Offer, highestPrice: number) {
   return {
@@ -32,6 +29,10 @@ export default function ProductPage() {
   const [notFound, setNotFound] = useState(false)
 
   const [activeRetailer, setActiveRetailer] = useState<Retailer | null>(null)
+
+  // Retailer CDNs do 404 on us. Remember which images died so the swap falls
+  // back to the placeholder instead of showing a broken image.
+  const [failedImageUrls, setFailedImageUrls] = useState<string[]>([])
 
   useEffect(() => {
     const controller = new AbortController()
@@ -106,7 +107,18 @@ export default function ProductPage() {
     availableOffers.find((offer) => offer.retailer === activeRetailer) ??
     availableOffers[0]
 
-  const image = thumbnailUrl(product.image_url, 100) ?? productDefault
+  // Each retailer photographs the same item its own way, so show the pack shot
+  // that belongs to the price the shopper just clicked.
+  const offerImage = activeOffer?.image_url ?? product.image_url ?? null
+
+  const image =
+    offerImage && !failedImageUrls.includes(offerImage)
+      ? offerImage
+      : productDefault
+
+  const imageAlt = activeOffer
+    ? `${RETAILER_LABEL[activeOffer.retailer]} — ${product.name}`
+    : product.name
 
   const size = formatSize(product)
 
@@ -118,10 +130,15 @@ export default function ProductPage() {
           <div className="flex aspect-square items-center justify-center overflow-hidden rounded-2xl border border-bw-line bg-white p-5">
             <img
               src={image}
-              alt={product.name}
-              width={100}
-              height={100}
-              className="h-[100px] w-[100px] object-contain"
+              alt={imageAlt}
+              onError={() => {
+                if (offerImage) {
+                  setFailedImageUrls((urls) =>
+                    urls.includes(offerImage) ? urls : [...urls, offerImage],
+                  )
+                }
+              }}
+              className="h-full w-full object-contain"
             />
           </div>
 
@@ -190,42 +207,18 @@ export default function ProductPage() {
                   })}
                 </div>
 
-                {/* Price breakdown for selected retailer */}
-                {activeOffer && (
-                  <div className="mt-5">
-                    <LedgerBreakdown
-                      groups={[
-                        {
-                          retailer: activeOffer.retailer,
-
-                          label: RETAILER_LABEL[activeOffer.retailer],
-
-                          subtotal: activeOffer.price,
-
-                          lines: [
-                            {
-                              product: {
-                                id: product.id,
-                                name: product.name,
-                              },
-
-                              quantity: 1,
-
-                              unitPrice: activeOffer.price,
-
-                              lineTotal: activeOffer.price,
-                            },
-                          ],
-                        },
-                      ]}
-                      total={activeOffer.price}
-                    />
-                  </div>
-                )}
+                {/*
+                 * What this item has cost, rather than a second copy of the
+                 * price already on the cards above. The marker on the range
+                 * bar follows whichever retailer is selected.
+                 */}
+                <PriceHistoryPanel
+                  productId={product.id}
+                  activeOffer={activeOffer}
+                  offers={availableOffers}
+                />
               </>
             )}
-
-            <PriceHistoryChart productId={product.id} />
           </div>
         </div>
       </div>
