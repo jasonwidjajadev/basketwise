@@ -10,6 +10,7 @@ import productDefault from '@/assets/product_card/product_default.png'
 
 import LedgerBreakdown from '@/components/compare/LedgerBreakdown'
 import OptionCard from '@/components/compare/OptionCard'
+import PriceHistoryChart from '@/components/PriceHistoryChart'
 
 import { thumbnailUrl } from '@/lib/imageThumbnail'
 
@@ -223,6 +224,8 @@ export default function ProductPage() {
                 )}
               </>
             )}
+
+            <PriceHistoryChart productId={product.id} />
           </div>
         </div>
       </div>
