@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { MdAdd, MdCheck } from 'react-icons/md'
+import { Link } from 'react-router'
 
 import { formatSize } from '@/api/client'
 import aldiColor from '@/assets/product_card/aldi_color.webp'
@@ -162,16 +163,22 @@ export default function ProductCard({
           </div>
         )}
 
-        <img
-          src={imageSrc}
-          alt={product.name}
-          onError={() => {
-            if (product.image_url) {
-              setFailedImageUrl(product.image_url)
-            }
-          }}
-          className="h-[168px] w-[180px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-        />
+        <Link
+          to={`/product/${product.id}`}
+          aria-label={product.name}
+          className="flex h-full w-full items-center justify-center focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
+        >
+          <img
+            src={imageSrc}
+            alt={product.name}
+            onError={() => {
+              if (product.image_url) {
+                setFailedImageUrl(product.image_url)
+              }
+            }}
+            className="h-[168px] w-[180px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          />
+        </Link>
 
         <button
           type="button"
@@ -197,12 +204,13 @@ export default function ProductCard({
       <div className="pt-3">
         <p className="mb-1 text-[11px] leading-none text-bw-muted">{brand}</p>
 
-        <p
+        <Link
+          to={`/product/${product.id}`}
           title={product.name}
-          className="min-h-[18px] cursor-default text-sm leading-[1.3] font-semibold text-bw-ink"
+          className="block min-h-[18px] text-sm leading-[1.3] font-semibold text-bw-ink hover:text-bw-green hover:underline focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
         >
           {truncateText(product.name)}
-        </p>
+        </Link>
 
         {(size || unitPrice) && (
           <p className="mt-1 text-[11px] text-bw-muted">

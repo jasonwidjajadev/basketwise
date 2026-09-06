@@ -1,4 +1,4 @@
-import { MdCheck } from 'react-icons/md'
+import { MdCheck, MdOpenInNew } from 'react-icons/md'
 
 import { cn, formatMoney } from '@/lib/utils'
 import SavingsBadge from '@/components/compare/SavingsBadge'
@@ -15,6 +15,8 @@ export default function OptionCard({
   available = true,
   note,
   showWhyButton = false,
+  storeItemName,
+  storeUrl,
   whyOpen = false,
   onToggleWhy,
   animationDelay,
@@ -33,12 +35,14 @@ export default function OptionCard({
     )
   }
 
-  // The recommended card hosts a nested WhyButton, and a <button> cannot
-  // legally contain another <button> — the browser silently closes the
-  // outer one when it hits the inner one. Render that one card as a
-  // div[role=button] with manual keyboard support instead.
-  const Tag = showWhyButton ? 'div' : 'button'
-  const tagProps = showWhyButton
+  // The recommended card hosts a nested WhyButton, and the product page cards
+  // host a nested "view at store" link. A <button> cannot legally contain
+  // another <button> or an <a> — the browser silently closes the outer one
+  // when it hits the inner one. Render those cards as a div[role=button] with
+  // manual keyboard support instead.
+  const hasNestedControl = showWhyButton || Boolean(storeUrl)
+  const Tag = hasNestedControl ? 'div' : 'button'
+  const tagProps = hasNestedControl
     ? {
         role: 'button',
         tabIndex: 0,
@@ -77,6 +81,26 @@ export default function OptionCard({
         {formatMoney(option.total)}
       </p>
       <p className="text-[11px] text-bw-subtle">{stores.join(' + ')}</p>
+
+      {/* The matched item is often named differently at each store, so show
+          what this store's price is actually for and link out to prove it. */}
+      {storeItemName && (
+        <p className="text-[11px] leading-snug text-bw-muted">
+          {storeItemName}
+        </p>
+      )}
+
+      {storeUrl && (
+        <a
+          href={storeUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={(e) => e.stopPropagation()}
+          className="inline-flex items-center gap-1 text-[10.5px] font-semibold text-bw-ink underline underline-offset-2 hover:text-bw-green"
+        >
+          View at {label} <MdOpenInNew className="h-3 w-3" />
+        </a>
+      )}
 
       {isBest ? (
         <span className="flex items-center gap-1 text-[10.5px] font-bold text-bw-green">

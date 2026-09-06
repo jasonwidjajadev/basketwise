@@ -121,20 +121,25 @@ export default function CategorySidebar({
 
   return (
     <>
-      {/* Desktop: permanent sidebar column */}
-      <aside className="hidden w-64 shrink-0 border border-bw-line bg-bw-surface lg:block">
-        <div className="border-b border-bw-line px-3.5 py-3.5 text-[11px] font-bold tracking-[.12em] text-bw-ink uppercase">
+      {/* Desktop: permanent sidebar column. Sticks under the 60px header and
+          scrolls its own list, so the product grid scrolls independently. */}
+      <aside className="sticky top-[60px] hidden max-h-[calc(100svh-60px)] w-64 shrink-0 flex-col border border-bw-line bg-bw-surface lg:flex">
+        <div className="shrink-0 border-b border-bw-line px-3.5 py-3.5 text-[11px] font-bold tracking-[.12em] text-bw-ink uppercase">
           Categories
         </div>
-        {body}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          {body}
+        </div>
       </aside>
 
       {/* Mobile/tablet: same permanent accordion, stacked above the product grid */}
-      <div className="border border-bw-line bg-bw-surface lg:hidden">
-        <div className="border-b border-bw-line px-3.5 py-3.5 text-[11px] font-bold tracking-[.12em] text-bw-ink uppercase">
+      <div className="flex max-h-[60svh] flex-col border border-bw-line bg-bw-surface lg:hidden">
+        <div className="shrink-0 border-b border-bw-line px-3.5 py-3.5 text-[11px] font-bold tracking-[.12em] text-bw-ink uppercase">
           Categories
         </div>
-        {body}
+        <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          {body}
+        </div>
       </div>
     </>
   )

@@ -17,7 +17,7 @@ from fastapi.responses import RedirectResponse
 
 import db
 from models import Health
-from routes import categories, compare, products
+from routes import categories, compare, price_trend, products
 
 # Public read-only data, rebuilt daily. Let Cloudflare's edge serve the GETs so the
 # origin effectively only handles POST /compare.
@@ -90,6 +90,7 @@ async def cache_headers(request: Request, call_next):
 app.include_router(categories.router)
 app.include_router(products.router)
 app.include_router(compare.router)
+app.include_router(price_trend.router)
 
 
 @app.get("/health", response_model=Health, tags=["meta"], summary="Liveness and data freshness")

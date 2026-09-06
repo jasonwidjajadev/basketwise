@@ -9,6 +9,7 @@ import { useParams } from 'react-router'
 import {
   formatSize,
   getProduct,
+  offerUrl,
   RETAILER_LABEL,
 } from '@/api/client'
 
@@ -98,14 +99,16 @@ export default function ProductPage() {
     }
   }, [productId])
 
-  const availableOffers = useMemo(
-    () =>
-      product?.offers.filter(
-        (offer) =>
-          offer.is_available !== false,
-      ) ?? [],
-    [product],
-  )
+  // ~5% of offers carry is_available=0, and for some products every offer is
+  // flagged that way. Hiding all of them left the comparison blank while the
+  // product card (which filters on price only) still showed prices for the same
+  // item. Prefer available offers, but never render an empty comparison when we
+  // do have prices.
+  const availableOffers = useMemo(() => {
+    const offers = product?.offers ?? []
+    const inStock = offers.filter((offer) => offer.is_available !== false)
+    return inStock.length > 0 ? inStock : offers
+  }, [product])
 
   if (loading) {
     return (
@@ -239,6 +242,21 @@ export default function ProductPage() {
                           isBest={
                             offer.price ===
                             lowestPrice
+                          }
+
+                          /*
+                           * The linked items can be
+                           * named differently at each
+                           * store, so name the exact
+                           * item this price is for and
+                           * link out to it.
+                           */
+                          storeItemName={
+                            offer.retailer_product_name
+                          }
+                          storeUrl={
+                            offerUrl(offer) ??
+                            undefined
                           }
 
                           /*
