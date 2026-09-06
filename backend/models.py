@@ -12,6 +12,12 @@ from pydantic import BaseModel, Field
 
 Retailer = Literal["coles", "woolworths", "aldi", "harrisfarm"]
 
+class ProductOffer(BaseModel):
+    """Lightweight retailer price used on product cards."""
+
+    retailer: Retailer
+    price: float
+
 
 class Subcategory(BaseModel):
     id: str = Field(examples=["milk"], description="Stable canonical id. Send this in API requests.")
@@ -24,14 +30,6 @@ class Category(BaseModel):
     name: str = Field(examples=["Dairy, Eggs & Fridge"])
     product_count: int = Field(examples=[3546])
     subcategories: list[Subcategory] = []
-
-
-class ProductOfferSummary(BaseModel):
-    """Just enough to render a per-retailer price next to a product card --
-    full retailer metadata lives on `Offer`, returned by `GET /products/{id}`."""
-
-    retailer: Retailer
-    price: float
 
 
 class Product(BaseModel):
@@ -67,11 +65,11 @@ class Product(BaseModel):
                                      description="Retailer star rating. Sparse today -- the Woolworths "
                                                  "detail crawl has not been run yet. Render only if present.")
     rating_count: int | None = Field(default=None, examples=[13])
-    offers: list[ProductOfferSummary] = Field(
-        default=[], description="One retailer + price per stocking retailer, cheapest-first. "
-                                "Lets a product card render a per-retailer price grid without a "
-                                "second request. For full retailer metadata, call GET /products/{id}.")
 
+    offers: list[ProductOffer] = Field(
+        default_factory=list,
+        description="Current retailer prices for this canonical product."
+    )
 
 class PricePoint(BaseModel):
     price: float
@@ -112,7 +110,7 @@ class Offer(BaseModel):
 
 
 class ProductDetail(Product):
-    offers: list[Offer] = []
+    offers: list[Offer] = Field(default_factory=list)
 
 
 class BasketItem(BaseModel):

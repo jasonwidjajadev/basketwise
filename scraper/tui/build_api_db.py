@@ -20,7 +20,7 @@ import os
 import sqlite3
 import sys
 import time
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -213,9 +213,14 @@ def enrich(rows: list[dict]) -> None:
              if (m := C.normalize_subcategory(store, lvl))), None)
         # A subcategory only counts if it belongs to the mapped category (v2 rule:
         # prefer NULL over a mapping that contradicts itself).
-        if r["sub"] and r["cat"] and r["sub"] not in C.CANONICAL_SUBCATEGORIES.get(r["cat"], []):
-            if r["sub"] not in C.SUBCATEGORY_NAME:
-                r["sub"] = None
+        if (
+            r["sub"]
+            and (
+                not r["cat"]
+                or r["sub"] not in C.CANONICAL_SUBCATEGORIES.get(r["cat"], [])
+            )
+        ):
+            r["sub"] = None
         # Collection labels are weak evidence; the per-product `dietary` claim is strong.
         r["tags"] = sorted(set(C.normalize_tags(store, src_cat, src_sub))
                            | set(C.tags_from_dietary(r["dietary"])))
@@ -275,41 +280,6 @@ def pick_representative(members: list[dict]) -> dict:
         0 if r["cat"] else 1,
         0 if r["image"] else 1,
     ))
-
-
-def fix_category_subcategory_mismatches(products: list[tuple]) -> tuple[list[tuple], int]:
-    """Re-home the rare stray that lands under the wrong top-level category.
-
-    category and subcategory are normalised independently from two different
-    retailer-provided strings (dept vs aisle), so an inconsistent retailer nav
-    occasionally produces nonsense pairs -- crumbed fish filed under
-    Meat & Seafood > "frozen-seafood" instead of Frozen, coffee beans under
-    Drinks > "tea-coffee" instead of Pantry. Each canonical subcategory has one
-    real home in practice; where one category holds an overwhelming majority of
-    a subcategory's products, correct the rare strays to match it. Never touches
-    subcategory itself, and never touches a subcategory with a genuine, roughly
-    even split across categories (that is real retailer variation, not a bug).
-    """
-    counts: dict[str, Counter] = defaultdict(Counter)
-    for p in products:
-        cat, sub = p[3], p[4]
-        if cat and sub:
-            counts[sub][cat] += 1
-
-    dominant = {sub: c.most_common(1)[0][0] for sub, c in counts.items()}
-
-    fixed = 0
-    out = []
-    for p in products:
-        cat, sub = p[3], p[4]
-        home = dominant.get(sub) if (cat and sub) else None
-        if home and home != cat:
-            this_count, dom_count = counts[sub][cat], counts[sub][home]
-            if this_count <= 2 or dom_count / this_count >= 10:
-                p = p[:3] + (home,) + p[4:]
-                fixed += 1
-        out.append(p)
-    return out, fixed
 
 
 def build(dry_run: bool) -> int:
@@ -407,10 +377,6 @@ def build(dry_run: bool) -> int:
                 r["last_seen"],
             ))
 
-    products, mismatches_fixed = fix_category_subcategory_mismatches(products)
-    if mismatches_fixed:
-        console.print(f"  category/subcategory outliers corrected: [yellow]{mismatches_fixed:,}[/]")
-
     valid_offers = {o[0] for o in offers}
     for r in src.execute("SELECT store, product_id, ts, price_cents, was_price_cents FROM price_history"):
         oid = f"{r['store']}:{r['product_id']}"
@@ -441,11 +407,6 @@ def build(dry_run: bool) -> int:
         for pos, sid in enumerate(subs):
             db.execute("INSERT INTO subcategories VALUES (?,?,?,?,0)", (sid, cid, C.subcategory_name(sid), pos))
     # subcategories discovered in data but absent from the v2 starter list
-    for (cid, sid) in db.execute(
-            "SELECT DISTINCT category, subcategory FROM products "
-            "WHERE category IS NOT NULL AND subcategory IS NOT NULL").fetchall():
-        db.execute("INSERT OR IGNORE INTO subcategories VALUES (?,?,?,999,0)",
-                   (sid, cid, C.subcategory_name(sid)))
 
     db.execute("UPDATE categories SET product_count="
                "(SELECT COUNT(*) FROM products p WHERE p.category=categories.id)")
@@ -481,7 +442,7 @@ def write_warm(db_path: Path, build_id: str) -> None:
     origin removed -- no API change, just a different destination.
     """
     sys.path.insert(0, str(Path(__file__).resolve().parents[2] / "backend"))
-    from shapes import category_payload, offer_summaries, product_rows_to_json
+    from shapes import category_payload, product_rows_to_json
 
     WARM.mkdir(exist_ok=True)
     for stale in WARM.glob("*.json"):
@@ -496,22 +457,19 @@ def write_warm(db_path: Path, build_id: str) -> None:
     if not ess:  # no curated list yet -- fall back to the widest-stocked products
         ess = db.execute("SELECT * FROM products WHERE image_url IS NOT NULL "
                          "ORDER BY retailer_count DESC, min_price ASC LIMIT 20").fetchall()
-    (WARM / "essentials.json").write_bytes(
-        product_rows_to_json(ess, offer_summaries(db, [r["id"] for r in ess])))
+    (WARM / "essentials.json").write_bytes(product_rows_to_json(ess, db))
     counts["essentials"] = db.execute("SELECT COUNT(*) FROM products WHERE is_essential=1").fetchone()[0]
 
     n = 0
     for (cid,) in db.execute("SELECT id FROM categories WHERE product_count > 0"):
         rows = db.execute("SELECT * FROM products WHERE category=? ORDER BY id LIMIT ?",
                           (cid, PAGE)).fetchall()
-        (WARM / f"category_{cid}_p0.json").write_bytes(
-            product_rows_to_json(rows, offer_summaries(db, [r["id"] for r in rows])))
+        (WARM / f"category_{cid}_p0.json").write_bytes(product_rows_to_json(rows, db))
         counts[f"category_{cid}_p0"] = db.execute(
             "SELECT COUNT(*) FROM products WHERE category=?", (cid,)).fetchone()[0]
         n += 1
     rows = db.execute("SELECT * FROM products ORDER BY id LIMIT ?", (PAGE,)).fetchall()
-    (WARM / "products_p0.json").write_bytes(
-        product_rows_to_json(rows, offer_summaries(db, [r["id"] for r in rows])))
+    (WARM / "products_p0.json").write_bytes(product_rows_to_json(rows, db))
     counts["products_p0"] = db.execute("SELECT COUNT(*) FROM products").fetchone()[0]
     (WARM / "_counts.json").write_bytes(json.dumps(counts).encode())
     (WARM / "_build.json").write_bytes(json.dumps({"build_id": build_id}).encode())
