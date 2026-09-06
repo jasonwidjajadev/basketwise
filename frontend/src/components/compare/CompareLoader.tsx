@@ -2,43 +2,35 @@ import { useEffect, useState } from 'react'
 
 import logo from '@/assets/basketwise_logo/logo.svg'
 import bakery from '@/assets/images/categories/bakery.png'
-import dairyEggs from '@/assets/images/categories/dairy-eggs-fridge.png'
-import drinks from '@/assets/images/categories/drinks.png'
-import frozen from '@/assets/images/categories/frozen.png'
 import fruitVegetables from '@/assets/images/categories/fruit-vegetables.png'
 import meatSeafood from '@/assets/images/categories/meat-seafood.png'
-import pantry from '@/assets/images/categories/pantry.png'
 import snacks from '@/assets/images/categories/snacks-confectionery.png'
-import heroBeetroot from '@/assets/images/hero/hero-beetroot.jpg'
 import heroEssential from '@/assets/images/hero/hero-essential.png'
 import heroGreens from '@/assets/images/hero/hero-greens.png'
-import heroStilllife from '@/assets/images/hero/hero-stilllife.png'
 import { cn } from '@/lib/utils'
 
-const FRAME_MS = 110
+const FRAME_MS = 400
 
-// Hero shots and category shots alternate so consecutive frames never look
-// alike -- that contrast is what reads as a flicker rather than a slideshow.
-// Every one of these is already imported by Hero/CategoryGrid, so a visitor
-// arriving from Home has them cached.
+// Six frames at FRAME_MS is one full pass in ~2.4s, just inside the 2.5s hold
+// ComparePage applies -- each image gets long enough to register instead of
+// strobing past. Neighbouring frames are picked to differ in colour and weight.
+//
+// Every one is already imported by Hero/CategoryGrid, so a visitor arriving
+// from Home has them cached. hero-stilllife and hero-beetroot are deliberately
+// left out: both are mostly pale wall (37% and 4% near-white pixels against a
+// near-white page), which makes the mark's handles disappear while they show.
 const FRAMES = [
-  heroStilllife,
-  bakery,
   heroGreens,
-  meatSeafood,
+  bakery,
   heroEssential,
-  drinks,
-  fruitVegetables,
-  heroBeetroot,
-  dairyEggs,
   snacks,
-  pantry,
-  frozen,
+  fruitVegetables,
+  meatSeafood,
 ]
 
 /**
  * Full-screen moment while the basket is being priced: the BasketWise mark,
- * centred, with grocery photography flickering inside it.
+ * centred, with grocery photography cycling inside it.
  *
  * logo.svg wraps a 1-bit PNG that carries a real alpha channel, so it can be
  * used directly as a CSS mask -- the images are clipped to the letterform.
@@ -70,13 +62,18 @@ export default function CompareLoader() {
       role="status"
       className="fixed inset-0 z-50 flex items-center justify-center bg-bw-surface"
     >
-      {/* Capped at the mask bitmap's own 295px: its edges are 1-bit, so
-          scaling past native size shows the stair-stepping. */}
+      {/* Half the mark's native 295px -- comfortably inside it, so the mask
+          bitmap's 1-bit edges stay crisp rather than stair-stepped.
+
+          The url() MUST stay double-quoted: Vite inlines this SVG as a data
+          URI whose markup carries single quotes, and an unquoted url() token
+          cannot contain a quote character -- the declaration is then dropped
+          wholesale and the box renders as an unmasked square. */}
       <div
-        className="relative aspect-square w-[min(62vw,290px)] overflow-hidden"
+        className="relative aspect-square w-[min(31vw,145px)] overflow-hidden"
         style={{
-          maskImage: `url(${logo})`,
-          WebkitMaskImage: `url(${logo})`,
+          maskImage: `url("${logo}")`,
+          WebkitMaskImage: `url("${logo}")`,
           maskSize: 'contain',
           WebkitMaskSize: 'contain',
           maskRepeat: 'no-repeat',

@@ -5,16 +5,37 @@
  * Dependency-free like PriceHistoryChart: the project ships no charting library
  * and a three-stop gradient does not justify adding one.
  */
+import type { CSSProperties } from 'react'
 
 const money = (n: number) => `$${n.toFixed(2)}`
 
 // Prices are equal to the cent when they differ by less than half of one.
 const FLAT_EPSILON = 0.005
 
-type Tick = {
+// Percent of the track the middle tick needs to clear each end label.
+const MIN_TICK_GAP = 26
+
+function Tick({
+  label,
+  value,
+  className = '',
+  style,
+}: {
   label: string
   value: number
-  position: number
+  className?: string
+  style?: CSSProperties
+}) {
+  return (
+    <div className={`flex flex-col gap-0.5 ${className}`} style={style}>
+      <span className="text-[11px] whitespace-nowrap text-bw-muted">
+        {label}
+      </span>
+      <span className="text-[11px] font-semibold whitespace-nowrap text-bw-ink">
+        {money(value)}
+      </span>
+    </div>
+  )
 }
 
 /**
@@ -58,13 +79,13 @@ export default function PriceRangeBar({
   const positionOf = (value: number) =>
     flat ? 50 : Math.min(100, Math.max(0, ((value - lowest) / span) * 100))
 
-  const ticks: Tick[] = flat
-    ? [{ label: 'Every observation', value: lowest, position: 50 }]
-    : [
-        { label: 'Lowest', value: lowest, position: 0 },
-        { label: 'Usually', value: usually, position: positionOf(usually) },
-        { label: 'Highest', value: highest, position: 100 },
-      ]
+  const usuallyPosition = positionOf(usually)
+
+  // With only a handful of observations the median often lands on an end of the
+  // range, and its label then prints straight on top of that end's. The two ends
+  // already carry the range, so drop the middle tick when it crowds them.
+  const showUsually =
+    usuallyPosition > MIN_TICK_GAP && usuallyPosition < 100 - MIN_TICK_GAP
 
   const currentPosition = current == null ? null : positionOf(current)
 
@@ -120,20 +141,42 @@ export default function PriceRangeBar({
 
       {/* Ticks */}
       <div className="relative mt-2 h-9">
-        {ticks.map((tick) => (
-          <div
-            key={tick.label}
-            className={`absolute top-0 flex flex-col gap-0.5 ${alignment(tick.position)}`}
-            style={anchor(tick.position)}
-          >
-            <span className="text-[11px] whitespace-nowrap text-bw-muted">
-              {tick.label}
-            </span>
-            <span className="text-[11px] font-semibold whitespace-nowrap text-bw-ink">
-              {money(tick.value)}
-            </span>
-          </div>
-        ))}
+        {flat ? (
+          <Tick
+            label="Every observation"
+            value={lowest}
+            className="text-left"
+          />
+        ) : (
+          <>
+            {/*
+             * The ends sit in flow layout rather than absolutely, so they push
+             * each other apart instead of overlapping on a narrow column.
+             */}
+            <div className="flex items-start justify-between gap-3">
+              <Tick label="Lowest" value={lowest} className="text-left" />
+              <Tick
+                label="Highest"
+                value={highest}
+                className="items-end text-right"
+              />
+            </div>
+
+            {/* Hidden below sm: there is no room for a third label there. */}
+            {showUsually && (
+              <div
+                className="absolute top-0 hidden -translate-x-1/2 sm:block"
+                style={{ left: `${usuallyPosition}%` }}
+              >
+                <Tick
+                  label="Usually"
+                  value={usually}
+                  className="items-center text-center"
+                />
+              </div>
+            )}
+          </>
+        )}
       </div>
     </section>
   )
