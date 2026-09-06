@@ -6,12 +6,17 @@ import {
   computeCompareOptions,
   RETAILER_LABEL,
 } from '@/components/compare/compareBasket'
+import CompareLoader from '@/components/compare/CompareLoader'
 import EmptyCompareState from '@/components/compare/EmptyCompareState'
 import OptionCard from '@/components/compare/OptionCard'
 import LedgerBreakdown from '@/components/compare/LedgerBreakdown'
 import UnavailableBanner from '@/components/compare/UnavailableBanner'
 import ConvergeBlock from '@/components/compare/ConvergeBlock'
 import CompareFooterActions from '@/components/compare/CompareFooterActions'
+
+// Pricing usually returns in well under a second -- hold the loader long enough
+// that it reads as a moment rather than a flash.
+const LOADER_MIN_MS = 2500
 
 export default function ComparePage() {
   const { items } = useCart()
@@ -46,6 +51,21 @@ export default function ComparePage() {
     }
   }, [items, basketKey])
 
+  // Minimum time the loader stays up, derived the same way `loading` is rather
+  // than set synchronously in an effect. Gating on `heldKey === null` applies
+  // the floor to the first pricing run only, so editing the basket from the
+  // drawer later re-prices without another full-screen hold.
+  const [heldKey, setHeldKey] = useState(null)
+  const holding = heldKey === null
+
+  useEffect(() => {
+    if (heldKey !== null) return
+
+    const timer = setTimeout(() => setHeldKey(basketKey), LOADER_MIN_MS)
+
+    return () => clearTimeout(timer)
+  }, [heldKey, basketKey])
+
   const [active, setActive] = useState('recommended')
   const [showWhy, setShowWhy] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -56,18 +76,7 @@ export default function ComparePage() {
 
   if (items.length === 0) return <EmptyCompareState />
 
-  if (loading) {
-    return (
-      <main className="w-full px-6 pt-9.5 pb-24 lg:px-8 xl:px-12 2xl:px-16">
-        <div className="mx-auto w-full max-w-7xl">
-          <h1 className="text-[32px] text-bw-ink">How do you want to shop?</h1>
-          <p className="mt-1.5 text-[13px] text-bw-body">
-            Pricing your basket…
-          </p>
-        </div>
-      </main>
-    )
-  }
+  if (loading || holding) return <CompareLoader />
 
   if (result.failed) {
     return (
