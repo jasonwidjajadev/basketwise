@@ -92,9 +92,9 @@ export default function Footer() {
     <footer className="mt-20 w-full bg-neutral-900 text-[#f4f2ea]">
       <div className="px-6 py-14 sm:py-16 lg:px-8 xl:px-12 2xl:px-16">
         <div className="mx-auto w-full max-w-7xl">
-        <p className="text-center text-2xl font-bold leading-none tracking-[0.1em] text-[#f4f2ea]">
-          BASKETWISE
-        </p>
+          <p className="text-center text-2xl leading-none font-bold tracking-[0.1em] text-[#f4f2ea]">
+            BASKETWISE
+          </p>
           {/* <span className="whitespace-nowrap  text-2xl font-medium tracking-[-0.025em] text-white">
                 BASKETWISE
               </span> */}
@@ -105,7 +105,7 @@ export default function Footer() {
 
             <FooterColumn heading="Connect" links={CONNECT_LINKS} />
 
-            <div className="border-t border-white/25 pt-10 lg:border-t-0 lg:border-l lg:pl-10 lg:pt-0">
+            <div className="border-t border-white/25 pt-10 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-10">
               <h2 className="text-2xl leading-none font-medium tracking-[-0.02em] text-[#f4f2ea] uppercase">
                 Join the list
               </h2>

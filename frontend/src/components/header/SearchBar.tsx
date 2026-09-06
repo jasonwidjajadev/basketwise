@@ -127,11 +127,7 @@ export default function SearchBar() {
           aria-label="Search groceries"
           className="absolute top-1/2 left-2.5 z-10 flex h-6 w-6 -translate-y-1/2 items-center justify-center rounded-full focus-visible:ring-2 focus-visible:ring-white focus-visible:outline-none"
         >
-          <img
-            src={searchIcon}
-            alt=""
-            className="h-5 w-5 invert opacity-90"
-          />
+          <img src={searchIcon} alt="" className="h-5 w-5 opacity-90 invert" />
         </button>
 
         <input
@@ -148,7 +144,7 @@ export default function SearchBar() {
           }}
           autoComplete="off"
           placeholder="Search groceries..."
-          className="h-9 w-full min-w-0 rounded-full border-0 bg-white/10 pr-3 pl-9 text-xs text-white outline-none transition-colors placeholder:text-sm placeholder:text-white/40 hover:bg-white/12 focus:bg-white/15"
+          className="h-9 w-full min-w-0 rounded-full border-0 bg-white/10 pr-3 pl-9 text-xs text-white transition-colors outline-none placeholder:text-sm placeholder:text-white/40 hover:bg-white/12 focus:bg-white/15"
         />
       </div>
 
@@ -156,9 +152,7 @@ export default function SearchBar() {
       {open && query.trim().length >= MIN_QUERY_LENGTH && (
         <div className="absolute top-[calc(100%+8px)] left-0 z-50 w-full overflow-hidden rounded-xl border border-bw-line bg-bw-surface text-bw-ink shadow-xl">
           {loading ? (
-            <p className="px-4 py-4 text-xs text-bw-muted">
-              Searching…
-            </p>
+            <p className="px-4 py-4 text-xs text-bw-muted">Searching…</p>
           ) : results.length === 0 ? (
             <p className="px-4 py-4 text-xs text-bw-muted">
               No matching groceries found.
@@ -166,20 +160,13 @@ export default function SearchBar() {
           ) : (
             <ul role="listbox" aria-label="Search suggestions">
               {results.map((product) => (
-                <li
-                  key={product.id}
-                  role="option"
-                  aria-selected="false"
-                >
+                <li key={product.id} role="option" aria-selected="false">
                   <button
                     type="button"
                     onClick={() => openProduct(product.id)}
                     className="w-full border-b border-bw-line px-3 py-2.5 text-left transition-colors last:border-b-0 hover:bg-bw-panel focus:bg-bw-panel focus:outline-none"
                   >
-                    <SearchResultItem
-                      product={product}
-                      compact
-                    />
+                    <SearchResultItem product={product} compact />
                   </button>
                 </li>
               ))}
@@ -191,9 +178,7 @@ export default function SearchBar() {
             type="submit"
             className="flex w-full items-center justify-between border-t border-bw-line bg-bw-panel px-4 py-2.5 text-left text-xs font-semibold text-bw-ink hover:bg-bw-green-tint focus:outline-none"
           >
-            <span>
-              See all results for “{query.trim()}”
-            </span>
+            <span>See all results for “{query.trim()}”</span>
 
             <span aria-hidden="true">→</span>
           </button>

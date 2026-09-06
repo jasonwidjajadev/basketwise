@@ -7,8 +7,10 @@
 // makes that a no-op cache hit instead of duplicate requests.
 import { useSyncExternalStore } from 'react'
 
-import { getProduct } from '@/api/client'
+import { ApiError, getProduct } from '@/api/client'
 import meals from '@/mocks/home/meals.json'
+
+const LOADING = { status: 'loading', item: null }
 
 const cache = new Map()
 const pending = new Set()
@@ -50,26 +52,43 @@ function productLineItem(product) {
   }
 }
 
+// A 404 means the id is genuinely gone (a basket saved before the catalogue
+// moved on, say) and the sidebar can safely drop it. Anything else -- offline,
+// a 500, a CORS hiccup -- must NOT read as "gone", or a flaky connection
+// would quietly empty someone's basket.
 function resolve(productId) {
   const meal = meals.find((m) => m.id === productId)
-  if (meal) return Promise.resolve(mealLineItem(meal))
-  return getProduct(productId)
-    .then(productLineItem)
-    .catch(() => null)
+  if (meal)
+    return Promise.resolve({ status: 'ready', item: mealLineItem(meal) })
+
+  return getProduct(productId).then(
+    (product) => ({ status: 'ready', item: productLineItem(product) }),
+    (error) => ({
+      status:
+        error instanceof ApiError && error.status === 404 ? 'missing' : 'error',
+      item: null,
+    }),
+  )
 }
 
 function ensureLoaded(productId) {
   if (cache.has(productId) || pending.has(productId)) return
   pending.add(productId)
-  resolve(productId).then((item) => {
-    cache.set(productId, item)
+  resolve(productId).then((entry) => {
+    cache.set(productId, entry)
     pending.delete(productId)
     notify()
   })
 }
 
-// undefined = still loading, null = no meal or live product matches this id.
+/**
+ * `{ status, item }` where status is:
+ *   loading — request in flight, render a placeholder
+ *   ready   — `item` is renderable
+ *   missing — no meal and no live product has this id; drop it from the basket
+ *   error   — lookup failed for some other reason; keep the row, show a fallback
+ */
 export function useCartLineItem(productId) {
   ensureLoaded(productId)
-  return useSyncExternalStore(subscribe, () => cache.get(productId))
+  return useSyncExternalStore(subscribe, () => cache.get(productId) ?? LOADING)
 }

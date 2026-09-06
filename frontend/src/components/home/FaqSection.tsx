@@ -84,7 +84,7 @@ export default function FaqSection() {
                 }`}
               >
                 <div className="overflow-hidden">
-                  <p className="max-w-[68ch] px-1 pb-6 pr-10 text-[15px] leading-relaxed text-bw-muted sm:pb-7">
+                  <p className="max-w-[68ch] px-1 pr-10 pb-6 text-[15px] leading-relaxed text-bw-muted sm:pb-7">
                     {faq.answer}
                   </p>
                 </div>

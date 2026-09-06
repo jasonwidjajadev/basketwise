@@ -27,10 +27,7 @@ export default function HeaderActions({
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        menuRef.current &&
-        !menuRef.current.contains(event.target as Node)
-      ) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsMenuOpen(false)
       }
     }
@@ -45,10 +42,7 @@ export default function HeaderActions({
   return (
     <div className="justify-self-end">
       {/* Desktop */}
-      <nav
-        aria-label="Main navigation"
-        className="hidden text-sm lg:block"
-      >
+      <nav aria-label="Main navigation" className="hidden text-sm lg:block">
         <ul className="flex items-center gap-4 min-[1300px]:gap-6">
           <li>
             <Link
@@ -58,9 +52,7 @@ export default function HeaderActions({
             >
               <MdOutlineGridView className="h-5 w-5" />
 
-              <span className="hidden min-[1300px]:inline">
-                BROWSE
-              </span>
+              <span className="hidden min-[1300px]:inline">BROWSE</span>
             </Link>
           </li>
 
@@ -74,9 +66,7 @@ export default function HeaderActions({
             >
               <MdOutlineListAlt className="h-5 w-5" />
 
-              <span className="hidden min-[1300px]:inline">
-                MY LISTS
-              </span>
+              <span className="hidden min-[1300px]:inline">MY LISTS</span>
             </button>
           </li>
 
@@ -90,9 +80,7 @@ export default function HeaderActions({
             >
               <MdOutlinePerson className="h-5 w-5" />
 
-              <span className="hidden min-[1300px]:inline">
-                SIGN IN
-              </span>
+              <span className="hidden min-[1300px]:inline">SIGN IN</span>
             </button>
           </li>
 
@@ -106,13 +94,13 @@ export default function HeaderActions({
               <img
                 src={cartOutlineIcon}
                 alt=""
-                className="h-[22px] w-[22px] invert opacity-80"
+                className="h-[22px] w-[22px] opacity-80 invert"
               />
 
               {count > 0 && (
                 <span
                   className={cn(
-                    'absolute -top-0 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-bw-yellow px-1 text-[9px] font-semibold leading-none text-bw-yellow-ink',
+                    'absolute -top-0 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-bw-yellow px-1 text-[9px] leading-none font-semibold text-bw-yellow-ink',
                     pulse && 'animate-[bw-pop_.42s_ease]',
                   )}
                 >
@@ -125,10 +113,7 @@ export default function HeaderActions({
       </nav>
 
       {/* Mobile */}
-      <div
-        ref={menuRef}
-        className="relative flex items-center gap-0 lg:hidden"
-      >
+      <div ref={menuRef} className="relative flex items-center gap-0 lg:hidden">
         <button
           type="button"
           aria-label={`Open basket, ${count} items`}
@@ -144,7 +129,7 @@ export default function HeaderActions({
           {count > 0 && (
             <span
               className={cn(
-                'absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-bw-yellow px-1 text-[9px] font-semibold leading-none text-bw-yellow-ink',
+                'absolute -top-1 -right-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-bw-yellow px-1 text-[9px] leading-none font-semibold text-bw-yellow-ink',
                 pulse && 'animate-[bw-pop_.42s_ease]',
               )}
             >
@@ -160,11 +145,7 @@ export default function HeaderActions({
           onClick={() => setIsMenuOpen((open) => !open)}
           className="flex h-8 w-8 items-center justify-center"
         >
-          <img
-            src={menuIcon}
-            alt=""
-            className="h-[20px] w-[20px] invert"
-          />
+          <img src={menuIcon} alt="" className="h-[20px] w-[20px] invert" />
         </button>
 
         {isMenuOpen && (

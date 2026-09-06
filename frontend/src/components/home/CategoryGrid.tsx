@@ -121,25 +121,13 @@ export default function CategoryGrid() {
         <div
           ref={sliderRef}
           onScroll={updateScrollState}
-          className="
-            flex snap-x snap-mandatory gap-4
-            overflow-x-auto scroll-smooth
-            [scrollbar-width:none]
-            [&::-webkit-scrollbar]:hidden
-          "
+          className="flex snap-x snap-mandatory [scrollbar-width:none] gap-4 overflow-x-auto overflow-y-hidden scroll-smooth [&::-webkit-scrollbar]:hidden"
         >
           {categories.map((category) => (
             <Link
               key={category.name}
               to={category.to}
-              className="
-                group relative block
-                w-[84%] shrink-0 snap-start
-                overflow-hidden rounded-2xl
-                sm:w-[68%]
-                md:w-[56%]
-                lg:w-[46%]
-              "
+              className="group relative block w-[84%] shrink-0 snap-start overflow-hidden rounded-2xl sm:w-[68%] md:w-[56%] lg:w-[46%]"
             >
               <div className="aspect-[2.6/1] w-full overflow-hidden">
                 <img

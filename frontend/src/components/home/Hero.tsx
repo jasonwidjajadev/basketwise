@@ -1,9 +1,4 @@
-import {
-  type ChangeEvent,
-  type DragEvent,
-  useEffect,
-  useState,
-} from 'react'
+import { type ChangeEvent, type DragEvent, useEffect, useState } from 'react'
 import { Link } from 'react-router'
 
 import heroImage1 from '@/assets/images/hero/hero-stilllife.png'
@@ -40,9 +35,7 @@ export default function Hero() {
   useEffect(() => {
     const intervalId = window.setInterval(() => {
       setActiveImage((currentImage) =>
-        currentImage === heroImages.length - 1
-          ? 0
-          : currentImage + 1,
+        currentImage === heroImages.length - 1 ? 0 : currentImage + 1,
       )
     }, IMAGE_ROTATION_MS)
 
@@ -88,9 +81,7 @@ export default function Hero() {
 
         <div className="px-1 pt-3 pb-1">
           <p className="max-w-[60ch] pl-2 text-xs leading-relaxed text-bw-muted">
-            <span className="font-semibold text-bw-ink">
-              Fresh every week
-            </span>{' '}
+            <span className="font-semibold text-bw-ink">Fresh every week</span>{' '}
             We track forty thousands of grocery prices so you can see where your
             weekly shop costs less.
           </p>
@@ -134,7 +125,7 @@ export default function Hero() {
             className={[
               'mt-7 flex min-h-[180px] cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed px-6 py-7 text-center transition-colors',
               isDragging
-                ? 'border-bw-green bg-bw-green-light'
+                ? 'bg-bw-green-light border-bw-green'
                 : 'border-bw-line-strong bg-white/65 hover:border-bw-green',
             ].join(' ')}
           >
@@ -147,9 +138,7 @@ export default function Hero() {
             />
 
             <p className="text-[15px] font-semibold text-bw-ink">
-              {selectedFile
-                ? selectedFile.name
-                : 'Drop your receipt here'}
+              {selectedFile ? selectedFile.name : 'Drop your receipt here'}
             </p>
 
             <p className="mt-1.5 text-xs text-bw-muted">
