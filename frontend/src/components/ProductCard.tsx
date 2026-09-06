@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { MdAdd, MdCheck } from 'react-icons/md'
+import { Link } from 'react-router'
 
 import { formatSize } from '@/api/client'
 import aldiColor from '@/assets/product_card/aldi_color.webp'
@@ -108,6 +109,9 @@ export default function ProductCard({
   const brand = product.brand?.trim() || 'No brand'
   const size = formatSize(product)
 
+  // Same destination the header search bar and the search results page use.
+  const productHref = `/product/${encodeURIComponent(product.id)}`
+
   const unitPrice =
     product.unit_price != null && product.unit_measure
       ? `${fmt(product.unit_price)} / ${product.unit_measure}`
@@ -173,13 +177,22 @@ export default function ProductCard({
           className="h-[168px] w-[180px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
         />
 
+        {/* Stretched hit target for the image. The add/remove button sits inside
+            this container, so the image can't simply be wrapped in the link --
+            a <button> inside an <a> is invalid and would navigate on add. */}
+        <Link
+          to={productHref}
+          aria-label={product.name}
+          className="absolute inset-0 z-10 rounded-2xl focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
+        />
+
         <button
           type="button"
           onClick={handleToggle}
           aria-label={added ? 'Remove from basket' : 'Add to basket'}
           title={added ? 'Remove from basket' : 'Add to basket'}
           className={cn(
-            'absolute right-2 bottom-2 flex h-8 w-8 items-center justify-center rounded-full border border-bw-line bg-white text-bw-ink transition-colors',
+            'absolute right-2 bottom-2 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-bw-line bg-white text-bw-ink transition-colors',
             'hover:border-bw-green hover:bg-bw-green hover:text-white',
             'focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
             added && 'border-bw-green bg-bw-green text-white',
@@ -197,12 +210,13 @@ export default function ProductCard({
       <div className="pt-3">
         <p className="mb-1 text-[11px] leading-none text-bw-muted">{brand}</p>
 
-        <p
+        <Link
+          to={productHref}
           title={product.name}
-          className="min-h-[18px] cursor-default text-sm leading-[1.3] font-semibold text-bw-ink"
+          className="block min-h-[18px] text-sm leading-[1.3] font-semibold text-bw-ink hover:underline focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
         >
           {truncateText(product.name)}
-        </p>
+        </Link>
 
         {(size || unitPrice) && (
           <p className="mt-1 text-[11px] text-bw-muted">
