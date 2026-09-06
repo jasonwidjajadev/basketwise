@@ -19,10 +19,15 @@ log() { printf '\n=== %s ===\n' "$*"; }
 
 if [[ "${1:-}" != "--no-crawl" ]]; then
   log "cookies (woolworths anti-bot)"
-  uv run tui/harvest_cookies.py --store woolworths || echo "cookie harvest failed; continuing on direct tier"
+  uv run tui/harvest_cookies.py --store woolworths --out data/cookies_woolworths.json || echo "cookie harvest failed; continuing on direct tier"
   for store in coles woolworths aldi harrisfarm; do
     log "crawl $store"
-    ./hyperscrape -store "$store" -phase all -start-rate auto || echo "$store crawl exited $? -- keeping previous data"
+    # Woolworths (Akamai) 403s the direct tier within ~90s. The harvested jar
+    # above is useless unless it is actually handed to the crawler.
+    jar="data/cookies_$store.json"
+    ck=()
+    [[ -s "$jar" ]] && ck=(-cookies "$jar")
+    ./hyperscrape -store "$store" -phase all -start-rate auto "${ck[@]}" || echo "$store crawl exited $? -- keeping previous data"
   done
   log "merge -> master.db"
   uv run tui/build_master.py
@@ -71,7 +76,13 @@ set -euo pipefail
 cd "$REMOTE_DIR"
 mkdir -p data
 mv -f incoming/basketwise.db data/basketwise.db
-rm -rf data/warm && mv -f incoming/warm data/warm
+# The previous activation left data/warm read-only (chmod -R a-w below), so
+# make it writable again before replacing it -- otherwise the rm fails, the new
+# warm cache is never swapped in, and the API serves the new DB behind stale
+# pre-rendered JSON.
+chmod -R u+w data/warm 2>/dev/null || true
+rm -rf data/warm
+mv -f incoming/warm data/warm
 chmod 444 data/basketwise.db && chmod -R a-w data/warm
 docker restart basketwise-api >/dev/null
 for i in \$(seq 1 30); do

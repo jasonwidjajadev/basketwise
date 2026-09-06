@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useParams } from 'react-router'
 
-import { formatSize, getProduct, RETAILER_LABEL } from '@/api/client'
+import { formatSize, getProduct, offerUrl, RETAILER_LABEL } from '@/api/client'
 
 import type { Offer, ProductDetail, Retailer } from '@/api/client'
 
@@ -10,6 +10,7 @@ import productDefault from '@/assets/product_card/product_default.png'
 
 import LedgerBreakdown from '@/components/compare/LedgerBreakdown'
 import OptionCard from '@/components/compare/OptionCard'
+import PriceHistoryChart from '@/components/PriceHistoryChart'
 
 import { thumbnailUrl } from '@/lib/imageThumbnail'
 
@@ -64,10 +65,16 @@ export default function ProductPage() {
     }
   }, [productId])
 
-  const availableOffers = useMemo(
-    () => product?.offers.filter((offer) => offer.is_available !== false) ?? [],
-    [product],
-  )
+  // ~5% of offers carry is_available=0, and for some products every offer is
+  // flagged that way. Hiding all of them left the comparison blank while the
+  // product card (which filters on price only) still showed prices for the same
+  // item. Prefer available offers, but never render an empty comparison when we
+  // do have prices.
+  const availableOffers = useMemo(() => {
+    const offers = product?.offers ?? []
+    const inStock = offers.filter((offer) => offer.is_available !== false)
+    return inStock.length > 0 ? inStock : offers
+  }, [product])
 
   if (loading) {
     return (
@@ -158,6 +165,16 @@ export default function ProductPage() {
                         isBest={offer.price === lowestPrice}
 
                         /*
+                         * The linked items can be
+                         * named differently at each
+                         * store, so name the exact
+                         * item this price is for and
+                         * link out to it.
+                         */
+                        storeItemName={offer.retailer_product_name}
+                        storeUrl={offerUrl(offer) ?? undefined}
+
+                        /*
                          * These props are required
                          * by Jason's OptionCard.
                          *
@@ -207,6 +224,8 @@ export default function ProductPage() {
                 )}
               </>
             )}
+
+            <PriceHistoryChart productId={product.id} />
           </div>
         </div>
       </div>

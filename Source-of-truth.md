@@ -203,7 +203,9 @@ type Offer = {
   size_value: number | null
   size_unit: string | null
   unit_price: number | null
-  product_url: string | null
+  product_url: string | null   // site-relative path on the retailer's own
+                               // storefront, e.g. "/shop/productdetails/673135/..."
+                               // -- resolve against that retailer's origin
   image_url: string | null
   is_available: boolean | null
   last_updated: string
@@ -812,7 +814,7 @@ Not specified as its own page contract in this section. Planned list `Product` p
       "size_value": 2000,
       "size_unit": "ml",
       "unit_price": 1.55,
-      "product_url": "https://...",
+      "product_url": "/product/coles-full-cream-milk-2l-1234567",
       "image_url": "https://...",
       "is_available": true,
       "last_updated": "2026-09-03"

@@ -26,6 +26,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import canonical as C
+import matcher as M
 from common import DATA_DIR, STORE_DISPLAY_NAME, console
 
 MASTER = DATA_DIR / "master.db"
@@ -232,40 +233,106 @@ def enrich(rows: list[dict]) -> None:
         r["key"] = C.norm_name(r["name"] or "", r["size"] or "")
 
 
-def group(rows: list[dict]) -> dict[tuple[str, str], list[dict]]:
-    """Cluster retailer rows into canonical products: barcode first, then name+size."""
+def group(rows: list[dict], links: list[tuple] | None = None) -> dict[tuple[str, str], list[dict]]:
+    """Cluster retailer rows into canonical products.
+
+    Tier 0  curated/LLM pairs from master.db's product_links
+    Tier 1  barcode equality
+    Tier 2  exact norm_name + size  (still earns aldi/harrisfarm links)
+    Tier 3  IDF-weighted token-set scoring, mutual-best only  (see matcher.py)
+
+    Tier 3 is the fix: tier 2 produced literally zero coles<->woolworths links
+    because Coles omits the brand from `name` and Woolworths includes it, so the
+    normalised keys never collided.
+    """
     uf = Union()
     idx = {(r["store"], r["product_id"]): r for r in rows}
     for r in rows:
         uf.find((r["store"], r["product_id"]))
 
-    def merge(groups: dict[str, list[tuple[str, str]]]) -> None:
+    # A canonical product may hold at most one row per retailer, so track the
+    # store set behind each root and refuse any union that would collide. This
+    # also bounds group size, which matters once fuzzy pairs enter the mix.
+    stores: dict[tuple[str, str], set[str]] = {k: {k[0]} for k in idx}
+
+    def link(a: tuple[str, str], b: tuple[str, str]) -> bool:
+        ra, rb = uf.find(a), uf.find(b)
+        if ra == rb:
+            return False
+        sa, sb = stores[ra], stores[rb]
+        if sa & sb or len(sa) + len(sb) > MAX_GROUP:
+            return False
+        uf.union(ra, rb)
+        root = uf.find(ra)
+        merged = sa | sb
+        stores[root] = merged
+        return True
+
+    def merge(groups: dict[str, list[tuple[str, str]]]) -> int:
+        n = 0
         for members in groups.values():
             uniq = sorted(set(members))
             if len(uniq) < 2 or len(uniq) > MAX_GROUP:
                 continue
             for other in uniq[1:]:
-                uf.union(uniq[0], other)
+                n += link(uniq[0], other)
+        return n
 
+    # -- tier 0: pairs already decided (barcode/name from build_master, or LLM) --
+    seeded = 0
+    for store_a, id_a, store_b, id_b in links or ():
+        a, b = (store_a, id_a), (store_b, id_b)
+        if a in idx and b in idx:
+            seeded += link(a, b)
+
+    # -- tier 1: barcode --
     by_barcode: dict[str, list[tuple[str, str]]] = defaultdict(list)
     for r in rows:
         bc = (r["barcode"] or "").strip()
         if bc and bc not in ("0", "00000000"):
             by_barcode[bc].append((r["store"], r["product_id"]))
-    merge(by_barcode)
+    n_barcode = merge(by_barcode)
 
+    # -- tier 2: exact normalised name + size --
     by_name: dict[str, list[tuple[str, str]]] = defaultdict(list)
     for r in rows:
         # size_value guards against fusing "Milk 1L" with "Milk 2L" when the
         # normalised text collapses to the same string.
         if len(r["key"]) >= 6:
             by_name[f"{r['key']}|{r['size_value']}{r['size_unit']}"].append((r["store"], r["product_id"]))
-    merge(by_name)
+    n_name = merge(by_name)
+
+    # -- tier 3: fuzzy mutual-best, every unordered store pair --
+    by_store: dict[str, list[dict]] = defaultdict(list)
+    for r in rows:
+        by_store[r["store"]].append(r)
+    n_fuzzy = 0
+    names = sorted(by_store)
+    for i, sa in enumerate(names):
+        for sb in names[i + 1:]:
+            pairs = M.mutual_pairs(by_store[sa], by_store[sb])
+            for a_id, b_id, _score in pairs:
+                n_fuzzy += link((sa, a_id), (sb, b_id))
+
+    console.print(
+        f"  links: seed=[cyan]{seeded:,}[/] barcode=[cyan]{n_barcode:,}[/] "
+        f"name=[cyan]{n_name:,}[/] fuzzy=[green]{n_fuzzy:,}[/]"
+    )
 
     clusters: dict[tuple[str, str], list[dict]] = defaultdict(list)
     for k, r in idx.items():
         clusters[uf.find(k)].append(r)
     return clusters
+
+
+def load_links(conn: sqlite3.Connection) -> list[tuple]:
+    """Curated + LLM-decided pairs from master.db, if the table exists."""
+    try:
+        return [tuple(r) for r in conn.execute(
+            "SELECT store_a, id_a, store_b, id_b FROM product_links "
+            "WHERE COALESCE(confidence, 0) >= 0.5")]
+    except sqlite3.OperationalError:
+        return []
 
 
 # Prefer the retailer with the richest, most reliably-named catalogue as the
@@ -299,7 +366,7 @@ def build(dry_run: bool) -> int:
     console.print("  " + "  ".join(f"{s}=[bold]{n:,}[/]" for s, n in sorted(per_store.items())))
 
     enrich(rows)
-    clusters = group(rows)
+    clusters = group(rows, load_links(src))
     console.print(f"canonical products: [green]{len(clusters):,}[/] "
                   f"(collapsed {len(rows) - len(clusters):,} duplicate/matched listings)")
 

@@ -140,6 +140,22 @@ export const getPriceHistory = (
     signal,
   )
 
+/**
+ * Price history merged across the immutable artifact and every crawl uploaded to
+ * Supabase. Prefer this over getPriceHistory for charts: /price-history reads only
+ * the artifact, which holds a single day.
+ */
+export const getPriceTrend = (
+  productId: string,
+  days = 30,
+  signal?: AbortSignal,
+) =>
+  get<PriceHistory[]>(
+    `/products/${encodeURIComponent(productId)}/price-trend`,
+    { days },
+    signal,
+  )
+
 export const RETAILER_LABEL: Record<Retailer, string> = {
   coles: 'Coles',
   woolworths: 'Woolworths',
@@ -174,4 +190,40 @@ export function formatSize(
   if (u === 'g' && v >= 1000) return `${+(v / 1000).toFixed(2)} kg`
   if (u === 'ea') return v === 1 ? 'each' : `${v} ea`
   return `${+v.toFixed(2)} ${u}`
+}
+
+/**
+ * Storefront origins. `offers.product_url` is stored as a site-relative path
+ * ("/product/...", "/shop/productdetails/..."), so it has to be resolved
+ * against the retailer it came from before it is usable as an href.
+ */
+const RETAILER_ORIGIN: Record<Retailer, string> = {
+  coles: 'https://www.coles.com.au',
+  woolworths: 'https://www.woolworths.com.au',
+  aldi: 'https://www.aldi.com.au',
+  harrisfarm: 'https://www.harrisfarm.com.au',
+}
+
+/**
+ * Absolute link to an offer on the retailer's own site, so a shopper can check
+ * that the price we quote really belongs to the item they think it does.
+ * Returns null when the offer has no URL, or when it is not http(s) -- an
+ * unexpected scheme must never reach an href.
+ */
+export function offerUrl(
+  offer: Pick<Offer, 'retailer' | 'product_url'>,
+): string | null {
+  if (!offer.product_url) return null
+
+  const origin = RETAILER_ORIGIN[offer.retailer]
+  if (!origin) return null
+
+  try {
+    const url = new URL(offer.product_url, origin)
+    return url.protocol === 'https:' || url.protocol === 'http:'
+      ? url.toString()
+      : null
+  } catch {
+    return null
+  }
 }

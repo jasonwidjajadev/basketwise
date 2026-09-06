@@ -166,16 +166,22 @@ export default function ProductCard({
           </div>
         )}
 
-        <img
-          src={imageSrc}
-          alt={product.name}
-          onError={() => {
-            if (product.image_url) {
-              setFailedImageUrl(product.image_url)
-            }
-          }}
-          className="h-[168px] w-[180px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
-        />
+        <Link
+          to={`/product/${product.id}`}
+          aria-label={product.name}
+          className="flex h-full w-full items-center justify-center focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
+        >
+          <img
+            src={imageSrc}
+            alt={product.name}
+            onError={() => {
+              if (product.image_url) {
+                setFailedImageUrl(product.image_url)
+              }
+            }}
+            className="h-[168px] w-[180px] object-contain transition-transform duration-300 ease-out group-hover:scale-110 motion-reduce:transition-none motion-reduce:group-hover:scale-100"
+          />
+        </Link>
 
         {/* Stretched hit target for the image. The add/remove button sits inside
             this container, so the image can't simply be wrapped in the link --
@@ -211,10 +217,15 @@ export default function ProductCard({
         <p className="mb-1 text-[11px] leading-none text-bw-muted">{brand}</p>
 
         <Link
+
           to={productHref}
           title={product.name}
           className="block min-h-[18px] text-sm leading-[1.3] font-semibold text-bw-ink hover:underline focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
-        >
+
+          // to={`/product/${product.id}`}
+          // title={product.name}
+          // className="block min-h-[18px] text-sm leading-[1.3] font-semibold text-bw-ink hover:text-bw-green hover:underline focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
+>
           {truncateText(product.name)}
         </Link>
 
