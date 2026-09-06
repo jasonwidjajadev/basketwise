@@ -1,22 +1,13 @@
 import type { Product } from '@/api/client'
-import {
-  formatSize,
-  RETAILER_LABEL,
-} from '@/api/client'
+import { formatSize, RETAILER_LABEL } from '@/api/client'
 
 import productDefault from '@/assets/product_card/product_default.png'
 import { thumbnailUrl } from '@/lib/imageThumbnail'
 
-function retailerLabel(
-  retailer: string | null | undefined,
-) {
+function retailerLabel(retailer: string | null | undefined) {
   if (!retailer) return null
 
-  return (
-    RETAILER_LABEL[
-      retailer as keyof typeof RETAILER_LABEL
-    ] ?? retailer
-  )
+  return RETAILER_LABEL[retailer as keyof typeof RETAILER_LABEL] ?? retailer
 }
 
 type SearchResultItemProps = {
@@ -30,13 +21,9 @@ export default function SearchResultItem({
 }: SearchResultItemProps) {
   const size = formatSize(product)
 
-  const retailer = retailerLabel(
-    product.cheapest_retailer,
-  )
+  const retailer = retailerLabel(product.cheapest_retailer)
 
-  const image =
-    thumbnailUrl(product.image_url, 100) ??
-    productDefault
+  const image = thumbnailUrl(product.image_url, 100) ?? productDefault
 
   return (
     <div className="flex min-w-0 items-center gap-3">
@@ -63,9 +50,7 @@ export default function SearchResultItem({
         </p>
 
         <p className="mt-0.5 truncate text-[11px] text-bw-muted">
-          {[product.brand, size]
-            .filter(Boolean)
-            .join(' · ') || 'Grocery item'}
+          {[product.brand, size].filter(Boolean).join(' · ') || 'Grocery item'}
         </p>
 
         <div className="mt-1 flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
@@ -76,9 +61,7 @@ export default function SearchResultItem({
           )}
 
           {retailer && (
-            <span className="text-[10.5px] text-bw-subtle">
-              {retailer}
-            </span>
+            <span className="text-[10.5px] text-bw-subtle">{retailer}</span>
           )}
 
           {product.retailer_count > 1 && (

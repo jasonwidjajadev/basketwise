@@ -1,4 +1,3 @@
-
 export function thumbnailUrl(
   rawUrl: string | null | undefined,
   size = 100,
@@ -25,7 +24,6 @@ export function thumbnailUrl(
       return null
     }
 
-
     if (url.hostname === 'dm.apac.cms.aldi.cx') {
       const originalPath = url.pathname
 
@@ -47,10 +45,7 @@ export function thumbnailUrl(
       }
 
       if (/\.jpg$/i.test(url.pathname)) {
-        url.pathname = url.pathname.replace(
-          /\.jpg$/i,
-          '-th.jpg',
-        )
+        url.pathname = url.pathname.replace(/\.jpg$/i, '-th.jpg')
 
         return url.toString()
       }
@@ -58,21 +53,13 @@ export function thumbnailUrl(
       return null
     }
 
-
-    if (
-      url.hostname ===
-      'productimages.coles.com.au'
-    ) {
-      const match =
-        url.pathname.match(/\/(\d+)\.jpg$/i)
+    if (url.hostname === 'productimages.coles.com.au') {
+      const match = url.pathname.match(/\/(\d+)\.jpg$/i)
 
       if (match) {
         const id = match[1]
 
-        const folders = id
-          .slice(0, 3)
-          .split('')
-          .join('/')
+        const folders = id.slice(0, 3).split('').join('/')
 
         return `https://shop.coles.com.au/wcsstore/Coles-CAS/images/${folders}/${id}-th.jpg`
       }
@@ -81,15 +68,9 @@ export function thumbnailUrl(
     }
 
     if (url.hostname.includes('shopify')) {
-      url.searchParams.set(
-        'width',
-        String(size),
-      )
+      url.searchParams.set('width', String(size))
 
-      url.searchParams.set(
-        'height',
-        String(size),
-      )
+      url.searchParams.set('height', String(size))
 
       return url.toString()
     }

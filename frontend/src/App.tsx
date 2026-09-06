@@ -1,7 +1,6 @@
-import {
-  Route,
-  Routes,
-} from 'react-router'
+import { Route, Routes } from 'react-router'
+
+import ScrollToTop from '@/components/ScrollToTop'
 
 import { CartProvider } from '@/context/CartContext'
 import { SignInModalProvider } from '@/context/SignInModalContext'
@@ -21,50 +20,27 @@ function App() {
   return (
     <CartProvider>
       <SignInModalProvider>
+        <ScrollToTop />
+
         <Routes>
           <Route element={<MainLayout />}>
-            <Route
-              index
-              element={<HomePage />}
-            />
+            <Route index element={<HomePage />} />
 
-            <Route
-              element={<BrowseLayout />}
-            >
-              <Route
-                path="browse"
-                element={<BrowsePage />}
-              />
+            <Route element={<BrowseLayout />}>
+              <Route path="browse" element={<BrowsePage />} />
             </Route>
 
-            <Route
-              path="compare"
-              element={<ComparePage />}
-            />
+            <Route path="compare" element={<ComparePage />} />
 
             {/* NEW */}
-            <Route
-              path="search"
-              element={
-                <SearchResultsPage />
-              }
-            />
+            <Route path="search" element={<SearchResultsPage />} />
 
             {/* NEW */}
-            <Route
-              path="product/:productId"
-              element={<ProductPage />}
-            />
+            <Route path="product/:productId" element={<ProductPage />} />
 
-            <Route
-              path="account"
-              element={<AccountPage />}
-            />
+            <Route path="account" element={<AccountPage />} />
 
-            <Route
-              path="*"
-              element={<NotFoundPage />}
-            />
+            <Route path="*" element={<NotFoundPage />} />
           </Route>
         </Routes>
       </SignInModalProvider>

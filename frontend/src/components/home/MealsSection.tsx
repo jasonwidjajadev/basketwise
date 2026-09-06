@@ -48,9 +48,7 @@ export default function MealsSection() {
     if (!firstCard) return
 
     const styles = window.getComputedStyle(slider)
-    const gap = Number.parseFloat(
-      styles.columnGap || styles.gap || '0',
-    )
+    const gap = Number.parseFloat(styles.columnGap || styles.gap || '0')
 
     const amount = firstCard.offsetWidth + gap
 
@@ -124,12 +122,7 @@ export default function MealsSection() {
       <div
         ref={sliderRef}
         onScroll={updateScrollState}
-        className="
-          flex snap-x snap-mandatory gap-4
-          overflow-x-auto scroll-smooth
-          [scrollbar-width:none]
-          [&::-webkit-scrollbar]:hidden
-        "
+        className="flex snap-x snap-mandatory [scrollbar-width:none] gap-4 overflow-x-auto overflow-y-hidden scroll-smooth [&::-webkit-scrollbar]:hidden"
       >
         {meals.map((meal) => (
           <div
@@ -209,23 +202,6 @@ export default function MealsSection() {
 //     </section>
 //   )
 // }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // working
 

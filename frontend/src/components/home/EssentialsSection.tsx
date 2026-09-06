@@ -125,10 +125,14 @@ export default function EssentialsSection() {
         </div>
       </div>
 
+      {/* overflow-x-auto on its own makes overflow-y compute to auto too, so a
+          stray pixel of vertical overflow turns this into a vertical scroller
+          and swallows the page's wheel gesture. The slider only ever moves
+          left/right, so pin the vertical axis shut. */}
       <div
         ref={sliderRef}
         onScroll={updateScrollState}
-        className="grid snap-x snap-mandatory [scrollbar-width:none] auto-cols-[calc((100%_-_0.875rem)/2)] grid-flow-col grid-rows-2 gap-x-3.5 gap-y-8 overflow-x-auto scroll-smooth sm:auto-cols-[calc((100%_-_1.75rem)/3)] lg:auto-cols-[calc((100%_-_3.5rem)/5)] [&::-webkit-scrollbar]:hidden"
+        className="grid snap-x snap-mandatory [scrollbar-width:none] auto-cols-[calc((100%_-_0.875rem)/2)] grid-flow-col grid-rows-2 gap-x-3.5 gap-y-8 overflow-x-auto overflow-y-hidden scroll-smooth sm:auto-cols-[calc((100%_-_1.75rem)/3)] lg:auto-cols-[calc((100%_-_3.5rem)/5)] [&::-webkit-scrollbar]:hidden"
       >
         {essentials.map((product) => (
           <div key={product.id} className="min-w-0 snap-start">

@@ -1,8 +1,5 @@
 import { useEffect, useState } from 'react'
-import {
-  useNavigate,
-  useSearchParams,
-} from 'react-router'
+import { useNavigate, useSearchParams } from 'react-router'
 
 import { getProductsPage } from '@/api/client'
 import type { Product } from '@/api/client'
@@ -16,23 +13,17 @@ export default function SearchResultsPage() {
 
   const [searchParams] = useSearchParams()
 
-  const query =
-    searchParams.get('q')?.trim() ?? ''
+  const query = searchParams.get('q')?.trim() ?? ''
 
-  const [items, setItems] = useState<Product[]>(
-    [],
-  )
+  const [items, setItems] = useState<Product[]>([])
 
   const [total, setTotal] = useState(0)
 
-  const [loading, setLoading] =
-    useState(true)
+  const [loading, setLoading] = useState(true)
 
-  const [loadingMore, setLoadingMore] =
-    useState(false)
+  const [loadingMore, setLoadingMore] = useState(false)
 
-  const [error, setError] =
-    useState(false)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     if (!query) {
@@ -42,8 +33,7 @@ export default function SearchResultsPage() {
       return
     }
 
-    const controller =
-      new AbortController()
+    const controller = new AbortController()
 
     setLoading(true)
     setError(false)
@@ -56,24 +46,14 @@ export default function SearchResultsPage() {
       },
       controller.signal,
     )
-      .then(
-        ({
-          data,
-          total: resultTotal,
-        }) => {
-          setItems(data)
+      .then(({ data, total: resultTotal }) => {
+        setItems(data)
 
-          setTotal(
-            resultTotal ?? data.length,
-          )
-        },
-      )
+        setTotal(resultTotal ?? data.length)
+      })
       .catch((fetchError) => {
         if (!controller.signal.aborted) {
-          console.error(
-            'Search results failed',
-            fetchError,
-          )
+          console.error('Search results failed', fetchError)
 
           setError(true)
         }
@@ -92,29 +72,17 @@ export default function SearchResultsPage() {
     setError(false)
 
     try {
-      const {
-        data,
-        total: resultTotal,
-      } = await getProductsPage({
+      const { data, total: resultTotal } = await getProductsPage({
         q: query,
         limit: PAGE_SIZE,
         offset: items.length,
       })
 
-      setItems((current) => [
-        ...current,
-        ...data,
-      ])
+      setItems((current) => [...current, ...data])
 
-      setTotal(
-        resultTotal ??
-          items.length + data.length,
-      )
+      setTotal(resultTotal ?? items.length + data.length)
     } catch (fetchError) {
-      console.error(
-        'Loading more search results failed',
-        fetchError,
-      )
+      console.error('Loading more search results failed', fetchError)
 
       setError(true)
     } finally {
@@ -132,9 +100,7 @@ export default function SearchResultsPage() {
             </p>
 
             <h1 className="mt-1 text-[30px] text-bw-ink">
-              {query
-                ? `Results for “${query}”`
-                : 'Search groceries'}
+              {query ? `Results for “${query}”` : 'Search groceries'}
             </h1>
           </div>
 
@@ -147,10 +113,7 @@ export default function SearchResultsPage() {
         </div>
 
         {loading ? (
-          <div
-            className="space-y-2"
-            aria-hidden="true"
-          >
+          <div className="space-y-2" aria-hidden="true">
             {Array.from({
               length: 6,
             }).map((_, index) => (
@@ -162,8 +125,7 @@ export default function SearchResultsPage() {
           </div>
         ) : !query ? (
           <p className="text-sm text-bw-muted">
-            Enter a grocery name in the
-            search bar above.
+            Enter a grocery name in the search bar above.
           </p>
         ) : items.length === 0 ? (
           <p className="text-sm text-bw-muted">
@@ -177,17 +139,11 @@ export default function SearchResultsPage() {
                   key={product.id}
                   type="button"
                   onClick={() =>
-                    navigate(
-                      `/product/${encodeURIComponent(
-                        product.id,
-                      )}`,
-                    )
+                    navigate(`/product/${encodeURIComponent(product.id)}`)
                   }
                   className="rounded-xl border border-bw-line bg-bw-surface p-3 text-left transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
                 >
-                  <SearchResultItem
-                    product={product}
-                  />
+                  <SearchResultItem product={product} />
                 </button>
               ))}
             </div>
@@ -200,9 +156,7 @@ export default function SearchResultsPage() {
                   onClick={loadMore}
                   className="rounded-full border border-bw-ink px-5 py-2.5 text-xs font-semibold text-bw-ink hover:bg-bw-panel disabled:opacity-50"
                 >
-                  {loadingMore
-                    ? 'Loading…'
-                    : 'Load more'}
+                  {loadingMore ? 'Loading…' : 'Load more'}
                 </button>
               </div>
             )}
@@ -211,9 +165,7 @@ export default function SearchResultsPage() {
 
         {error && (
           <p className="mt-4 text-xs text-red-700">
-            Something went wrong while
-            loading results. Please try
-            again.
+            Something went wrong while loading results. Please try again.
           </p>
         )}
       </div>

@@ -42,9 +42,7 @@ export default function MealCard({
   }, [isOpen])
 
   function openIngredients() {
-    setSelectedIds(
-      meal.ingredients.map((ingredient) => ingredient.product_id),
-    )
+    setSelectedIds(meal.ingredients.map((ingredient) => ingredient.product_id))
 
     setIsOpen(true)
   }
@@ -86,13 +84,9 @@ export default function MealCard({
 
         {/* Meal details */}
         <div className="px-4 py-4">
-          <p className="text-[15px] font-semibold text-bw-ink">
-            {meal.name}
-          </p>
+          <p className="text-[15px] font-semibold text-bw-ink">{meal.name}</p>
 
-          <p className="mt-1 text-[11.5px] text-bw-subtle">
-            {meal.meta}
-          </p>
+          <p className="mt-1 text-[11.5px] text-bw-subtle">{meal.meta}</p>
 
           <div className="mt-4 flex items-center justify-between gap-3">
             <button
@@ -163,9 +157,7 @@ export default function MealCard({
 
             <div className="mt-7 border-t border-bw-line">
               {meal.ingredients.map((ingredient) => {
-                const selected = selectedIds.includes(
-                  ingredient.product_id,
-                )
+                const selected = selectedIds.includes(ingredient.product_id)
 
                 return (
                   <label
@@ -175,9 +167,7 @@ export default function MealCard({
                     <input
                       type="checkbox"
                       checked={selected}
-                      onChange={() =>
-                        toggleIngredient(ingredient.product_id)
-                      }
+                      onChange={() => toggleIngredient(ingredient.product_id)}
                       className="h-4 w-4 shrink-0 accent-bw-green"
                     />
 

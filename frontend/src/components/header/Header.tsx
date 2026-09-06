@@ -27,7 +27,7 @@ export default function Header() {
                 alt=""
                 className="h-6 w-6 shrink-0 object-contain"
               />
-              <p className="text-center text-2xl font-bold leading-none tracking-[0.05em] text-[#f4f2ea]">
+              <p className="text-center text-2xl leading-none font-bold tracking-[0.05em] text-[#f4f2ea]">
                 BASKETWISE
               </p>
               {/* <span className="whitespace-nowrap  text-2xl font-medium tracking-[-0.025em] text-white">
@@ -51,10 +51,7 @@ export default function Header() {
         </div>
       </header>
 
-      <CartSidebar
-        isOpen={isCartOpen}
-        onClose={() => setIsCartOpen(false)}
-      />
+      <CartSidebar isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
   )
 }

@@ -8,10 +8,7 @@ type SignInModalProps = {
 
 type AuthMode = 'create' | 'sign-in'
 
-export default function SignInModal({
-  isOpen,
-  onClose,
-}: SignInModalProps) {
+export default function SignInModal({ isOpen, onClose }: SignInModalProps) {
   const [mode, setMode] = useState<AuthMode>('create')
   const emailInputRef = useRef<HTMLInputElement>(null)
   const titleId = useId()
@@ -91,10 +88,7 @@ export default function SignInModal({
           {supportingCopy}
         </p>
 
-        <form
-          className="mt-9"
-          onSubmit={(event) => event.preventDefault()}
-        >
+        <form className="mt-9" onSubmit={(event) => event.preventDefault()}>
           <label
             htmlFor="sign-in-email"
             className="mb-2 block text-xs font-medium tracking-[0.04em] text-white/75"
@@ -127,9 +121,7 @@ export default function SignInModal({
             : 'New to BasketWise?'}{' '}
           <button
             type="button"
-            onClick={() =>
-              setMode(isCreatingAccount ? 'sign-in' : 'create')
-            }
+            onClick={() => setMode(isCreatingAccount ? 'sign-in' : 'create')}
             className="font-medium text-white underline decoration-white/55 underline-offset-4 transition-colors hover:text-[#BECBAE]"
           >
             {isCreatingAccount ? 'SIGN IN' : 'CREATE AN ACCOUNT'}

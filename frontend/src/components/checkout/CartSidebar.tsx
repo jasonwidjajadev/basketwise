@@ -13,6 +13,18 @@ function fmt(n) {
   return `$${n.toFixed(2)}`
 }
 
+function LoadingRow() {
+  return (
+    <div className="animate-bw-fade-up flex items-center gap-3.5 border-b border-bw-line px-5 py-3.5">
+      <div className="h-13 w-13 shrink-0 animate-pulse rounded-2xl border border-bw-line bg-bw-panel" />
+      <div className="min-w-0 flex-1 space-y-2">
+        <div className="h-3 w-2/3 animate-pulse rounded bg-bw-panel" />
+        <div className="h-3 w-1/4 animate-pulse rounded bg-bw-panel" />
+      </div>
+    </div>
+  )
+}
+
 function CartRow({
   productId,
   quantity,
@@ -21,8 +33,9 @@ function CartRow({
   onDecrement,
   onRemove,
   onCollapseEnd,
+  onUnavailable,
 }) {
-  const item = useCartLineItem(productId)
+  const { status, item } = useCartLineItem(productId)
 
   const [qtyPop, setQtyPop] = useState(false)
   const prevQuantity = useRef(quantity)
@@ -41,10 +54,25 @@ function CartRow({
     return () => clearTimeout(popTimeout.current)
   }, [quantity])
 
-  if (!item) return null
+  // An id the catalogue no longer has can't be rendered, and leaving it in the
+  // basket is what made the header count disagree with an empty panel. Drop it.
+  useEffect(() => {
+    if (status === 'missing') onUnavailable(productId)
+  }, [status, productId, onUnavailable])
 
-  const priceLabel =
-    item.kind === 'meal' ? fmt(item.totalPrice) : fmt(item.unitPrice * quantity)
+  if (status === 'loading') return <LoadingRow />
+  if (status === 'missing') return null
+
+  // status === 'error': the lookup failed (offline, server error), so keep the
+  // row -- with its quantity controls -- rather than silently dropping it.
+  const name = item ? item.name : 'Item unavailable'
+  const imageSrc = item?.image_url || productDefault
+  const priceLabel = !item
+    ? "Couldn't load this item"
+    : item.kind === 'meal'
+      ? fmt(item.totalPrice)
+      : fmt(item.unitPrice * quantity)
+  const isMeal = item?.kind === 'meal'
 
   return (
     <div
@@ -58,8 +86,8 @@ function CartRow({
           className={`bw-row-collapse-inner animate-bw-fade-up flex items-center gap-3.5 border-b border-bw-line px-5 py-3.5`}
         >
           <img
-            src={item.image_url || productDefault}
-            alt={item.name}
+            src={imageSrc}
+            alt={name}
             onError={(e) => {
               if (e.currentTarget.src !== productDefault) {
                 e.currentTarget.src = productDefault
@@ -70,9 +98,9 @@ function CartRow({
 
           <div className="min-w-0 flex-1">
             <p className="truncate text-[13.5px] font-semibold text-bw-ink">
-              {item.name}
+              {name}
             </p>
-            {item.kind === 'meal' && (
+            {isMeal && (
               <p className="mt-0.5 text-[10.5px] text-bw-muted">{item.meta}</p>
             )}
             <p
@@ -84,7 +112,7 @@ function CartRow({
             </p>
           </div>
 
-          {item.kind === 'meal' ? (
+          {isMeal ? (
             <button
               type="button"
               onClick={onRemove}
@@ -216,6 +244,7 @@ export default function CartSidebar({ isOpen, onClose }) {
                 }
                 onRemove={() => beginRemove(entry.product_id)}
                 onCollapseEnd={() => handleCollapseEnd(entry.product_id)}
+                onUnavailable={remove}
               />
             ))}
           </div>

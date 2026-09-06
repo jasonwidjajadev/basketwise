@@ -2,15 +2,12 @@ import { useCart } from '@/context/useCart'
 import meals from '@/mocks/home/meals.json'
 import MealCard from '@/components/home/MealCard'
 
-
-
 import beefTacos from '@/assets/images/meal/beef-tacos.png'
 import chickenCurryRice from '@/assets/images/meal/chicken-curry-rice.png'
 import chickenStirFryRice from '@/assets/images/meal/chicken-stir-fry-rice.png'
 import chickenTrayBake from '@/assets/images/meal/chicken-tray-bake.png'
 import spaghettiBolognese from '@/assets/images/meal/spaghetti-bolognese.png'
 import vegetableChickpeaCurry from '@/assets/images/meal/vegetable-chickpea-curry.png'
-
 
 const INGREDIENTS_PER_MEAL = 8
 
@@ -23,7 +20,7 @@ export default function MealsSection() {
         Cook it, shop it
       </p> */}
       <h2 className="mb-4 text-base font-bold tracking-[.2em] text-bw-ink uppercase">
-          Cook it, shop it
+        Cook it, shop it
       </h2>
       <div className="border border-bw-line bg-bw-panel px-6 pt-10 pb-9 sm:px-10">
         <h2 className="text-base font-bold tracking-[.2em] text-bw-ink uppercase">

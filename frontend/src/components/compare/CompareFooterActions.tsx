@@ -2,11 +2,7 @@ import { Link } from 'react-router'
 
 import { useSignInModal } from '@/context/SignInModalContext'
 
-export default function CompareFooterActions({
-  signedIn,
-  saved,
-  onSave,
-}) {
+export default function CompareFooterActions({ signedIn, saved, onSave }) {
   const { openSignIn } = useSignInModal()
 
   return (
@@ -27,11 +23,7 @@ export default function CompareFooterActions({
         >
           <span
             key={saved ? 'saved' : 'save'}
-            className={
-              saved
-                ? 'motion-safe:animate-[bw-pop_360ms_ease]'
-                : ''
-            }
+            className={saved ? 'motion-safe:animate-[bw-pop_360ms_ease]' : ''}
           >
             {saved ? 'Saved ✓' : 'Save list'}
           </span>

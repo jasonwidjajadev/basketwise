@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils'
 
 export default function MealCard({ meal, added, onAdd }) {
   return (
-    <div className="border border-bw-line bg-bw-[#f5f3ec]">
+    <div className="bg-bw-[#f5f3ec] border border-bw-line">
       <div
         className="flex aspect-4/3 items-center justify-center"
         style={{
