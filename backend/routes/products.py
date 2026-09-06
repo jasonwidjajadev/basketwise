@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Path, Query, Response
 
 import db
 from models import PriceHistory, Product, ProductDetail
-from shapes import dumps, offer_dict, product_dict, product_rows_to_json
+from shapes import dumps, offer_dict, offer_summaries, product_dict, product_rows_to_json
 
 router = APIRouter(tags=["catalogue"])
 
@@ -92,7 +92,8 @@ def list_products(
     rows = db.db().execute(
         f"SELECT p.* FROM products p{clause} ORDER BY {order} LIMIT ? OFFSET ?",
         (*params, limit, offset)).fetchall()
-    return _json(product_rows_to_json(rows), total)
+    offers = offer_summaries(db.db(), [r["id"] for r in rows])
+    return _json(product_rows_to_json(rows, offers), total)
 
 
 @router.get(

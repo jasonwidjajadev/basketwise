@@ -1,4 +1,4 @@
-import COMPARE from '@/mocks/compare/compare.json'
+import { compare } from '@/api/client'
 
 export const RETAILER_LABEL = {
   woolworths: 'Woolworths',
@@ -7,12 +7,14 @@ export const RETAILER_LABEL = {
   harrisfarm: 'Harris Farm',
 }
 
+// null means this strategy can't fulfil the whole basket -- the backend prices
+// a strategy all-or-nothing, it never drops one item and shows the rest.
 function toUiOption(option) {
-  if (!option) return null
+  if (!option || option.total == null) return null
 
   const groups = option.breakdown.map((group) => ({
     retailer: group.retailer,
-    label: RETAILER_LABEL[group.retailer],
+    label: RETAILER_LABEL[group.retailer] ?? group.retailer,
     subtotal: group.subtotal,
     lines: group.items.map((item) => ({
       product: { id: item.product_id, name: item.product_name },
@@ -27,46 +29,41 @@ function toUiOption(option) {
     savings: option.savings,
     retailer: groups.length === 1 ? groups[0].retailer : undefined,
     groups,
-    excludedItems: [],
   }
 }
 
-function uniqueProductIds(option) {
-  return new Set(
-    option.breakdown.flatMap((group) =>
-      group.items.map((item) => item.product_id),
-    ),
-  )
-}
-
-export function computeCompareOptions(cartItems) {
+// Connects the basket to POST /compare and reshapes the response into what
+// ComparePage renders.
+export async function computeCompareOptions(cartItems, signal) {
   if (!cartItems.length) return null
 
-  const byId = Object.fromEntries(
-    COMPARE.options.map((option) => [option.id, option]),
+  const response = await compare(
+    cartItems.map((entry) => ({
+      product_id: entry.product_id,
+      quantity: entry.quantity,
+    })),
+    signal,
   )
+
+  const byId = Object.fromEntries(response.options.map((o) => [o.id, o]))
   const recommended = toUiOption(byId['recommended-split'])
   const cheapestSingle = toUiOption(byId['cheapest-single-store'])
   const lowestTotal = toUiOption(byId['lowest-possible-price'])
 
-  const productIds = uniqueProductIds(byId['recommended-split'])
-  const hasSingleStoreOption = cheapestSingle != null
+  const totals = [recommended, cheapestSingle, lowestTotal]
+    .filter(Boolean)
+    .map((o) => o.total)
   const converge =
-    hasSingleStoreOption &&
-    new Set(
-      [recommended.total, lowestTotal.total, cheapestSingle.total].map((t) =>
-        t.toFixed(2),
-      ),
-    ).size === 1
+    totals.length === 3 && new Set(totals.map((t) => t.toFixed(2))).size === 1
 
   return {
-    itemCount: productIds.size,
-    isSingleItem: productIds.size === 1,
-    unavailable: [],
-    hasSingleStoreOption,
+    itemCount: cartItems.length,
+    isSingleItem: cartItems.length === 1,
+    unavailableCount: response.unknown_product_ids.length,
+    hasSingleStoreOption: cheapestSingle != null,
     converge,
     recommended,
-    lowestTotal,
     cheapestSingle,
+    lowestTotal,
   }
 }

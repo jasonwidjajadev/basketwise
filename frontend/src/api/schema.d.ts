@@ -104,13 +104,16 @@ export interface paths {
     get?: never
     put?: never
     /**
-     * Price a basket across every retailer
-     * @description Send the whole basket; get one total per retailer plus a recommendation.
+     * Price a basket as three buying strategies
+     * @description Send the whole basket; get three complete-basket options:
      *
-     *     - `total` sums only the items that retailer actually stocks.
-     *     - `missing_product_ids` lists what it does not stock, explicitly -- a cheap total with three missing items is not a real win, so show this in the UI.
-     *     - `recommendation` is the cheapest retailer stocking the **entire** basket, and is `null` when no retailer stocks everything.
-     *     - `unknown_product_ids` lists ids that do not exist at all (usually a stale basket).
+     *     - `recommended-split` — cheapest practical basket using at most two retailers (a single store if a second shop does not help).
+     *     - `cheapest-single-store` — cheapest retailer that stocks every known item.
+     *     - `lowest-possible-price` — cheapest offer per item, any number of retailers.
+     *
+     *     A strategy that cannot fulfil the complete known basket returns `total: null` and an empty `breakdown` — never a silent partial total.
+     *     `unknown_product_ids` lists ids that do not exist at all (usually a stale basket).
+     *     `savings` is against the most expensive complete single-store basket.
      *
      *     Call this again whenever the basket changes.
      */
@@ -179,6 +182,57 @@ export interface components {
        */
       subcategories: components['schemas']['Subcategory'][]
     }
+    /** CompareItem */
+    CompareItem: {
+      /** Product Id */
+      product_id: string
+      /** Product Name */
+      product_name: string
+      /** Retailer Product Id */
+      retailer_product_id?: string | null
+      /** Retailer Product Name */
+      retailer_product_name: string
+      /** Quantity */
+      quantity: number
+      /** Unit Price */
+      unit_price: number
+      /** Line Total */
+      line_total: number
+      /** Image Url */
+      image_url?: string | null
+    }
+    /** CompareOption */
+    CompareOption: {
+      /**
+       * Id
+       * @enum {string}
+       */
+      id:
+        'recommended-split' | 'cheapest-single-store' | 'lowest-possible-price'
+      /** Name */
+      name: string
+      /** Description */
+      description: string
+      /**
+       * Total
+       * @description Complete-basket total. null when this strategy cannot fulfil every known item.
+       */
+      total?: number | null
+      /**
+       * Savings
+       * @description baseline (most expensive complete single-store) minus total. null when total or baseline is missing.
+       */
+      savings?: number | null
+      /**
+       * Stores
+       * @description Number of retailer groups in breakdown.
+       */
+      stores: number
+      /** Recommended */
+      recommended: boolean
+      /** Breakdown */
+      breakdown: components['schemas']['StoreBreakdown'][]
+    }
     /** CompareRequest */
     CompareRequest: {
       /** Items */
@@ -186,10 +240,8 @@ export interface components {
     }
     /** CompareResponse */
     CompareResponse: {
-      /** Stores */
-      stores: components['schemas']['StoreComparison'][]
-      /** @description Cheapest retailer that stocks the WHOLE basket. null if no retailer stocks everything. */
-      recommendation?: components['schemas']['Recommendation'] | null
+      /** Options */
+      options: components['schemas']['CompareOption'][]
       /**
        * Unknown Product Ids
        * @description Ids in the request that do not exist at all.
@@ -400,6 +452,12 @@ export interface components {
        * @example 13
        */
       rating_count?: number | null
+      /**
+       * Offers
+       * @description One retailer + price per stocking retailer, cheapest-first. Lets a product card render a per-retailer price grid without a second request. For full retailer metadata, call GET /products/{id}.
+       * @default []
+       */
+      offers: components['schemas']['ProductOfferSummary'][]
     }
     /** ProductDetail */
     ProductDetail: {
@@ -515,35 +573,31 @@ export interface components {
        */
       offers: components['schemas']['Offer'][]
     }
-    /** Recommendation */
-    Recommendation: {
+    /**
+     * ProductOfferSummary
+     * @description Just enough to render a per-retailer price next to a product card --
+     *     full retailer metadata lives on `Offer`, returned by `GET /products/{id}`.
+     */
+    ProductOfferSummary: {
       /**
        * Retailer
        * @enum {string}
        */
       retailer: 'coles' | 'woolworths' | 'aldi' | 'harrisfarm'
-      /** Total */
-      total: number
+      /** Price */
+      price: number
     }
-    /** StoreComparison */
-    StoreComparison: {
+    /** StoreBreakdown */
+    StoreBreakdown: {
       /**
        * Retailer
        * @enum {string}
        */
       retailer: 'coles' | 'woolworths' | 'aldi' | 'harrisfarm'
-      /**
-       * Total
-       * @description Sum over items this retailer stocks. Missing items are excluded.
-       */
-      total: number
-      /**
-       * Missing Product Ids
-       * @description Basket items this retailer does not stock. Returned explicitly, never silently dropped.
-       */
-      missing_product_ids: string[]
-      /** Available Count */
-      available_count: number
+      /** Subtotal */
+      subtotal: number
+      /** Items */
+      items: components['schemas']['CompareItem'][]
     }
     /** Subcategory */
     Subcategory: {

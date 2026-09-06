@@ -11,12 +11,14 @@ import sqlite3
 from typing import Any
 
 
-def product_dict(row: sqlite3.Row | Any) -> dict:
+def product_dict(row: sqlite3.Row | Any, offers: list[dict] | None = None) -> dict:
     """One canonical product, exactly the v2 section 0.3 `Product` shape.
 
     `min_price` / `retailer_count` are additive conveniences so the frontend can
     render a "from $x at N stores" card without a second round trip; the required
-    contract fields are unchanged.
+    contract fields are unchanged. `offers` is a cheapest-first per-retailer price
+    summary -- pass it in for a list response, or override the whole key with full
+    `Offer` dicts for `GET /products/{id}` (see `products.py:get_product`).
     """
     return {
         "id": row["id"],
@@ -40,6 +42,7 @@ def product_dict(row: sqlite3.Row | Any) -> dict:
         "retailer_count": row["retailer_count"],
         "rating_avg": row["rating_avg"],
         "rating_count": row["rating_count"],
+        "offers": offers or [],
     }
 
 
@@ -74,8 +77,24 @@ def dumps(obj: Any) -> bytes:
     return json.dumps(obj, separators=(",", ":"), ensure_ascii=False).encode("utf-8")
 
 
-def product_rows_to_json(rows) -> bytes:
-    return dumps([product_dict(r) for r in rows])
+def product_rows_to_json(rows, offers_by_product: dict[str, list[dict]] | None = None) -> bytes:
+    offers_by_product = offers_by_product or {}
+    return dumps([product_dict(r, offers_by_product.get(r["id"])) for r in rows])
+
+
+def offer_summaries(db: sqlite3.Connection, product_ids: list[str]) -> dict[str, list[dict]]:
+    """retailer + price per product, cheapest first -- the `Product.offers` summary."""
+    if not product_ids:
+        return {}
+    ph = ",".join("?" * len(product_ids))
+    out: dict[str, list[dict]] = {}
+    for r in db.execute(
+        f"SELECT product_id, retailer, price FROM offers "
+        f"WHERE product_id IN ({ph}) AND COALESCE(is_available, 1) = 1 "
+        f"ORDER BY product_id, price", product_ids,
+    ):
+        out.setdefault(r["product_id"], []).append({"retailer": r["retailer"], "price": r["price"]})
+    return out
 
 
 def category_payload(db: sqlite3.Connection) -> bytes:

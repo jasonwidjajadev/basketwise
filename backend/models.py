@@ -26,6 +26,14 @@ class Category(BaseModel):
     subcategories: list[Subcategory] = []
 
 
+class ProductOfferSummary(BaseModel):
+    """Just enough to render a per-retailer price next to a product card --
+    full retailer metadata lives on `Offer`, returned by `GET /products/{id}`."""
+
+    retailer: Retailer
+    price: float
+
+
 class Product(BaseModel):
     """A canonical grocery -- what the user wants to buy, not one retailer's listing."""
 
@@ -59,6 +67,10 @@ class Product(BaseModel):
                                      description="Retailer star rating. Sparse today -- the Woolworths "
                                                  "detail crawl has not been run yet. Render only if present.")
     rating_count: int | None = Field(default=None, examples=[13])
+    offers: list[ProductOfferSummary] = Field(
+        default=[], description="One retailer + price per stocking retailer, cheapest-first. "
+                                "Lets a product card render a per-retailer price grid without a "
+                                "second request. For full retailer metadata, call GET /products/{id}.")
 
 
 class PricePoint(BaseModel):

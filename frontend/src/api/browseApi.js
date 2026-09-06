@@ -1,44 +1,39 @@
-// Mock implementation of the Browse page's backend contract
-// (see /basketwise/browsing_page_guide.md). Same function signatures and
-// response shapes the real `GET /categories` / `GET /products` endpoints
-// will return — swapping these bodies for real `fetch()` calls later is a
-// one-line change per function, nothing above this layer needs to know.
-//
-// `retailer`, `q`, and `sort` are listed in the guide as post-MVP extensions
-// (§Extensions 1-3), but the core category → subcategory → product → basket
-// flow already works, so they're wired up now using the exact param names
-// and semantics the guide itself specifies for when they land for real.
-import BROWSE_CATEGORIES from '@/mocks/browse/categories.json'
-import BROWSE_PRODUCTS from '@/mocks/browse/products.json'
-
-const MOCK_LATENCY_MS = 200
-
-function delay(value) {
-  return new Promise((resolve) =>
-    setTimeout(() => resolve(value), MOCK_LATENCY_MS),
-  )
-}
+// Browse page's backend contract, backed by the real BasketWise API
+// (GET /categories, GET /products). Same {items, total} / Category[] shapes
+// the mock version returned, so nothing above this layer needs to change.
+import {
+  getCategories as apiGetCategories,
+  getProductsPage,
+} from '@/api/client'
 
 function cheapestOffer(product, retailer) {
+  const all = product.offers ?? []
   const offers = retailer
-    ? product.offers.filter((offer) => offer.retailer === retailer)
-    : product.offers
+    ? all.filter((offer) => offer.retailer === retailer)
+    : all
+  if (offers.length === 0) return Infinity
   return offers.reduce((min, offer) => Math.min(min, offer.price), Infinity)
 }
 
 function savingsOf(product) {
-  if (product.offers.length < 2) return 0
-  const prices = product.offers.map((offer) => offer.price)
+  const offers = product.offers ?? []
+  if (offers.length < 2) return 0
+  const prices = offers.map((offer) => offer.price)
   return Math.max(...prices) - Math.min(...prices)
 }
 
 // GET /categories
 export function getCategories() {
-  return delay(BROWSE_CATEGORIES)
+  return apiGetCategories()
 }
 
-// GET /products?category=&subcategory=&retailer=&q=&sort=&limit=&offset=
-export function getProducts({
+// GET /products?category=&subcategory=&retailer=&q=&limit=&offset=
+//
+// `sort` has no server-side equivalent yet, so it's applied to the page the
+// API just returned, same as `loadMore` already appends pages one at a time --
+// a sort that's globally correct across the whole filtered set (not just the
+// loaded pages) would need backend support.
+export async function getProducts({
   category,
   subcategory,
   retailer,
@@ -47,25 +42,16 @@ export function getProducts({
   limit = 24,
   offset = 0,
 } = {}) {
-  let items = BROWSE_PRODUCTS
+  const { data, total } = await getProductsPage({
+    category,
+    subcategory,
+    retailer,
+    q,
+    limit,
+    offset,
+  })
 
-  if (category) {
-    items = items.filter((product) => product.category === category)
-  }
-  if (subcategory) {
-    items = items.filter((product) => product.subcategory === subcategory)
-  }
-  if (retailer) {
-    items = items.filter((product) =>
-      product.offers.some((offer) => offer.retailer === retailer),
-    )
-  }
-  if (q) {
-    const query = q.trim().toLowerCase()
-    items = items.filter((product) =>
-      product.name.toLowerCase().includes(query),
-    )
-  }
+  let items = data
 
   if (sort === 'name_asc') {
     items = [...items].sort((a, b) => a.name.localeCompare(b.name))
@@ -85,8 +71,5 @@ export function getProducts({
     items = [...items].sort((a, b) => savingsOf(a) - savingsOf(b))
   }
 
-  const total = items.length
-  const page = items.slice(offset, offset + limit)
-
-  return delay({ items: page, total })
+  return { items, total: total ?? items.length }
 }

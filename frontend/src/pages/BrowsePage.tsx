@@ -39,15 +39,22 @@ export default function BrowsePage() {
     )
   }
 
-  const [items, setItems] = useState([])
-  const [total, setTotal] = useState(0)
+  const [retryToken, setRetryToken] = useState(0)
   const [loadingMore, setLoadingMore] = useState(false)
-  // Tracks which request `items` actually belong to, so "loading" can be
+  // Tracks which request `result` actually belongs to, so "loading" can be
   // derived instead of set synchronously inside the effect.
-  const [loadedFor, setLoadedFor] = useState(null)
+  const [result, setResult] = useState({
+    key: null,
+    items: [],
+    total: 0,
+    failed: false,
+  })
 
-  const requestKey = `${category}:${subcategory}:${retailer}:${sort}`
-  const loading = loadedFor !== requestKey
+  const requestKey = `${category}:${subcategory}:${retailer}:${sort}:${retryToken}`
+  const loading = result.key !== requestKey
+  const failed = !loading && result.failed
+  const items = result.items
+  const total = result.total
 
   // Fetch page 1 whenever category, subcategory, retailer, or sort changes.
   useEffect(() => {
@@ -60,18 +67,27 @@ export default function BrowsePage() {
       sort,
       limit: PAGE_SIZE,
       offset: 0,
-    }).then((result) => {
-      if (!cancelled) {
-        setItems(result.items)
-        setTotal(result.total)
-        setLoadedFor(requestKey)
-      }
     })
+      .then((r) => {
+        if (!cancelled) {
+          setResult({
+            key: requestKey,
+            items: r.items,
+            total: r.total,
+            failed: false,
+          })
+        }
+      })
+      .catch((error) => {
+        if (cancelled) return
+        console.error('Failed to load products', error)
+        setResult({ key: requestKey, items: [], total: 0, failed: true })
+      })
 
     return () => {
       cancelled = true
     }
-  }, [category, subcategory, retailer, sort, requestKey])
+  }, [category, subcategory, retailer, sort, requestKey, retryToken])
 
   function loadMore() {
     setLoadingMore(true)
@@ -82,11 +98,19 @@ export default function BrowsePage() {
       sort,
       limit: PAGE_SIZE,
       offset: items.length,
-    }).then((result) => {
-      setItems((prev) => [...prev, ...result.items])
-      setTotal(result.total)
-      setLoadingMore(false)
     })
+      .then((r) => {
+        setResult((prev) => ({
+          ...prev,
+          items: [...prev.items, ...r.items],
+          total: r.total,
+        }))
+        setLoadingMore(false)
+      })
+      .catch((error) => {
+        console.error('Failed to load more products', error)
+        setLoadingMore(false)
+      })
   }
 
   const activeCategory = categories.find((cat) => cat.id === category)
@@ -143,6 +167,22 @@ export default function BrowsePage() {
               </div>
             </div>
           ))}
+        </div>
+      ) : failed ? (
+        <div className="animate-bw-fade-up flex flex-col items-start gap-1.5 border border-bw-line bg-bw-surface px-8 py-12">
+          <h2 className="text-xl font-normal text-bw-ink">
+            Couldn't load products
+          </h2>
+          <p className="max-w-[44ch] text-[13px] text-bw-muted">
+            Check your connection and try again.
+          </p>
+          <button
+            type="button"
+            onClick={() => setRetryToken((n) => n + 1)}
+            className="mt-2 rounded-full border border-bw-ink px-5 py-2.75 text-xs font-semibold text-bw-ink transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
+          >
+            Try again
+          </button>
         </div>
       ) : items.length === 0 ? (
         <div className="animate-bw-fade-up flex flex-col items-start gap-1.5 border border-bw-line bg-bw-surface px-8 py-12">

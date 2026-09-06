@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { MdChevronLeft, MdChevronRight } from 'react-icons/md'
 
+import { getEssentials, type Product } from '@/api/client'
 import ProductCard from '@/components/ProductCard'
 import { useCart } from '@/context/useCart'
-import essentials from '@/mocks/home/essentials.json'
 import { cn } from '@/lib/utils'
 
 export default function EssentialsSection() {
@@ -13,6 +13,26 @@ export default function EssentialsSection() {
 
   const [canScrollLeft, setCanScrollLeft] = useState(false)
   const [canScrollRight, setCanScrollRight] = useState(true)
+
+  // The curated list of essential product ids lives in backend/data/essentials.txt --
+  // this just fetches current details, images and prices for those same ids.
+  const [essentials, setEssentials] = useState<Product[]>([])
+
+  useEffect(() => {
+    let cancelled = false
+
+    getEssentials()
+      .then((data) => {
+        if (!cancelled) setEssentials(data)
+      })
+      .catch((error) => {
+        if (!cancelled) console.error('Failed to load essentials', error)
+      })
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   function updateScrollState() {
     const slider = sliderRef.current
@@ -55,11 +75,12 @@ export default function EssentialsSection() {
     }
   }, [])
 
+  // Nothing to show yet (still loading, or the request failed) -- rather
+  // than a heading over an empty slider, just don't render the section.
+  if (essentials.length === 0) return null
+
   return (
-    <section
-      id="essentials"
-      className="w-full scroll-mt-27 py-5"
-    >
+    <section id="essentials" className="w-full scroll-mt-27 py-5">
       <div className="mb-4 flex items-center justify-between gap-4">
         <h2 className="text-base font-bold tracking-[.2em] text-bw-ink uppercase">
           Essentials
@@ -107,23 +128,10 @@ export default function EssentialsSection() {
       <div
         ref={sliderRef}
         onScroll={updateScrollState}
-        className="
-          grid grid-flow-col grid-rows-2
-          auto-cols-[calc((100%_-_0.875rem)/2)]
-          gap-x-3.5 gap-y-8
-          overflow-x-auto scroll-smooth
-          snap-x snap-mandatory
-          [scrollbar-width:none]
-          [&::-webkit-scrollbar]:hidden
-          sm:auto-cols-[calc((100%_-_1.75rem)/3)]
-          lg:auto-cols-[calc((100%_-_3.5rem)/5)]
-        "
+        className="grid snap-x snap-mandatory [scrollbar-width:none] auto-cols-[calc((100%_-_0.875rem)/2)] grid-flow-col grid-rows-2 gap-x-3.5 gap-y-8 overflow-x-auto scroll-smooth sm:auto-cols-[calc((100%_-_1.75rem)/3)] lg:auto-cols-[calc((100%_-_3.5rem)/5)] [&::-webkit-scrollbar]:hidden"
       >
         {essentials.map((product) => (
-          <div
-            key={product.id}
-            className="min-w-0 snap-start"
-          >
+          <div key={product.id} className="min-w-0 snap-start">
             <ProductCard
               product={product}
               added={Boolean(addedIds[product.id])}

@@ -725,7 +725,7 @@ Search, retailer filtering, sorting, tags and Specials filtering are extensions 
 GET /products?...
 ```
 
-Bare `Product[]`. Header **`X-Total-Count`** is the match count ignoring `limit`/`offset`. Empty match → `[]`. **No `offers` key.**
+Bare `Product[]`. Header **`X-Total-Count`** is the match count ignoring `limit`/`offset`. Empty match → `[]`.
 
 ```json
 [
@@ -748,12 +748,16 @@ Bare `Product[]`. Header **`X-Total-Count`** is the match count ignoring `limit`
     "has_special": true,
     "retailer_count": 3,
     "rating_avg": null,
-    "rating_count": null
+    "rating_count": null,
+    "offers": [
+      { "retailer": "coles", "price": 3.10 },
+      { "retailer": "woolworths", "price": 3.20 }
+    ]
   }
 ]
 ```
 
-Differs: extra denormalised card fields; per-retailer prices are not on the list. Those live on `GET /products/{id}`.
+Differs: extra denormalised card fields; `offers` here is `ProductOfferSummary[]` (`retailer` + `price` only, cheapest first) so a product card can render a per-retailer price grid without a second request. Full retailer metadata (`retailer_product_name`, `product_url`, `is_available`, ...) is still only on `GET /products/{id}`.
 
 #### Product detail
 

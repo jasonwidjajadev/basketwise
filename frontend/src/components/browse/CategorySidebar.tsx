@@ -81,6 +81,8 @@ function CategoryAccordionList({
 export default function CategorySidebar({
   categories,
   loading,
+  failed,
+  onRetry,
   category,
   subcategory,
   onSelect,
@@ -102,6 +104,17 @@ export default function CategorySidebar({
     <p className="px-3.5 py-4 text-[12.5px] text-bw-muted">
       Loading categories…
     </p>
+  ) : failed ? (
+    <div className="flex flex-col items-start gap-2 px-3.5 py-4 text-[12.5px] text-bw-muted">
+      <p>Couldn't load categories.</p>
+      <button
+        type="button"
+        onClick={onRetry}
+        className="font-semibold text-bw-ink underline underline-offset-2"
+      >
+        Try again
+      </button>
+    </div>
   ) : (
     <CategoryAccordionList {...listProps} />
   )

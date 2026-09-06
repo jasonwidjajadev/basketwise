@@ -19,7 +19,7 @@ import main  # noqa: E402
 PRODUCT_FIELDS = {"id", "name", "brand", "category", "subcategory", "tags", "size_value",
                   "size_unit", "image_url", "is_essential", "min_price", "cheapest_retailer",
                   "unit_price", "unit_measure", "was_price", "has_special", "retailer_count",
-                  "rating_avg", "rating_count"}
+                  "rating_avg", "rating_count", "offers"}
 
 
 @pytest.fixture(scope="module")
@@ -147,6 +147,18 @@ def test_products_have_usable_images(client):
     imgs = [p["image_url"] for p in ps if p["image_url"]]
     assert len(imgs) >= 48, "image coverage dropped below 96%"
     assert all(u.startswith("https://") for u in imgs), "image_url must be absolute https"
+
+
+def test_products_list_includes_offer_summary(client):
+    """Product cards render a per-retailer price grid from `offers` without a
+    second request -- see ProductOfferSummary in models.py."""
+    ps = client.get("/products?multi_retailer=true&limit=5").json()
+    assert ps
+    for p in ps:
+        assert len(p["offers"]) == p["retailer_count"] >= 2
+        assert {"retailer", "price"} <= p["offers"][0].keys()
+        prices = [o["price"] for o in p["offers"]]
+        assert prices == sorted(prices), "offers must be cheapest-first"
 
 
 def test_price_fields_describe_one_retailer(client):

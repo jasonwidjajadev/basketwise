@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router'
 import { MdAdd, MdDeleteOutline, MdRemove } from 'react-icons/md'
 
-import { getCartLineItem } from '@/components/checkout/cartLineItems.js'
+import productDefault from '@/assets/product_card/product_default.png'
+import { useCartLineItem } from '@/components/checkout/cartLineItems.js'
 import { useCart } from '@/context/useCart'
 
 const QTY_POP_DURATION_MS = 300
@@ -21,7 +22,7 @@ function CartRow({
   onRemove,
   onCollapseEnd,
 }) {
-  const item = getCartLineItem(productId)
+  const item = useCartLineItem(productId)
 
   const [qtyPop, setQtyPop] = useState(false)
   const prevQuantity = useRef(quantity)
@@ -56,12 +57,15 @@ function CartRow({
         <div
           className={`bw-row-collapse-inner animate-bw-fade-up flex items-center gap-3.5 border-b border-bw-line px-5 py-3.5`}
         >
-          <div
-            className="h-13 w-13 shrink-0 rounded-2xl border border-bw-line bg-bw-panel"
-            style={{
-              backgroundImage:
-                'repeating-linear-gradient(135deg,#F3F1EA 0 7px,#EDEBE2 7px 14px)',
+          <img
+            src={item.image_url || productDefault}
+            alt={item.name}
+            onError={(e) => {
+              if (e.currentTarget.src !== productDefault) {
+                e.currentTarget.src = productDefault
+              }
             }}
+            className="h-13 w-13 shrink-0 rounded-2xl border border-bw-line bg-bw-panel object-contain"
           />
 
           <div className="min-w-0 flex-1">
