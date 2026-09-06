@@ -348,6 +348,11 @@ CREATE VIRTUAL TABLE products_fts USING fts5(
   name, id UNINDEXED, tokenize='porter unicode61'
 );
 
+CREATE TABLE search_vocab (
+  term TEXT PRIMARY KEY,
+  df   INTEGER NOT NULL
+);
+
 CREATE INDEX idx_products_cat      ON products(category, subcategory, id);
 CREATE INDEX idx_products_ess      ON products(is_essential, essential_rank) WHERE is_essential=1;
 CREATE INDEX idx_products_special  ON products(has_special) WHERE has_special=1;
@@ -362,7 +367,8 @@ Diffs vs planned:
 - `products`: extra columns (`brand`, `essential_rank`, `is_active`, `cheapest_retailer`, `unit_price`, `unit_measure`, `was_price`, `has_special`, `rating_avg`, `rating_count`); **no** `offers[]` column; `tags` is JSON text `'[]'`, not Postgres `TEXT[]`
 - `offers`: same fields as planned; `last_updated` is nullable TEXT
 - `price_history.id` is `INTEGER PRIMARY KEY`, not a string
-- Extra tables: `categories`, `subcategories`, `meta`, `products_fts`
+- Extra tables: `categories`, `subcategories`, `meta`, `products_fts`, `search_vocab`
+- `search_vocab` is the spell-correction dictionary for `q` (term -> how many products use it). Built by `build_api_db.py`, loaded once at API startup. An older `basketwise.db` without it still works: the API derives the vocabulary from product names at startup instead
 - Rebuild: hyperscrape writes Schema A; `build_api_db.py` **rebuilds** Schema B from `master.db`. It does not upsert a live Schema B `offers` row during crawl
 
 ### 2.3 Basket State
@@ -1128,6 +1134,18 @@ multi_retailer
 ```
 
 Their live query-string behaviour is implemented (`backend/routes/products.py`). List-body JSON is the **Current return** under §4.2, not the planned `offers[]` example.
+
+#### `q` semantics
+
+`q` is no longer a strict FTS5 prefix AND over product names. Query parsing and
+planning live in `backend/search.py`:
+
+- **Size tokens** (`1kg`, `500 g`, `2L`, `6pk`) are pulled out of the text and matched against `products.size_value` / `size_unit`, normalised to the canonical `g` / `ml` / `pk` / `ea` units, with a 2% tolerance. `1kg protein powder` used to return nothing because `1kg` is not a word in `Whey Protein Powder Vanilla`.
+- **Fallback ladder**, first rung that matches anything wins: all-terms + size, all-terms, any-term + size, any-term. Precision is kept for a clean query; recall is spent only when needed.
+- **Fuzzy tolerance**: plural/singular variants and Damerau-Levenshtein spell correction (transposition counts as one edit) against `search_vocab`. A term the catalogue uses for very few products can still be corrected, but only to a candidate at least 20x more common; the original spelling always stays in the match set.
+- **Ranking**, best first: exact name match, requested size, name prefix match, number of query terms present in name/brand, `retailer_count`, FTS bm25.
+- Unchanged: `X-Total-Count` reflects the rung that matched, paging is stable and non-repeating, and every term is stripped to alphanumerics and quoted, so FTS5 operators in user input are inert.
+- A query that cannot match anything returns `200` with `[]`, not an error.
 
 ### 5.2 Full-App Extensions
 

@@ -14,7 +14,7 @@ WORKDIR /app
 RUN pip install --no-cache-dir "fastapi==0.141.1" "uvicorn[standard]==0.38.0" \
  && useradd --uid 10001 --no-create-home --shell /usr/sbin/nologin api
 
-COPY --chown=root:root main.py db.py models.py shapes.py ./
+COPY --chown=root:root main.py db.py models.py shapes.py search.py supabase_client.py ./
 COPY --chown=root:root routes/ ./routes/
 
 USER 10001

@@ -4,6 +4,7 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Path, Query, Response
 
 import db
+import search
 from models import PriceHistory, Product, ProductDetail
 from shapes import dumps, offer_dict, product_dict, product_rows_to_json
 
@@ -62,7 +63,13 @@ def list_products(
     q: str | None = Query(
         None,
         examples=["milk"],
-        description="Full-text search over product names.",
+        description=(
+            "Search over product names and brands. Size tokens (`1kg`, `500 g`, "
+            "`2L`) are matched against the product size rather than its name. "
+            "Multi-word queries fall back from all-terms to best-match, with "
+            "plural and typo tolerance, so a query is never silently empty when "
+            "something reasonable matches."
+        ),
     ),
     special: bool | None = Query(
         None,
@@ -142,16 +149,24 @@ def list_products(
         params.append(retailer)
 
     if q:
-        # FTS5 prefix search. Quote each token so user input can't inject operators.
-        terms = " ".join(f'"{t}"*' for t in q.replace('"', " ").split() if t)
-        if not terms:
-            return _json(b"[]")
-        where.append("p.id IN (SELECT id FROM products_fts WHERE products_fts MATCH ?)")
-        params.append(terms)
-        order = "p.retailer_count DESC, p.id"
-    else:
-        order = "p.is_essential DESC, p.essential_rank, p.id" if essential else "p.id"
+        # Size tokens ("1kg") are matched against size_value/size_unit, not the
+        # name text; the rest goes to FTS5 with an AND -> OR -> fuzzy fallback.
+        # search.py quotes every term, so operators in user input stay inert.
+        parsed = search.parse(q)
+        if not parsed:
+            return _json(b"[]", 0)
+        found = search.plan(db.db(), parsed, where, params)
+        if found is None:
+            return _json(b"[]", 0)
+        clause = (" WHERE " + " AND ".join(found.where)) if found.where else ""
+        rows = db.db().execute(
+            f"SELECT p.* FROM products p{found.join}{clause} "
+            f"ORDER BY {found.order} LIMIT ? OFFSET ?",
+            (*found.join_params, *found.where_params, *found.order_params,
+             limit, offset)).fetchall()
+        return _json(product_rows_to_json(rows, db.db()), found.total)
 
+    order = "p.is_essential DESC, p.essential_rank, p.id" if essential else "p.id"
     clause = (" WHERE " + " AND ".join(where)) if where else ""
     total = db.db().execute(f"SELECT COUNT(*) FROM products p{clause}", params).fetchone()[0]
     rows = db.db().execute(

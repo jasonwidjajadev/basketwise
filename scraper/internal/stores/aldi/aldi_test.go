@@ -56,3 +56,17 @@ func TestSearchProductToProduct(t *testing.T) {
 		t.Errorf("unexpected URL: %s", p.URL)
 	}
 }
+
+// ALDI sets notForSale=true on its entire walk-in catalogue (no online shop), so
+// it must never be read as "out of stock". Only discontinued removes a product.
+func TestNotForSaleIsNotAvailability(t *testing.T) {
+	sp := searchProduct{SKU: "1", Name: "x", NotForSale: true}
+	sp.Price.Amount = 100
+	if p := sp.toProduct(nil); !p.Available || !p.InStock || p.Deprecated {
+		t.Fatalf("notForSale=true must stay available: %+v", p)
+	}
+	sp.Discontinued = true
+	if p := sp.toProduct(nil); p.Available || p.InStock || !p.Deprecated {
+		t.Fatalf("discontinued must be unavailable+deprecated: %+v", p)
+	}
+}

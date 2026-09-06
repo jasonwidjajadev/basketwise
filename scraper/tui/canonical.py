@@ -834,8 +834,35 @@ _UNIT_SCALE = {
 }
 
 
+def _parse_one(text: str | None) -> tuple[float | None, str | None]:
+    if not text:
+        return None, None
+    m = _MULTI_RE.search(text)
+    if m:
+        count, value, unit = int(m.group(1)), float(m.group(2)), m.group(3).lower()
+        scale, canon = _UNIT_SCALE[unit]
+        return round(count * value * scale, 3), canon
+    m = _SIZE_RE.search(text)
+    if m:
+        value, unit = float(m.group(1)), m.group(2).lower()
+        scale, canon = _UNIT_SCALE[unit]
+        return round(value * scale, 3), canon
+    return None, None
+
+
 def parse_size(size: str | None, name: str | None = None) -> tuple[float | None, str | None]:
-    """('2L', ...) -> (2000.0, 'ml').  '6 x 375ml' -> (2250.0, 'ml').  Falls back to the name."""
+    """('2L', ...) -> (2000.0, 'ml').  '6 x 375ml' -> (2250.0, 'ml').  Falls back to the name.
+
+    When the size field and the name disagree, the NAME wins. Harris Farm's
+    Shopify feed puts `variants[].grams` -- shipping weight, not net content --
+    into the size field, and 53% of its rows disagree with their own name
+    ("Cioccolato Milk Chocolate Block 100g" carrying size='315g'). Trusting that
+    field made the size filter endorse wrong matches instead of rejecting them.
+    """
+    sv, su = _parse_one(size)
+    nv, nu = _parse_one(name)
+    if sv is not None and nv is not None and (su != nu or abs(sv - nv) > 0.02 * max(sv, nv)):
+        return nv, nu
     for text in (size, name):
         if not text:
             continue

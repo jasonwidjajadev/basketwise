@@ -1,7 +1,7 @@
 /**
  * Price history for one product, in the slot the basket ledger used to occupy.
  *
- * Owns the single /products/{id}/price-history request and hands the result to
+ * Owns the single /products/{id}/price-trend request and hands the result to
  * both visuals, so the range bar and the chart never fetch the same series twice.
  *
  * Coverage is thin -- the crawler has only recently begun recording daily
@@ -12,7 +12,7 @@
  */
 import { useEffect, useState } from 'react'
 
-import { getPriceHistory, RETAILER_LABEL } from '@/api/client'
+import { getPriceTrend, RETAILER_LABEL } from '@/api/client'
 
 import type { Offer, PriceHistory } from '@/api/client'
 
@@ -50,7 +50,7 @@ export default function PriceHistoryPanel({
   useEffect(() => {
     const ac = new AbortController()
 
-    getPriceHistory(productId, DAYS, ac.signal)
+    getPriceTrend(productId, DAYS, ac.signal)
       .then((d) => setRes({ id: productId, series: d }))
       .catch((e) => {
         if (e?.name !== 'AbortError') setRes({ id: productId, series: null })
@@ -90,6 +90,31 @@ export default function PriceHistoryPanel({
     series.flatMap((s) => s.points.map((p) => p.recorded_at.slice(0, 10))),
   )
 
+  // What is actually on file for this item, so nobody has to guess how much
+  // history sits behind the bar and the chart.
+  const sortedDays = [...days].sort()
+  const fmtDay = (day: string) =>
+    new Date(`${day}T00:00:00Z`).toLocaleDateString('en-AU', {
+      day: 'numeric',
+      month: 'short',
+      timeZone: 'UTC',
+    })
+  const perStore = series
+    .filter((s) => s.points.length > 0)
+    .map(
+      (s) =>
+        `${RETAILER_LABEL[s.retailer as keyof typeof RETAILER_LABEL] ?? s.retailer} ${s.points.length}`,
+    )
+    .join(' · ')
+  const coverage =
+    observed.length > 0
+      ? `${observed.length} price point${observed.length === 1 ? '' : 's'} on file across ${storeCount} store${storeCount === 1 ? '' : 's'} and ${days.size} day${days.size === 1 ? '' : 's'}` +
+        (sortedDays.length > 0
+          ? ` (${fmtDay(sortedDays[0])}${sortedDays.length > 1 ? ` – ${fmtDay(sortedDays[sortedDays.length - 1])}` : ''})`
+          : '') +
+        (perStore ? `. Points per store: ${perStore}.` : '.')
+      : `No recorded history yet. Showing today's ${prices.length} live price${prices.length === 1 ? '' : 's'} from ${storeCount} store${storeCount === 1 ? '' : 's'}.`
+
   return (
     <div className="mt-5">
       <PriceRangeBar
@@ -100,6 +125,8 @@ export default function PriceHistoryPanel({
         currentLabel={activeOffer ? RETAILER_LABEL[activeOffer.retailer] : null}
         caption={caption}
       />
+
+      <p className="mt-2 text-xs text-bw-muted">{coverage}</p>
 
       {days.size > 1 ? (
         <PriceHistoryChart series={series} />

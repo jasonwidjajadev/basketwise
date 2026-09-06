@@ -1,21 +1,19 @@
+import { RETAILER_FILTER_OPTIONS } from '@/components/storePrices'
 import { cn } from '@/lib/utils'
 
-const OPTIONS = [
-  { value: '', label: 'All stores' },
-  { value: 'woolworths', label: 'Woolworths' },
-  { value: 'coles', label: 'Coles' },
-  { value: 'aldi', label: 'ALDI' },
-  { value: 'harrisfarm', label: 'Harris Farm' },
-]
-
-export default function RetailerFilter({ value, onChange }) {
+export default function RetailerFilter({
+  value,
+  onChange,
+  label = 'Filter by retailer',
+  className,
+}) {
   return (
     <div
       role="group"
-      aria-label="Filter by retailer"
-      className="flex flex-wrap gap-1.5"
+      aria-label={label}
+      className={cn('flex flex-wrap gap-1.5', className)}
     >
-      {OPTIONS.map((opt) => (
+      {RETAILER_FILTER_OPTIONS.map((opt) => (
         <button
           key={opt.value}
           type="button"

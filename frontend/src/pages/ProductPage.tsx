@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { useParams } from 'react-router'
 
-import { formatSize, getProduct, offerUrl, RETAILER_LABEL } from '@/api/client'
+import { formatSize, getProduct, RETAILER_LABEL } from '@/api/client'
 
 import type { Offer, ProductDetail, Retailer } from '@/api/client'
 
@@ -10,6 +10,10 @@ import productDefault from '@/assets/product_card/product_default.png'
 
 import OptionCard from '@/components/compare/OptionCard'
 import PriceHistoryPanel from '@/components/PriceHistoryPanel'
+import OfferImageLink from '@/components/product/OfferImageLink'
+import PriceTrendChart from '@/components/product/PriceTrendChart'
+
+import { useCart } from '@/context/useCart'
 
 function uiOption(offer: Offer, highestPrice: number) {
   return {
@@ -21,6 +25,11 @@ function uiOption(offer: Offer, highestPrice: number) {
 
 export default function ProductPage() {
   const { productId = '' } = useParams()
+
+  // The basket keys on the canonical product id, not on a retailer -- the whole
+  // point of /compare is that the backend picks the store afterwards -- so this
+  // adds the product once, whichever offer the shopper is looking at.
+  const { addedIds, add, remove } = useCart()
 
   const [product, setProduct] = useState<ProductDetail | null>(null)
 
@@ -66,16 +75,11 @@ export default function ProductPage() {
     }
   }, [productId])
 
-  // ~5% of offers carry is_available=0, and for some products every offer is
-  // flagged that way. Hiding all of them left the comparison blank while the
-  // product card (which filters on price only) still showed prices for the same
-  // item. Prefer available offers, but never render an empty comparison when we
-  // do have prices.
-  const availableOffers = useMemo(() => {
-    const offers = product?.offers ?? []
-    const inStock = offers.filter((offer) => offer.is_available !== false)
-    return inStock.length > 0 ? inStock : offers
-  }, [product])
+  // The browse card lists every retailer that has a price for this item, so the
+  // product page must show exactly the same set. Filtering out is_available=0
+  // offers here made a store (usually ALDI) appear on the card and then vanish
+  // on click. Unavailable offers stay in the comparison and are flagged instead.
+  const availableOffers = useMemo(() => product?.offers ?? [], [product])
 
   if (loading) {
     return (
@@ -121,6 +125,8 @@ export default function ProductPage() {
     : product.name
 
   const size = formatSize(product)
+
+  const inCart = Boolean(addedIds[product.id])
 
   return (
     <main className="w-full px-6 py-9 lg:px-8 xl:px-12 2xl:px-16">
@@ -173,7 +179,11 @@ export default function ProductPage() {
                         key={offer.id}
                         label={label}
                         tag={
-                          offer.price === lowestPrice ? 'Cheapest' : undefined
+                          offer.price === lowestPrice
+                            ? 'Cheapest'
+                            : offer.is_available === false
+                              ? 'Check stock'
+                              : undefined
                         }
                         option={uiOption(offer, highestPrice)}
                         stores={[label]}
@@ -189,7 +199,6 @@ export default function ProductPage() {
                          * link out to it.
                          */
                         storeItemName={offer.retailer_product_name}
-                        storeUrl={offerUrl(offer) ?? undefined}
 
                         /*
                          * These props are required
@@ -207,6 +216,46 @@ export default function ProductPage() {
                   })}
                 </div>
 
+                {/* Add to basket */}
+                <div className="mt-5 flex items-center gap-3">
+                  {inCart ? (
+                    <button
+                      type="button"
+                      onClick={() => remove(product.id)}
+                      className="rounded-full border border-bw-line px-5 py-2.5 text-sm font-semibold text-bw-ink transition hover:border-bw-green hover:text-bw-green focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
+                    >
+                      Remove from basket
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => add(product.id, 1)}
+                      className="rounded-full bg-bw-green px-5 py-2.5 text-sm font-semibold text-white transition hover:opacity-90 focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
+                    >
+                      Add to basket
+                    </button>
+                  )}
+
+                  {lowestPrice != null && (
+                    <span className="text-sm text-bw-muted">
+                      from ${lowestPrice.toFixed(2)}
+                    </span>
+                  )}
+                </div>
+
+                {/* Each retailer's own photo of the item, linking to its page */}
+                <div className="mt-6">
+                  <h2 className="text-[10.5px] font-bold tracking-[.14em] text-bw-muted uppercase">
+                    At each store
+                  </h2>
+
+                  <div className="mt-3 grid grid-cols-2 gap-4 sm:grid-cols-4">
+                    {availableOffers.map((offer) => (
+                      <OfferImageLink key={offer.id} offer={offer} />
+                    ))}
+                  </div>
+                </div>
+
                 {/*
                  * What this item has cost, rather than a second copy of the
                  * price already on the cards above. The marker on the range
@@ -221,6 +270,9 @@ export default function ProductPage() {
             )}
           </div>
         </div>
+
+        {/* Only appears once the backend has prices on more than one day */}
+        <PriceTrendChart productId={product.id} />
       </div>
     </main>
   )

@@ -17,6 +17,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import re
 import sqlite3
 import sys
 import time
@@ -121,6 +122,15 @@ CREATE TABLE meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
 CREATE VIRTUAL TABLE products_fts USING fts5(
   name, id UNINDEXED, tokenize='porter unicode61'
 );
+
+-- Search vocabulary: every word appearing in a product name or brand, with how
+-- many products use it. The API loads this once at startup to spell-correct
+-- typo'd query terms and resolve plural/singular forms, so it never has to scan
+-- the catalogue to answer a search.
+CREATE TABLE search_vocab (
+  term TEXT PRIMARY KEY,
+  df   INTEGER NOT NULL
+);
 """
 
 INDEXES = """
@@ -132,6 +142,24 @@ CREATE INDEX idx_offers_retailer   ON offers(retailer);
 CREATE INDEX idx_ph_offer          ON price_history(offer_id, recorded_at);
 CREATE INDEX idx_sub_cat           ON subcategories(category_id, position);
 """
+
+
+VOCAB_WORD = re.compile(r"[a-z0-9]+")
+MIN_VOCAB_LEN = 3
+
+
+def build_vocab(texts) -> dict[str, int]:
+    """Word -> number of products containing it, for the API's typo correction.
+
+    Counted once per product rather than per occurrence, so `df` is a document
+    frequency and the API can prefer the commoner of two equally-close spelling
+    candidates.
+    """
+    df: dict[str, int] = defaultdict(int)
+    for text in texts:
+        for word in {w for w in VOCAB_WORD.findall(text.lower()) if len(w) >= MIN_VOCAB_LEN}:
+            df[word] += 1
+    return dict(df)
 
 
 class Union:
@@ -465,8 +493,10 @@ def build(dry_run: bool) -> int:
         "INSERT INTO price_history (offer_id,price,was_price,is_special,special_type,recorded_at)"
         " VALUES (?,?,?,?,?,?)", history)
     # brand is searchable too: people type "Coles milk" and "Bega cheese".
-    db.executemany("INSERT INTO products_fts (name, id) VALUES (?,?)",
-                   [(f"{p[1]} {p[2] or ''}".strip(), p[0]) for p in products])
+    searchable = [(f"{p[1]} {p[2] or ''}".strip(), p[0]) for p in products]
+    db.executemany("INSERT INTO products_fts (name, id) VALUES (?,?)", searchable)
+    db.executemany("INSERT INTO search_vocab (term, df) VALUES (?,?)",
+                   sorted(build_vocab(t for t, _ in searchable).items()))
 
     for pos, (cid, cname) in enumerate(C.CATEGORIES):
         db.execute("INSERT INTO categories VALUES (?,?,?,0)", (cid, cname, pos))

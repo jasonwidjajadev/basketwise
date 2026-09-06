@@ -3,54 +3,15 @@ import { MdAdd, MdCheck } from 'react-icons/md'
 import { Link } from 'react-router'
 
 import { formatSize } from '@/api/client'
-import aldiColor from '@/assets/product_card/aldi_color.webp'
-import aldiGreyscale from '@/assets/product_card/aldi_grey.webp'
-import colesColor from '@/assets/product_card/coles_color.webp'
-import colesGreyscale from '@/assets/product_card/coles_grey.webp'
-import harrisColor from '@/assets/product_card/harris_color.webp'
-import harrisGreyscale from '@/assets/product_card/harris_grey.webp'
 import productDefault from '@/assets/product_card/product_default.png'
-import woolworthsColor from '@/assets/product_card/woolies_color.webp'
-import woolworthsGreyscale from '@/assets/product_card/woolies_grey.webp'
+import StorePriceRow from '@/components/StorePriceRow'
+import type { Retailer, StoreOffer } from '@/components/storePrices'
 import { cn } from '@/lib/utils'
 
 const POP_DURATION_MS = 420
 const PRODUCT_NAME_MAX_LENGTH = 24
 
-const RETAILER_LABELS = {
-  woolworths: 'Woolworths',
-  coles: 'Coles',
-  aldi: 'ALDI',
-  harrisfarm: 'Harris Farm',
-} as const
-
-const RETAILER_LOGOS = {
-  woolworths: {
-    color: woolworthsColor,
-    greyscale: woolworthsGreyscale,
-  },
-  coles: {
-    color: colesColor,
-    greyscale: colesGreyscale,
-  },
-  aldi: {
-    color: aldiColor,
-    greyscale: aldiGreyscale,
-  },
-  harrisfarm: {
-    color: harrisColor,
-    greyscale: harrisGreyscale,
-  },
-} as const
-
-const RETAILER_ORDER = ['woolworths', 'coles', 'aldi', 'harrisfarm'] as const
-
-type Retailer = (typeof RETAILER_ORDER)[number]
-
-type ProductOffer = {
-  retailer: Retailer
-  price: number
-}
+type ProductOffer = StoreOffer
 
 type ProductCardProduct = {
   id: string
@@ -90,10 +51,6 @@ export default function ProductCard({
   onAdd,
   onRemove,
 }: ProductCardProps) {
-  const offersByRetailer = new Map(
-    (product.offers ?? []).map((offer) => [offer.retailer, offer]),
-  )
-
   const [justAdded, setJustAdded] = useState(false)
   const [failedImageUrl, setFailedImageUrl] = useState<string | null>(null)
 
@@ -116,23 +73,6 @@ export default function ProductCard({
     product.unit_price != null && product.unit_measure
       ? `${fmt(product.unit_price)} / ${product.unit_measure}`
       : null
-
-  const availableOffers = (product.offers ?? []).filter((offer) =>
-    Number.isFinite(offer.price),
-  )
-
-  const cheapestPrice =
-    availableOffers.length > 0
-      ? Math.min(...availableOffers.map((offer) => offer.price))
-      : null
-
-  const cheapestRetailer =
-    product.cheapest_retailer &&
-    offersByRetailer.get(product.cheapest_retailer)?.price === cheapestPrice
-      ? product.cheapest_retailer
-      : (RETAILER_ORDER.find(
-          (retailer) => offersByRetailer.get(retailer)?.price === cheapestPrice,
-        ) ?? null)
 
   function handleToggle() {
     if (added) {
@@ -240,32 +180,10 @@ export default function ProductCard({
         )}
       </div>
 
-      <div className="mt-3 grid w-full grid-cols-4">
-        {RETAILER_ORDER.map((retailer) => {
-          const offer = offersByRetailer.get(retailer)
-          const logos = RETAILER_LOGOS[retailer]
-          const label = RETAILER_LABELS[retailer]
-          const isCheapest = retailer === cheapestRetailer
-          return (
-            <div key={retailer} className="flex min-w-0 flex-col items-center">
-              <img
-                src={isCheapest ? logos.color : logos.greyscale}
-                alt={label}
-                className="aspect-square w-[55%] object-contain"
-              />
-
-              <span
-                className={cn(
-                  'mt-1 text-xs leading-none font-medium',
-                  isCheapest ? 'font-bold text-black' : 'text-taupe-two',
-                )}
-              >
-                {offer ? fmt(offer.price) : ''}
-              </span>
-            </div>
-          )
-        })}
-      </div>
+      <StorePriceRow
+        offers={product.offers}
+        cheapestRetailer={product.cheapest_retailer}
+      />
     </div>
   )
 }

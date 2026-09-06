@@ -74,3 +74,6 @@ scraper/hyperscrape
 scraper/data/*.pid
 scraper/data/*.ndjson
 scraper/data/.notified_*
+
+# Syncthing conflict copies (the repo lives inside a synced folder)
+*.sync-conflict-*

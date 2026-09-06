@@ -77,6 +77,118 @@ def test_search(client):
     assert client.get('/products?q="""&limit=5').status_code == 200
 
 
+def test_search_size_token_is_matched_against_size_not_name(client):
+    """"1kg protein powder" used to return nothing: FTS required every token in the
+    name, and "1kg" is the product's size, not a word in its name."""
+    ps = client.get("/products?q=1kg+protein+powder&limit=10").json()
+    assert ps, "size token still being required as name text"
+    assert all("protein" in p["name"].lower() for p in ps)
+    # the spelled-out form parses the same way
+    spaced = client.get("/products?q=1+kg+protein+powder&limit=10").json()
+    assert [p["id"] for p in spaced] == [p["id"] for p in ps]
+
+
+def test_search_size_token_filters_and_ranks_by_size(client):
+    """When the catalogue does have that size, it is what comes back first."""
+    r = client.get("/products?q=2L+milk&limit=10")
+    ps = r.json()
+    assert ps
+    assert ps[0]["size_unit"] == "ml" and abs(ps[0]["size_value"] - 2000) < 40
+    # narrower than the un-sized query -- the size is a real constraint
+    assert int(r.headers["x-total-count"]) < int(
+        client.get("/products?q=milk&limit=1").headers["x-total-count"])
+
+
+def test_search_tolerates_a_typo(client):
+    ps = client.get("/products?q=protien+powder&limit=10").json()
+    assert ps, "no fuzzy fallback for a misspelled term"
+    assert any("protein" in p["name"].lower() for p in ps)
+
+
+def test_search_matches_plural_and_singular(client):
+    singular = {p["id"] for p in client.get("/products?q=yoghurt&limit=20").json()}
+    plural = {p["id"] for p in client.get("/products?q=yoghurts&limit=20").json()}
+    assert plural and singular & plural, "plural query missed the singular products"
+
+
+def test_search_corrects_a_transposed_typo(client):
+    """Swapped adjacent letters are one edit, not two.
+
+    Under plain Levenshtein "mlik" sits two edits from "milk" but only one from
+    "mik", so the obvious correction loses to a rarer word.
+    """
+    ps = client.get("/products?q=mlik&limit=10").json()
+    assert ps and any("milk" in p["name"].lower() for p in ps)
+
+
+def test_search_corrects_a_term_that_technically_exists(client):
+    """A word in the catalogue can still be a typo.
+
+    One obscure product containing "Chocolat" puts that term in the vocabulary;
+    it must not block the correction to the vastly commoner "chocolate".
+    """
+    ps = client.get("/products?q=chocolat+mlik&limit=10").json()
+    assert ps
+    top = " ".join(p["name"].lower() for p in ps[:5])
+    assert "chocolate" in top and "milk" in top
+
+
+def test_search_or_fallback_ranks_by_term_coverage(client):
+    """On the OR rung, matching both words must beat matching one common word.
+
+    Otherwise "Baking Powder" outranks every protein product for
+    "protein powder", because it wins on retailer_count.
+    """
+    ps = client.get("/products?q=protein+powder+zzzzqqq&limit=5").json()
+    assert ps and "protein" in ps[0]["name"].lower()
+
+
+def test_search_does_not_correct_common_words(client):
+    """Fuzzy tolerance must not rewrite a term the catalogue genuinely uses."""
+    import search
+    for term in ("milk", "cream", "organic", "pear", "lite"):
+        assert search.correct(term) is None, f"{term} was treated as a typo"
+
+
+def test_search_multi_token_is_not_strict_and(client):
+    """One unmatched token must not empty the whole result set."""
+    ps = client.get("/products?q=protein+powder+zzzzqqq&limit=10").json()
+    assert ps and any("protein" in p["name"].lower() for p in ps)
+
+
+def test_search_ranks_exact_name_matches_first(client):
+    ps = client.get("/products?q=chocolate+biscuits&limit=10").json()
+    assert ps
+    assert "chocolate" in ps[0]["name"].lower() and "biscuits" in ps[0]["name"].lower()
+
+
+def test_search_input_cannot_inject_fts_operators(client):
+    """Every term is quoted, so FTS5 syntax in `q` is matched as literal text."""
+    for q in ["milk OR *", "milk NEAR/2 bread", 'a" OR "b', "^milk", "NOT milk", "((("]:
+        assert client.get("/products", params={"q": q, "limit": 5}).status_code == 200
+
+
+def test_search_keeps_pagination_contract(client):
+    r = client.get("/products?q=protein+powder&limit=5&offset=0")
+    total = int(r.headers["x-total-count"])
+    first = [p["id"] for p in r.json()]
+    second = [p["id"] for p in client.get(
+        "/products?q=protein+powder&limit=5&offset=5").json()]
+    assert total >= 10 and len(first) == 5
+    assert not set(first) & set(second), "search paging repeats rows"
+
+
+def test_search_can_combine_with_other_filters(client):
+    ps = client.get("/products?q=milk&category=dairy-eggs-fridge&limit=10").json()
+    assert ps and all(p["category"] == "dairy-eggs-fridge" for p in ps)
+
+
+def test_search_with_no_possible_match_is_empty_not_error(client):
+    r = client.get("/products?q=zzzzqqq+wwwwxxx&limit=5")
+    assert r.status_code == 200 and r.json() == []
+    assert r.headers["x-total-count"] == "0"
+
+
 def test_essentials_are_ordered_and_flagged(client):
     ps = client.get("/products?essential=true&limit=20").json()
     assert len(ps) == 20 and all(p["is_essential"] for p in ps)

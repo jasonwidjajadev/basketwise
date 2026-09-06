@@ -3,13 +3,13 @@ import { useOutletContext, useSearchParams } from 'react-router'
 
 import { getProducts } from '@/api/browseApi'
 import ProductCard from '@/components/ProductCard'
-import RetailerFilter from '@/components/browse/RetailerFilter'
+import RetailerFilter from '@/components/RetailerFilter'
+import { RETAILER_FILTER_VALUES } from '@/components/storePrices'
 import SortMenu from '@/components/browse/SortMenu'
 import { useCart } from '@/context/useCart'
-import { SORT_OPTIONS } from '@/components/browse/browseSort'
+import { SORT_OPTIONS, sortProducts } from '@/components/browse/browseSort'
 
 const PAGE_SIZE = 24
-const RETAILER_VALUES = ['', 'woolworths', 'coles', 'aldi', 'harrisfarm']
 
 export default function BrowsePage() {
   const { categories, category, subcategory } = useOutletContext()
@@ -17,7 +17,9 @@ export default function BrowsePage() {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const retailerParam = searchParams.get('retailer')
-  const retailer = RETAILER_VALUES.includes(retailerParam) ? retailerParam : ''
+  const retailer = RETAILER_FILTER_VALUES.includes(retailerParam)
+    ? retailerParam
+    : ''
 
   const sortParam = searchParams.get('sort')
   const sort = SORT_OPTIONS.some((opt) => opt.value === sortParam)
@@ -50,13 +52,15 @@ export default function BrowsePage() {
     failed: false,
   })
 
-  const requestKey = `${category}:${subcategory}:${retailer}:${sort}:${retryToken}`
+  const requestKey = `${category}:${subcategory}:${retailer}:${retryToken}`
   const loading = result.key !== requestKey
   const failed = !loading && result.failed
-  const items = result.items
+  // Sorting is client-side, so it reorders every page loaded so far without
+  // refetching.
+  const items = sortProducts(result.items, sort, retailer)
   const total = result.total
 
-  // Fetch page 1 whenever category, subcategory, retailer, or sort changes.
+  // Fetch page 1 whenever category, subcategory or retailer changes.
   useEffect(() => {
     let cancelled = false
 
@@ -64,7 +68,6 @@ export default function BrowsePage() {
       category,
       subcategory,
       retailer,
-      sort,
       limit: PAGE_SIZE,
       offset: 0,
     })
@@ -87,7 +90,7 @@ export default function BrowsePage() {
     return () => {
       cancelled = true
     }
-  }, [category, subcategory, retailer, sort, requestKey, retryToken])
+  }, [category, subcategory, retailer, requestKey, retryToken])
 
   function loadMore() {
     setLoadingMore(true)
@@ -95,7 +98,6 @@ export default function BrowsePage() {
       category,
       subcategory,
       retailer,
-      sort,
       limit: PAGE_SIZE,
       offset: items.length,
     })
@@ -139,6 +141,7 @@ export default function BrowsePage() {
 
       <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-t border-b border-bw-line py-3.5">
         <RetailerFilter
+          label="Filter by store"
           value={retailer}
           onChange={(value) => updateParam('retailer', value)}
         />
@@ -194,7 +197,7 @@ export default function BrowsePage() {
       ) : (
         <>
           <div
-            key={requestKey}
+            key={`${requestKey}:${sort}`}
             className="grid grid-cols-2 gap-x-3.5 gap-y-12 sm:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 3xl:grid-cols-6"
           >
             {items.map((product, index) => (

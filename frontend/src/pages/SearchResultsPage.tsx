@@ -1,19 +1,53 @@
 import { useEffect, useState } from 'react'
+import { MdAdd, MdCheck } from 'react-icons/md'
 import { useNavigate, useSearchParams } from 'react-router'
 
 import { getProductsPage } from '@/api/client'
-import type { Product } from '@/api/client'
+import type { Product, Retailer } from '@/api/client'
 
+import RetailerFilter from '@/components/RetailerFilter'
+import { RETAILER_FILTER_VALUES } from '@/components/storePrices'
+import SortMenu from '@/components/browse/SortMenu'
+import { SORT_OPTIONS, sortProducts } from '@/components/browse/browseSort'
 import SearchResultItem from '@/components/search/SearchResultItem'
+import { useCart } from '@/context/useCart'
+import { cn } from '@/lib/utils'
 
 const PAGE_SIZE = 24
 
 export default function SearchResultsPage() {
   const navigate = useNavigate()
 
-  const [searchParams] = useSearchParams()
+  const { addedIds, add, remove } = useCart()
+
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const query = searchParams.get('q')?.trim() ?? ''
+
+  const retailerParam = searchParams.get('retailer')
+  const retailer = RETAILER_FILTER_VALUES.includes(retailerParam ?? '')
+    ? (retailerParam ?? '')
+    : ''
+
+  const sortParam = searchParams.get('sort')
+  const sort = SORT_OPTIONS.some((opt) => opt.value === sortParam)
+    ? (sortParam ?? '')
+    : ''
+
+  function updateParam(key: string, value: string) {
+    setSearchParams(
+      (prev) => {
+        const next = new URLSearchParams(prev)
+        if (!value) {
+          next.delete(key)
+        } else {
+          next.set(key, value)
+        }
+        return next
+      },
+      { replace: true },
+    )
+  }
 
   const [items, setItems] = useState<Product[]>([])
 
@@ -41,6 +75,7 @@ export default function SearchResultsPage() {
     getProductsPage(
       {
         q: query,
+        retailer: (retailer || undefined) as Retailer | undefined,
         limit: PAGE_SIZE,
         offset: 0,
       },
@@ -65,7 +100,7 @@ export default function SearchResultsPage() {
       })
 
     return () => controller.abort()
-  }, [query])
+  }, [query, retailer])
 
   async function loadMore() {
     setLoadingMore(true)
@@ -74,6 +109,7 @@ export default function SearchResultsPage() {
     try {
       const { data, total: resultTotal } = await getProductsPage({
         q: query,
+        retailer: (retailer || undefined) as Retailer | undefined,
         limit: PAGE_SIZE,
         offset: items.length,
       })
@@ -89,6 +125,10 @@ export default function SearchResultsPage() {
       setLoadingMore(false)
     }
   }
+
+  // Sorting is client-side, so it only orders the pages loaded so far --
+  // same caveat Browse has.
+  const sortedItems = sortProducts(items, sort, retailer)
 
   return (
     <main className="w-full px-6 py-9 lg:px-8 xl:px-12 2xl:px-16">
@@ -112,6 +152,21 @@ export default function SearchResultsPage() {
           )}
         </div>
 
+        {query && (
+          <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b border-bw-line pb-3.5">
+            <RetailerFilter
+              label="Filter by store"
+              value={retailer}
+              onChange={(value: string) => updateParam('retailer', value)}
+            />
+
+            <SortMenu
+              value={sort}
+              onChange={(value: string) => updateParam('sort', value)}
+            />
+          </div>
+        )}
+
         {loading ? (
           <div className="space-y-2" aria-hidden="true">
             {Array.from({
@@ -127,25 +182,56 @@ export default function SearchResultsPage() {
           <p className="text-sm text-bw-muted">
             Enter a grocery name in the search bar above.
           </p>
-        ) : items.length === 0 ? (
+        ) : sortedItems.length === 0 ? (
           <p className="text-sm text-bw-muted">
             No groceries matched “{query}”.
           </p>
         ) : (
           <>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              {items.map((product) => (
-                <button
-                  key={product.id}
-                  type="button"
-                  onClick={() =>
-                    navigate(`/product/${encodeURIComponent(product.id)}`)
-                  }
-                  className="rounded-xl border border-bw-line bg-bw-surface p-3 text-left transition-colors hover:bg-bw-panel focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
-                >
-                  <SearchResultItem product={product} />
-                </button>
-              ))}
+              {sortedItems.map((product) => {
+                const added = Boolean(addedIds[product.id])
+
+                return (
+                  <div
+                    key={product.id}
+                    className="relative rounded-xl border border-bw-line bg-bw-surface transition-colors hover:bg-bw-panel"
+                  >
+                    <button
+                      type="button"
+                      onClick={() =>
+                        navigate(`/product/${encodeURIComponent(product.id)}`)
+                      }
+                      className="w-full rounded-xl p-3 text-left focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none"
+                    >
+                      <SearchResultItem product={product} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() =>
+                        added ? remove(product.id) : add(product.id, 1)
+                      }
+                      aria-label={
+                        added ? 'Remove from basket' : 'Add to basket'
+                      }
+                      title={added ? 'Remove from basket' : 'Add to basket'}
+                      className={cn(
+                        'absolute top-3 right-3 flex h-8 w-8 items-center justify-center rounded-full border border-bw-line bg-white text-bw-ink transition-colors',
+                        'hover:border-bw-green hover:bg-bw-green hover:text-white',
+                        'focus-visible:ring-2 focus-visible:ring-bw-green focus-visible:outline-none',
+                        added && 'border-bw-green bg-bw-green text-white',
+                      )}
+                    >
+                      {added ? (
+                        <MdCheck className="h-4 w-4" />
+                      ) : (
+                        <MdAdd className="h-4 w-4" />
+                      )}
+                    </button>
+                  </div>
+                )
+              })}
             </div>
 
             {items.length < total && (

@@ -10,6 +10,8 @@ import os
 import sqlite3
 from pathlib import Path
 
+import search
+
 # Defaults suit a local checkout; the container overrides both.
 DB_PATH = Path(os.getenv("BASKETWISE_DB", Path(__file__).resolve().parents[1] / "scraper" / "data" / "basketwise.db"))
 WARM_DIR = Path(os.getenv("BASKETWISE_WARM", Path(__file__).resolve().parents[1] / "scraper" / "data" / "warm"))
@@ -53,6 +55,8 @@ def startup() -> None:
     # Totals for the pre-rendered pages, so a warm hit can still send X-Total-Count.
     if (counts := _warm.pop("_counts", None)) is not None:
         _warm_counts.update(json.loads(counts))
+    # Spell-correction dictionary for search, loaded once so no request pays for it.
+    search.load_vocab(_conn)
 
 
 def shutdown() -> None:

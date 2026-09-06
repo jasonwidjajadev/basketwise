@@ -54,6 +54,11 @@ if n_off  < 20000:  fail.append(f"only {n_off} offers")
 if n_cat  < 10:     fail.append(f"only {n_cat} non-empty categories")
 if n_multi < 2000:  fail.append(f"only {n_multi} comparable products -- /compare would be useless")
 if len(stores) < 2: fail.append(f"only {len(stores)} retailers: {stores}")
+# /compare only prices offers with is_available=1. A retailer whose entire range
+# is flagged unavailable (ALDI's notForSale bug, 2026-09-06) silently vanishes
+# from every basket, so treat it as a broken artifact rather than a quiet gap.
+for store, n, avail in db.execute("SELECT retailer, COUNT(*), SUM(COALESCE(is_available,1)) FROM offers GROUP BY retailer"):
+    if avail < n * 0.5: fail.append(f"{store}: only {avail}/{n} offers available -- /compare would drop it")
 prev = pathlib.Path("data/.last_build.json")
 if prev.exists():
     old = json.loads(prev.read_text())

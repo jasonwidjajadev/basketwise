@@ -123,10 +123,14 @@ func (sp *searchProduct) toProduct(raw json.RawMessage) *crawl.Product {
 		UnitPriceCents: int64(sp.Price.Comparison),
 		UnitPriceStr:   sp.Price.ComparisonDisplay,
 		UnitMeasure:    sp.QuantityUnit,
-		Available:      !sp.NotForSale,
-		InStock:        !sp.NotForSale,
-		Deprecated:     sp.Discontinued,
-		ListingJSON:    raw,
+		// notForSale is NOT stock: ALDI has no online shop, so the walk-in
+		// catalogue returns notForSale=true for every single product. Mapping it
+		// to Available zeroed the whole range and /compare silently dropped ALDI.
+		// The only real "gone" signal in the listing is discontinued.
+		Available:   !sp.Discontinued,
+		InStock:     !sp.Discontinued,
+		Deprecated:  sp.Discontinued,
+		ListingJSON: raw,
 	}
 	p.WasCents = parseDollarsToCents(sp.Price.WasPriceDisplay.String())
 	p.SaveCents = parseDollarsToCents(sp.Price.SavingsDisplay.String())

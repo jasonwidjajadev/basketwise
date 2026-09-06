@@ -33,6 +33,8 @@ import canonical as C
 MAX_POSTINGS = 3000
 TOP_CANDIDATES = 60          # per source row, by IDF mass, before exact scoring
 ACCEPT = 0.5                 # mutual-best Jaccard required to auto-link
+UNKNOWN_SIZE_ACCEPT = 0.7    # stricter bar when neither side states a size
+MAX_PRICE_RATIO = 2.5        # a real same-item spread almost never exceeds this
 BAND_LO = 0.34               # below ACCEPT but plausible -> tier 4 (LLM) band
 SIZE_TOL = 0.02              # 2% relative tolerance on parsed size
 
@@ -60,10 +62,49 @@ def prepare(rows: list[dict]) -> None:
         r["tok"] = tokens(r.get("name"), r.get("size"))
 
 
+# House brands are the same product sold under each chain's own label, so they
+# must NOT be treated as a brand conflict -- that is exactly the coles<->woolworths
+# case this matcher exists to catch.
+_HOUSE = {
+    "coles", "woolworths", "ww", "macro", "essentials", "homebrand", "select",
+    "hfm", "harris farm", "aldi", "community co", "the fresh grocer",
+}
+
+
+def _brand_key(row: dict) -> str | None:
+    b = (row.get("brand") or "").strip().lower()
+    if not b or b in _HOUSE:
+        return None
+    return b
+
+
+def brand_conflict(a: dict, b: dict) -> bool:
+    """True when both sides name a real (non-house) brand and they disagree.
+
+    This is what separates "Cadbury Dairy Milk Block" from Harris Farm's
+    "Cioccolato Milk Chocolate Block" -- they share enough tokens to score 0.60
+    but are plainly different products. Where a retailer omits the brand (Coles
+    usually does) the guard abstains rather than guessing.
+    """
+    ka, kb = _brand_key(a), _brand_key(b)
+    if ka is None or kb is None:
+        return False
+    return ka != kb and not (ka in kb or kb in ka)
+
+
+def price_conflict(a: dict, b: dict) -> bool:
+    """True when the two prices are too far apart to be the same item."""
+    pa, pb = a.get("price_cents") or 0, b.get("price_cents") or 0
+    if pa <= 0 or pb <= 0:
+        return False
+    hi, lo = max(pa, pb), min(pa, pb)
+    return hi / lo > MAX_PRICE_RATIO
+
+
 def size_compatible(a: dict, b: dict) -> bool:
-    """Hard filter. Unknown size on either side is permissive, not a match."""
+    """Hard filter on stated sizes. Unknown size defers to a stricter score bar."""
     if a["sv"] is None or b["sv"] is None:
-        return True
+        return True  # undecidable here; rank() applies UNKNOWN_SIZE_ACCEPT instead
     if a["su"] != b["su"]:
         return False
     return abs(a["sv"] - b["sv"]) <= SIZE_TOL * max(a["sv"], b["sv"])
@@ -104,14 +145,19 @@ class Index:
             dst = self.rows[i]
             if not size_compatible(src, dst):
                 continue
+            if brand_conflict(src, dst) or price_conflict(src, dst):
+                continue
             union = src["tok"] | dst["tok"]
             if not union:
                 continue
             jaccard = len(src["tok"] & dst["tok"]) / len(union)
-            # A confirmed size agreement is real evidence; an unknown size on
-            # either side is not, so those score slightly lower and are pushed
-            # toward the LLM band rather than auto-accepted.
-            out.append((jaccard * (1.0 if _size_known(src, dst) else 0.925), i))
+            # A confirmed size agreement is real evidence. Without it a token
+            # overlap alone is far too easy to hit ("Rose 750mL" vs "Miraval Rose
+            # 750mL"), so those pairs must clear a materially higher bar rather
+            # than take a token 7.5% haircut.
+            if not _size_known(src, dst) and jaccard < UNKNOWN_SIZE_ACCEPT:
+                continue
+            out.append((jaccard, i))
         out.sort(reverse=True)
         return out
 

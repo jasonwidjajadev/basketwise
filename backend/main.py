@@ -19,9 +19,12 @@ import db
 from models import Health
 from routes import categories, compare, price_trend, products
 
-# Public read-only data, rebuilt daily. Let Cloudflare's edge serve the GETs so the
-# origin effectively only handles POST /compare.
-CACHE_CONTROL = "public, max-age=300, stale-while-revalidate=86400"
+# Public read-only data, rebuilt daily. Browsers keep the bytes but must revalidate
+# on every request: the ETag is the build id, so an unchanged build costs a 304 and
+# a new build is picked up immediately. The old stale-while-revalidate=86400 let a
+# browser show a day-old /products page (previous build) next to a fresh
+# /products/{id}, so the browse card and the product page disagreed on prices.
+CACHE_CONTROL = "public, no-cache"
 
 DESCRIPTION = """
 Compare an Australian grocery basket across **Coles, Woolworths, ALDI and Harris Farm**.

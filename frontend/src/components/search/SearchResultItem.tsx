@@ -2,6 +2,7 @@ import type { Product } from '@/api/client'
 import { formatSize, RETAILER_LABEL } from '@/api/client'
 
 import productDefault from '@/assets/product_card/product_default.png'
+import StorePriceRow from '@/components/StorePriceRow'
 import { thumbnailUrl } from '@/lib/imageThumbnail'
 
 function retailerLabel(retailer: string | null | undefined) {
@@ -70,6 +71,19 @@ export default function SearchResultItem({
             </span>
           )}
         </div>
+
+        {/* Every store's price, cheapest in colour -- same row the product
+            cards use. Skipped in the header dropdown, which has no room. */}
+        {!compact && (
+          <StorePriceRow
+            offers={product.offers}
+            cheapestRetailer={product.cheapest_retailer}
+            emptyLabel="—"
+            className="mt-2 max-w-[260px]"
+            logoClassName="w-[42%]"
+            priceClassName="text-[11px]"
+          />
+        )}
       </div>
     </div>
   )
