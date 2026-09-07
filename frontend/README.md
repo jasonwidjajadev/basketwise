@@ -1,8 +1,14 @@
 # BasketWise frontend
 
-React (Vite) app. Pages still use mock data. Browse goes through
-`src/api/browseApi.js` (categories/products JSON). Other pages still import
-`src/data/`. The typed client in `src/api/client.ts` exists; no page imports it yet.
+React (Vite) app. Most product flows call the live API through
+`src/api/client.ts` (`VITE_API_BASE` or `https://basket.taskglass.work`).
+
+`src/api/browseApi.js` wraps that client and applies **client-side sort**. It
+does not read mock JSON.
+
+Still local: Home meals (`src/mocks/home/meals.json`), the receipt dropzone,
+Account copy, and the sign-in modal. Other files under `src/mocks/` are unused.
+`src/data/` does not exist.
 
 ```
 frontend/
@@ -14,112 +20,71 @@ frontend/
 │   │   ├── client.ts
 │   │   └── schema.d.ts
 │   ├── assets/
-│   │   ├── fonts/
-│   │   ├── icons/
-│   │   ├── images/
-│   │   │   ├── essentials/
-│   │   │   └── hero/
-│   │   ├── logos/
-│   │   └── mascots/
 │   ├── components/
 │   │   ├── browse/
-│   │   │   ├── CategorySidebar.tsx
-│   │   │   ├── RetailerFilter.tsx
-│   │   │   └── SortMenu.tsx
+│   │   ├── checkout/
 │   │   ├── compare/
-│   │   │   ├── CompareFooterActions.tsx
-│   │   │   ├── ConvergeBlock.tsx
-│   │   │   ├── EmptyCompareState.tsx
-│   │   │   ├── LedgerBreakdown.tsx
-│   │   │   ├── OptionCard.tsx
-│   │   │   ├── SavingsBadge.tsx
-│   │   │   ├── UnavailableBanner.tsx
-│   │   │   └── WhyButton.tsx
+│   │   ├── header/
 │   │   ├── home/
-│   │   │   ├── CategoryGrid.tsx
-│   │   │   ├── EssentialsSection.tsx
-│   │   │   ├── FaqRow.tsx
-│   │   │   ├── FaqSection.tsx
-│   │   │   ├── Hero.tsx
-│   │   │   ├── HowItWorks.tsx
-│   │   │   ├── MealCard.tsx
-│   │   │   ├── MealsSection.tsx
-│   │   │   └── StartAnotherWay.tsx
-│   │   ├── CartSidebar.tsx
-│   │   ├── Footer.tsx
-│   │   ├── Header.tsx
+│   │   ├── product/
+│   │   ├── search/
 │   │   ├── ProductCard.tsx
-│   │   └── SearchBar.tsx
+│   │   ├── RetailerFilter.tsx
+│   │   └── Footer.tsx
 │   ├── context/
 │   │   ├── cart-context.js
 │   │   ├── CartContext.tsx
+│   │   ├── SignInModalContext.tsx
 │   │   └── useCart.js
-│   ├── data/
-│   │   ├── browseCategories.js
-│   │   ├── browseProducts.js
-│   │   ├── cartLineItems.js
-│   │   ├── categories.js
-│   │   ├── essentials.js
-│   │   ├── faqs.js
-│   │   ├── meals.js
-│   │   ├── milk.json
-│   │   └── startAnotherWay.js
 │   ├── layouts/
 │   │   ├── BrowseLayout.tsx
 │   │   └── MainLayout.tsx
 │   ├── lib/
-│   │   ├── browseSort.js
-│   │   ├── compareBasket.js
-│   │   ├── format.js
+│   │   ├── imageThumbnail.ts
 │   │   └── utils.js
 │   ├── mocks/
-│   │   ├── browse/
-│   │   ├── compare/
-│   │   ├── home/
-│   │   └── product/
+│   │   └── home/
+│   │       └── meals.json          # the only mock still imported
 │   ├── pages/
 │   │   ├── AccountPage.tsx
 │   │   ├── BrowsePage.tsx
 │   │   ├── ComparePage.tsx
 │   │   ├── HomePage.tsx
 │   │   ├── NotFoundPage.tsx
-│   │   └── SignInPage.tsx
+│   │   ├── ProductPage.tsx
+│   │   ├── SearchResultsPage.tsx
+│   │   └── SignInPage.tsx          # modal body, not a route
 │   ├── App.tsx
 │   ├── index.css
 │   └── main.tsx
-├── eslint.config.js
-├── index.html
 ├── package.json
 ├── pnpm-lock.yaml
-├── tsconfig.app.json
-├── tsconfig.json
-├── tsconfig.node.json
 └── vite.config.ts
 ```
 
-`src/data/` holds leftover Home/Compare mock catalogues. Browse uses
-`src/api/browseApi.js` → `src/mocks/browse/`. Tailwind v4 tokens live in
-`src/index.css`. `@/*` maps to `src/*`.
+Tailwind v4 tokens live in `src/index.css`. `@/*` maps to `src/*`.
 
 ```
 pages
-  -> src/api/browseApi.js  (Browse)
-  -> src/data/             (Home / cart leftovers)
-  (not https://basket.taskglass.work/)
+  -> src/api/client.ts          (essentials, search, product, compare, cart resolve)
+  -> src/api/browseApi.js       (browse categories + products + client sort)
+  -> src/mocks/home/meals.json  (Home meals only)
 ```
 
 ## Routes
 
-| Path       | Page                                                                           |
-| ---------- | ------------------------------------------------------------------------------ |
-| `/`        | Home                                                                           |
-| `/browse`  | Browse (sidebar + `category` / `subcategory` URL params, under `BrowseLayout`) |
-| `/compare` | Compare                                                                        |
-| `/account` | Account                                                                        |
-| `/signin`  | Sign in                                                                        |
-| `*`        | 404                                                                            |
+| Path | Page |
+| --- | --- |
+| `/` | Home |
+| `/browse` | Browse (`category` / `subcategory` / `retailer` / `sort` query params, under `BrowseLayout`) |
+| `/search` | Search results (`q`, optional `retailer` / `sort`) |
+| `/product/:productId` | Product detail |
+| `/compare` | Compare (`POST /compare`) |
+| `/account` | Account placeholder |
+| `*` | 404 |
 
-There is no `/categories` route. `CartProvider` wraps `<App />`.
+There is no `/categories` or `/signin` route. Sign-in is a modal.
+`CartProvider` wraps `<App />`. Cart key: `basketwise:cart`.
 
 ## Run it
 

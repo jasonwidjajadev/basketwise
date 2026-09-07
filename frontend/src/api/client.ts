@@ -18,7 +18,6 @@ export type Offer = components['schemas']['Offer']
 export type BasketItem = components['schemas']['BasketItem']
 export type CompareResponse = components['schemas']['CompareResponse']
 export type PriceHistory = components['schemas']['PriceHistory']
-export type StoreComparison = components['schemas']['StoreComparison']
 export type Retailer = Offer['retailer']
 
 const BASE: string =

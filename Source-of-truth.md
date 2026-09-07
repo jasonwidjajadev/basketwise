@@ -7,7 +7,7 @@
 - Retailer-specific IDs do not go into the shared basket.
 - `GET /categories` is the frontend source of truth for canonical category/subcategory labels.
 
-> **Current cleanup status:** the structure has been simplified. Some runtime/API details may still be stale and will be verified against Swagger in the next pass.
+> **Current as of 7 Sep 2026.** Frontend wiring, Search, Product, list `offers[]`, `price-trend`, and cache headers match the live repo. Schema A/B and Appendix A are unchanged.
 
 ---
 
@@ -53,17 +53,30 @@ FastAPI
 ### 1.3 Frontend
 
 - **Client:** `frontend/src/api/client.ts`
-  - Can call the API using `VITE_API_BASE` or the live URL.
-- **Pages:** Home / Browse / Compare do **not** use the client yet.
-  - Browse reads `frontend/src/api/browseApi.js` → `frontend/src/mocks/browse/`.
-  - Home / cart leftovers still read `frontend/src/data/`.
+  - Base URL: `VITE_API_BASE` if set, otherwise `https://basket.taskglass.work`.
+- **`browseApi.js`** is a thin wrapper around the client (plus **client-side sort**). It does not read mocks.
+- **`src/data/` is gone.** Leftover JS catalogues live under `frontend/_can_possibly_delete/data/`. Orphan JSON under `frontend/src/mocks/` is unused except `mocks/home/meals.json`.
+
+| Surface | Data source |
+|---|---|
+| Home essentials | Live `GET /products?essential=true&limit=20` |
+| Home meals | `frontend/src/mocks/home/meals.json` (display only; add is a no-op) |
+| Home category grid | Hardcoded 8 links to `/browse?category=` |
+| Home receipt dropzone | Local `File` state only. No `POST /receipts/scan` |
+| Browse sidebar + grid | Live `GET /categories`, `GET /products` |
+| Header search + `/search` | Live `GET /products?q=` |
+| `/product/:productId` | Live `GET /products/{id}` + `GET /products/{id}/price-trend` |
+| Compare | Live `POST /compare` |
+| Cart | Client state (`basketwise:cart`). Line items resolved via `GET /products/{id}` (meals via mock JSON) |
+| Account | Placeholder copy |
+| Sign-in | Modal (`SignInPage`), not a `/signin` route. No auth API |
 
 ```txt
 Scraper
 ↓
 Backend
 ↓
-Frontend
+Frontend (live client, except meals / receipt UI / account / sign-in)
 ```
 
 ---
@@ -564,13 +577,31 @@ Woolworths "Fruit & Veg Specials & Offers"
 
 ### 4.1 Home
 
+`HomePage` is a mix of live data and local copy.
+
 #### Everyday Essentials
 
 ```http
 GET /products?essential=true&limit=20
 ```
 
-Uses the same `Product[]` planned and current contracts documented under Browse below.
+Uses the same list `Product[]` as Browse (including summary `offers[]`). Implemented as `getEssentials()` in `frontend/src/api/client.ts`. Add-to-basket writes `{ product_id, quantity }` into cart context.
+
+#### Meals
+
+No `GET /meals` API. The section reads `frontend/src/mocks/home/meals.json`. Adding a meal from Home does not write the cart (handler is a no-op). Cart resolution still recognises those mock meal ids if they are already in `basketwise:cart`.
+
+#### Category shortcuts
+
+Hardcoded eight tiles in `CategoryGrid.tsx` linking to `/browse?category=…`. Does **not** call `GET /categories`.
+
+#### Receipt dropzone
+
+Hero accepts drag/drop and file pick into React state. Nothing is uploaded. `POST /receipts/scan` is not implemented.
+
+#### Other Home copy
+
+How-it-works, FAQ, guest bar: inlined. Sign-in opens the modal.
 
 ---
 
@@ -642,9 +673,20 @@ type Category = {
 ]
 ```
 
-Differs: `product_count` on each category and subcategory. Empty categories are omitted.
+Differs: `product_count` on each category and subcategory. **Empty categories are not omitted** — the full canonical tree is returned, including `product_count: 0`, so the sidebar shape matches the starter taxonomy.
 
 The frontend displays `name` and sends `id` back in product requests.
+
+Browse URL (query params, not path segments):
+
+```txt
+/browse?category={id}&subcategory={id}&retailer={retailer}&sort={sort}
+```
+
+Default category is `fruit-vegetables` (`BrowseLayout.tsx`).
+
+- `retailer` is sent to `GET /products`.
+- `sort` is **client-side only** on already-loaded pages (`browseApi.js` / `browseSort.js`). There is no `sort=` query on the API. A globally correct order across the full filtered set would need a backend `sort` parameter.
 
 ---
 
@@ -725,7 +767,7 @@ Behaviour (planned):
 - `offers` must contain the current retailer prices needed by the frontend.
 - Pagination is bounded. Do not return the full catalogue in one response.
 
-Search, retailer filtering, sorting, tags and Specials filtering are extensions and can be added later as optional parameters.
+`q`, `retailer`, `tag`, `special`, and `multi_retailer` are implemented on `GET /products`. Search is a core page (§4.3). `sort` is frontend-only.
 
 #### Product list — current return (live API)
 
@@ -831,7 +873,90 @@ Not specified as its own page contract in this section. Planned list `Product` p
 
 ---
 
-### 4.3 Basket
+### 4.3 Search
+
+Search is live. It uses the **list** endpoint, not a separate search route on the API.
+
+#### Header autocomplete
+
+`frontend/src/components/header/SearchBar.tsx`
+
+- Controlled query, minimum 2 characters.
+- 300 ms debounce; `AbortController` plus a request id so a stale response cannot overwrite a newer one.
+- Request:
+
+```http
+GET /products?q={query}&limit=6
+```
+
+- Click a row → `/product/{id}`.
+- Enter, the magnifying glass, or “See all results” → `/search?q={query}`.
+
+#### Full results page
+
+`frontend/src/pages/SearchResultsPage.tsx`
+
+```http
+GET /products?q={query}&limit=24&offset=0
+GET /products?q={query}&limit=24&offset=24
+```
+
+Optional `retailer` is forwarded to the API. `sort` is applied on the client to loaded pages only (same functions as Browse). Load more appends. Header `X-Total-Count` is the match total. Rows can add/remove cart items.
+
+Body is list `Product[]` (summary `offers[]` included). Empty match → `[]`.
+
+#### `q` semantics (`backend/search.py`)
+
+Not a strict FTS5 prefix AND over names.
+
+- **Size tokens** (`1kg`, `500 g`, `2L`, `6pk`) are pulled out of the text and matched against `products.size_value` / `size_unit`, normalised to `g` / `ml` / `pk` / `ea`, with a 2% tolerance. `1kg protein powder` used to return nothing because `1kg` is not a word in `Whey Protein Powder Vanilla`.
+- **Fallback ladder**, first rung that matches anything wins: all-terms + size, all-terms, any-term + size, any-term.
+- **Fuzzy tolerance**: plural/singular and Damerau-Levenshtein against `search_vocab` (built by `build_api_db.py`). A rare term can still be corrected, but only to a candidate at least 20× more common; the original spelling stays in the match set.
+- **Ranking**, best first: exact name match, requested size, name prefix, number of query terms in name/brand, `retailer_count`, FTS bm25.
+- `X-Total-Count` reflects the rung that matched. Paging is stable. Every term is stripped to alphanumerics and quoted, so FTS5 operators in user input are inert.
+- A query that cannot match anything returns `200` with `[]`, not an error.
+
+---
+
+### 4.4 Product page
+
+```txt
+/product/:productId
+```
+
+#### Detail
+
+```http
+GET /products/{id}
+```
+
+404 if the id does not exist. Body is the list product object plus **full** Schema B `offers` (cheapest first) — `Offer[]`, not the summary `{ retailer, price }` used on the list. Contract JSON is under Browse → Product detail below.
+
+The page:
+
+- Adds to the basket with the **canonical** `product_id` (not a retailer SKU).
+- Shows every offer the browse card would, including `is_available=false` (filtering those out made ALDI appear on the card and vanish here).
+- Links out to the retailer PDP via `offerUrl()` in `client.ts` (`OfferImageLink`).
+
+#### Price trend (what the page actually calls)
+
+```http
+GET /products/{id}/price-trend?days=30
+```
+
+Implemented in `backend/routes/price_trend.py`. Merges local SQLite `price_history` with Supabase `store_products` history, de-duplicated to one point per retailer per day. 5-minute in-memory cache. If Supabase is unreachable, local points still return (possibly `[]`). Same JSON shape as `price-history` (array of `{ product_id, retailer, points[] }`).
+
+#### Price history (local artifact only)
+
+```http
+GET /products/{id}/price-history?days=30
+```
+
+SQLite only. The product page does **not** call this; it uses `price-trend`.
+
+---
+
+### 4.5 Basket
 
 No backend Basket API is required in the current documented contract.
 
@@ -844,11 +969,23 @@ type BasketItem = {
 
 The basket stores the canonical `product_id`, not retailer product IDs or `offer_id`.
 
+**Client state** (`frontend/src/context/CartContext.tsx`):
+
+- localStorage key: `basketwise:cart`
+- Persisted: `{ items: BasketItem[], savedIds: Record<string, true> }`
+- `add(id)` inserts only if that id is **not** already in the basket. Quantity changes use `setQuantity` / `increment`.
+- `savedIds` / `toggleSaved` persist; no page UI uses them yet. This is not the planned Saved Lists API.
+
+**Line items** (`frontend/src/components/checkout/cartLineItems.js`):
+
+1. If `product_id` matches `mocks/home/meals.json` → treat as a meal.
+2. Else `GET /products/{id}`. 404 → drop the row. Other errors → keep a fallback label.
+
 Current return: none. There is no basket route on the live API.
 
 ---
 
-### 4.4 Compare
+### 4.6 Compare
 
 #### `POST /compare`
 
@@ -879,7 +1016,7 @@ Request:
 
 ##### Response
 
-Implemented in `backend/routes/compare.py`. Three complete-basket strategies; the frontend only renders the response.
+Implemented in `backend/routes/compare.py`. Three complete-basket strategies; the frontend only renders the response (`compareBasket.js` → `compare()` in `client.ts`). The request is silently truncated to **200** items.
 
 ```json
 {
@@ -1065,7 +1202,7 @@ savings  = baseline - option.total
 
 ---
 
-### 4.5 Meta (implemented, not in the original page plan)
+### 4.7 Meta (implemented, not in the original page plan)
 
 #### `GET /health`
 
@@ -1086,7 +1223,7 @@ No original page contract.
 
 #### `GET /products/{id}/price-history`
 
-Listed in §5.2 as a Price Insights extension. Implemented today.
+Local SQLite series. See §4.4. The product page uses **`/price-trend`**, not this route.
 
 ```http
 GET /products/{id}/price-history?days=30
@@ -1117,47 +1254,48 @@ Not specified in §4.
 ]
 ```
 
+#### `GET /products/{id}/price-trend`
+
+See §4.4. Same point-array shape as `price-history`. Implemented in `backend/routes/price_trend.py`. Committed `backend/openapi.json` / `frontend/src/api/schema.d.ts` may lag the live route.
+
 ---
 
 ## 5. API & Product Extensions
 
-### 5.1 Implemented `GET /products` Extension Parameters
+### 5.1 Implemented `GET /products` query parameters
 
-The current document lists these additional parameters outside the core page flow:
+All of these are live on `GET /products` (`backend/routes/products.py`). The list body is always the **Current return** under §4.2, including summary `offers[]`. Filters combine with AND.
 
 ```txt
-q
+essential
+category
+subcategory
+q            → §4.3 Search
 tag
 special
 retailer
 multi_retailer
+limit        (default 24, max 100)
+offset
 ```
 
-Their live query-string behaviour is implemented (`backend/routes/products.py`). List-body JSON is the **Current return** under §4.2, not the planned `offers[]` example.
+There is **no** `sort=` on the API. Browse and Search sort the pages they already loaded.
 
-#### `q` semantics
+### 5.2 Not built vs already implemented
 
-`q` is no longer a strict FTS5 prefix AND over product names. Query parsing and
-planning live in `backend/search.py`:
+**Implemented (also listed in §4):**
 
-- **Size tokens** (`1kg`, `500 g`, `2L`, `6pk`) are pulled out of the text and matched against `products.size_value` / `size_unit`, normalised to the canonical `g` / `ml` / `pk` / `ea` units, with a 2% tolerance. `1kg protein powder` used to return nothing because `1kg` is not a word in `Whey Protein Powder Vanilla`.
-- **Fallback ladder**, first rung that matches anything wins: all-terms + size, all-terms, any-term + size, any-term. Precision is kept for a clean query; recall is spent only when needed.
-- **Fuzzy tolerance**: plural/singular variants and Damerau-Levenshtein spell correction (transposition counts as one edit) against `search_vocab`. A term the catalogue uses for very few products can still be corrected, but only to a candidate at least 20x more common; the original spelling always stays in the match set.
-- **Ranking**, best first: exact name match, requested size, name prefix match, number of query terms present in name/brand, `retailer_count`, FTS bm25.
-- Unchanged: `X-Total-Count` reflects the rung that matched, paging is stable and non-repeating, and every term is stripped to alphanumerics and quoted, so FTS5 operators in user input are inert.
-- A query that cannot match anything returns `200` with `[]`, not an error.
+- `GET /products/{id}/price-history?days=30`
+- `GET /products/{id}/price-trend?days=30`
+- Search (`q`), retailer filter, tag, special, `multi_retailer`
 
-### 5.2 Full-App Extensions
+**Not implemented:**
 
-These are outside the current core page flow but still build on the canonical `product_id` architecture.
-
-- **Meals:** `GET /meals`, `GET /meals/{meal_id}`
-- **Saved Lists:** list CRUD APIs
-- **Receipt Import:** `POST /receipts/scan`
-- **Price Insights:** `GET /products/{product_id}/price-history?days=30`, `GET /products/{product_id}/price-insights`
-- **Authentication:** Supabase Auth is documented as the intended auth layer.
-
-The detailed schemas for these extensions should live in their own contract once they become active frontend work.
+- **Meals API:** `GET /meals`, `GET /meals/{meal_id}` — Home uses `mocks/home/meals.json`
+- **Saved Lists:** list CRUD — `savedIds` in cart localStorage is unrelated UI state
+- **Receipt Import:** `POST /receipts/scan` — Hero dropzone is local file state
+- **Price insights:** `GET /products/{id}/price-insights`
+- **Authentication:** no auth on the API; sign-in is a frontend modal
 
 ---
 
@@ -1176,11 +1314,11 @@ npx openapi-typescript https://basket.taskglass.work/openapi.json -o src/api/sch
 ### Current implementation notes
 
 1. Harris Farm Markets was added as a fourth retailer. The `retailer` enum is now `"coles" | "woolworths" | "aldi" | "harrisfarm"`.
-2. `Product` gained `min_price` and `retailer_count` so a product card can show `"from $x at N stores"` without a second request.
-3. `CompareResponse` is `options[]` of three strategies (`recommended-split`, `cheapest-single-store`, `lowest-possible-price`) plus `unknown_product_ids`. `total` and `savings` are `number | null`. Until hpsrv is redeployed, production `basket.taskglass.work` still serves the old `stores[]` + `recommendation` shape.
+2. List `Product` includes denormalised card fields (`min_price`, `cheapest_retailer`, `unit_price`, …) plus summary `offers: { retailer, price }[]`. Full offer metadata is only on `GET /products/{id}`.
+3. `CompareResponse` is `options[]` of three strategies (`recommended-split`, `cheapest-single-store`, `lowest-possible-price`) plus `unknown_product_ids`. `total` and `savings` are `number | null`. Requests are capped at 200 items.
 4. `size_value` / `size_unit` are normalized to `g` / `ml` / `pk` / `ea`, so `1kg` and `1000g` compare equal. Display with `formatSize()` in `frontend/src/api/client.ts`.
-5. The data source is a nightly-built read-only SQLite artifact (Schema B: `products` / `offers` / `price_history` plus `categories` / `subcategories` / `meta` / FTS), not live Supabase.
-6. `GET /products` also supports the implemented query parameters `retailer` and `multi_retailer`.
+5. Catalogue GETs read the nightly SQLite artifact (Schema B). `GET /products/{id}/price-trend` additionally merges Supabase history when configured; it is not a live scrape.
+6. `GET /products` supports `retailer`, `multi_retailer`, `q`, `tag`, `special`. GET cache is `Cache-Control: public, no-cache` with `ETag` = build id (a long `stale-while-revalidate` made browse cards and product pages disagree on prices).
 
 ---
 
